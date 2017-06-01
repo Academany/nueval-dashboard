@@ -4,6 +4,11 @@
 
 Needs the [nueval-api](http://github.com/fibasile/nueval-api) server. 
 
+## Author
+
+Fiore Basile <fiore.basile@gmail.com>
+(c) 2017 All rights reserved;
+
 ## Environment
 
 `Node >= 6`

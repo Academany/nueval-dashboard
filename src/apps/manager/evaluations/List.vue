@@ -1,0 +1,114 @@
+<template>
+<MDView>
+  <MLTable
+    slot="master"
+    ref="masterTable"
+    :value="tableData"
+    :selectedRow="selectedRow"
+    :tableColumns="tableColumns"
+    @select="handleSelect"
+    @edit="handleEdit"
+    @delete="handleDelete"/>
+  <MDDetailView :entity="entity"
+                :selectedRow="selectedRow"
+                v-model="tabs"
+                @newItem="handleNew"
+    slot="detail">
+    <BasicDetail :item="selectedRow"
+                  slot="tab-content-0"
+                  @cancelEdit="handleCancel"/>
+    <StudentsList :item="selectedRow" slot="tab-content-1"/>
+  </MDDetailView>
+</MDView>
+</template>
+
+<script>
+import MDDetailView from '../../../components/MDDetailView.vue'
+// import MLHeader from './Header.vue'
+import MLTable from '../../../components/MDTable.vue'
+import MDView from '../../../components/MDView.vue'
+import MDNotImplemented from '../../../components/MDNotImplemented.vue'
+import lodash from 'lodash'
+import BasicDetail from './Detail.vue'
+import StudentsList from './Students.vue'
+let startId=0
+//
+// lodash.forEach(sampleData.data, (el)=>{
+//   el.id = ++startId;
+//   el.supernode = 'nosupernode';
+//   el.isSupernode = false;
+// })
+
+export default {
+  components: {
+    // MLDetail,
+    // MLDetailInfo,
+    // MLDetailRel1,
+    // MLDetailRel2,
+    // MLHeader,
+    MLTable,
+    MDDetailView,
+    // MLPermissionsRel,
+    MDView,
+    BasicDetail,
+    StudentsList,
+    MDNotImplemented
+  },
+  data() {
+    return {
+      entity: 'Evaluation Session',
+      tableData: [
+        {'name': 'Local Evaluation Session', 'date': '7 June 2017', 'students' : '120', id: 1},
+        {'name': 'Global Evaluation Session', 'date': '7 June 2017', 'students' : '120', id: 2}
+      ],
+      tableColumns: [
+        {id: 1, label: 'Name', prop: 'name', width: 250 },
+        {id: 2, label: 'Date', prop: 'date' },
+        {id: 3, label: 'Students', prop: 'students' }
+      ],
+      selectedRow: null,
+      activeName: 'basic',
+      tabs: [
+        {
+          id: 'basic',
+          label: 'Basic',
+          name: 'basic',
+          hide: false,
+        },
+        {
+          id: 'students',
+          label: 'Students',
+          name: 'students',
+          hide: true
+        }
+      ]
+    }
+  },
+  methods: {
+    handleNew() {
+      this.selectedRow = {};
+    },
+    handleCancel() {
+      this.$refs.masterTable.clearSelection()
+      this.selectedRow = null
+    },
+    handleClick (id,e){
+      // tabs event handler
+    },
+    handleSelect (index,row){
+      // console.log(row)
+      this.selectedRow = row
+    },
+    handleEdit (index,row){
+      // console.log(row)
+      this.selectedRow = row
+    },
+    handleDelete( index,row){
+      // console.log(index + ' ' + row)
+    }
+  }
+}
+</script>
+<style scoped>
+
+</style>

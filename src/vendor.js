@@ -1,0 +1,7 @@
+import Vue from 'vue'
+import ElementUI from 'element-ui'
+import lodash from 'lodash'
+import Icon from 'vue-awesome/components/Icon.vue'
+import webix from 'webix'
+import Vuex from 'vuex'
+import 'webix/webix.css'

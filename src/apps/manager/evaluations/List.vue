@@ -3,7 +3,7 @@
   <MLTable
     slot="master"
     ref="masterTable"
-    :value="tableData"
+    :value="evaluations"
     :selectedRow="selectedRow"
     :tableColumns="tableColumns"
     @select="handleSelect"
@@ -13,6 +13,7 @@
                 :selectedRow="selectedRow"
                 v-model="tabs"
                 @newItem="handleNew"
+                 @delete="handleDelete"
     slot="detail">
     <BasicDetail :item="selectedRow"
                   slot="tab-content-0"
@@ -31,6 +32,7 @@ import MDNotImplemented from '../../../components/MDNotImplemented.vue'
 import lodash from 'lodash'
 import BasicDetail from './Detail.vue'
 import StudentsList from './Students.vue'
+import {mapActions,mapGetters} from 'vuex'
 let startId=0
 //
 // lodash.forEach(sampleData.data, (el)=>{
@@ -57,10 +59,6 @@ export default {
   data() {
     return {
       entity: 'Evaluation Session',
-      tableData: [
-        {'name': 'Local Evaluation Session', 'date': '7 June 2017', 'students' : '120', id: 1},
-        {'name': 'Global Evaluation Session', 'date': '7 June 2017', 'students' : '120', id: 2}
-      ],
       tableColumns: [
         {id: 1, label: 'Name', prop: 'name', width: 250 },
         {id: 2, label: 'Date', prop: 'date' },
@@ -84,9 +82,18 @@ export default {
       ]
     }
   },
+  computed: {
+    ...mapGetters(['currentCourse', 'evaluations'])
+  },
+  mounted() {
+    this.loadEvaluations(this.currentCourse.id);
+  },
   methods: {
+    
     handleNew() {
-      this.selectedRow = {};
+      this.selectedRow = {
+        courseId: this.currentCourse.id,
+      }
     },
     handleCancel() {
       this.$refs.masterTable.clearSelection()
@@ -105,10 +112,28 @@ export default {
     },
     handleDelete( index,row){
       // console.log(index + ' ' + row)
-    }
+
+      const vm = this;
+      if (this.selectedRow){
+        this.deleteEvaluation(this.selectedRow).then((succes) => {
+            vm.notify("Success", "Item deleted succcessfully")
+            vm.handleCancel()
+        }).catch((error)=>{
+            vm.notify("Error", "Some error occurred:\n" + JSON.stringify(error));
+        });
+      }
+    },
+    notify(title, msg) {
+      const h = this.$createElement;
+
+      this.$notify({
+        title: title,
+        message: h('i', {
+          style: 'color: teal'
+        }, msg)
+      });
+    },
+    ...mapActions(['loadEvaluations','deleteEvaluation'])
   }
 }
 </script>
-<style scoped>
-
-</style>

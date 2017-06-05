@@ -1,6 +1,6 @@
 <template>
 <div class="form clearfix">
-  <h3>Instructors</h3>
+  <h3>Students</h3>
 
   <el-form ref="myForm" :rules="rules" :model="form" label-position="left" label-width="150px" >
     <el-autocomplete
@@ -11,17 +11,22 @@
    :trigger-on-focus="false"
    @select="handleSelect"
  ></el-autocomplete>
-    <el-button  type="primary" @click="submitForm('myForm')">Add to Lab</el-button>
+    <el-button  type="primary" @click="submitForm('myForm')">Add Student</el-button>
   </el-form>
 
-  <div><br></div>
+  <div><br/></div>
 
   <el-table
-    :data="tableData"
+    :data="students"
     style="width: 100%">
     <el-table-column
-      prop="name"
-      label="Name"
+      prop="student_id"
+      label="Student ID"
+      fit>
+    </el-table-column>
+    <el-table-column
+      prop="username"
+      label="Username"
       fit>
     </el-table-column>
     <el-table-column
@@ -37,9 +42,8 @@
   </el-table>
 
   <div class="clearfix" style="margin-top: 24px">
-  <el-button type="info">Register a new instructor</el-button>
+  <el-button type="info">Register a new student</el-button>
 </div>
-
 </div>
 
 </template>
@@ -65,13 +69,11 @@ export default {
           { "value": "vue-router", "link": "https://github.com/vuejs/vue-router" },
           { "value": "babel", "link": "https://github.com/babel/babel" }
          ],
-        tableData: [
-          { username: 'username', name: 'Full Name', email: 'email@provider.com'}
-        ],
-        students: this.item.students
+        
       }
     },
     computed: {
+      students() { return this.item.students}
     },
     methods: {
       querySearch(queryString, cb) {
@@ -84,17 +86,6 @@ export default {
         return (link) => {
           return (link.value.indexOf(queryString.toLowerCase()) === 0);
         };
-      },
-      loadAll() {
-        return [
-          { "value": "vue", "link": "https://github.com/vuejs/vue" },
-          { "value": "element", "link": "https://github.com/ElemeFE/element" },
-          { "value": "cooking", "link": "https://github.com/ElemeFE/cooking" },
-          { "value": "mint-ui", "link": "https://github.com/ElemeFE/mint-ui" },
-          { "value": "vuex", "link": "https://github.com/vuejs/vuex" },
-          { "value": "vue-router", "link": "https://github.com/vuejs/vue-router" },
-          { "value": "babel", "link": "https://github.com/babel/babel" }
-         ]
       },
       handleSelect(item) {
         console.log(item);

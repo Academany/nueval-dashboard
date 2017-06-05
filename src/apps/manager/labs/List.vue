@@ -18,9 +18,9 @@
       <BasicDetail :item="selectedRow"
                     slot="tab-content-0"
                     @cancelEdit="handleCancel"/>
-      <MLDetailInfo :item="selectedRow" slot="tab-content-1"/>
-      <MLDetailRel1 :item="selectedRow" slot="tab-content-2"/>
-      <MLDetailRel2 :item="selectedRow" slot="tab-content-3"/>
+      <Supernode :item="selectedRow" slot="tab-content-1"/>
+      <InstructorsList :item="selectedRow" slot="tab-content-2"/>
+      <StudentsList :item="selectedRow" slot="tab-content-3"/>
     </MDDetailView>
   </MDView>
 </template>
@@ -28,9 +28,9 @@
 <script>
 import sampleData from './sample-data.js'
 import BasicDetail from './Detail.vue'
-import MLDetailInfo from './DetailInfo.vue'
-import MLDetailRel1 from './DetailInfo0.vue'
-import MLDetailRel2 from './DetailInfo1.vue'
+import Supernode from './Supernode.vue'
+import InstructorsList from './InstructorsList.vue'
+import StudentsList from './StudentsList.vue'
 import MLPermissionsRel from '../../../components/Permissions.vue'
 import MLHeader from './Header.vue'
 import MLTable from '../../../components/MDTable.vue'
@@ -51,9 +51,9 @@ import {mapGetters,mapActions} from 'vuex'
 export default {
   components: {
     BasicDetail,
-    MLDetailInfo,
-    MLDetailRel1,
-    MLDetailRel2,
+    Supernode,
+    InstructorsList,
+    StudentsList,
     MLHeader,
     MLTable,
     MLPermissionsRel,
@@ -69,9 +69,10 @@ export default {
       entity: 'Lab',
       tableData: sampleData.data,
       tableColumns: [
-        {id: 1, label: 'Name', prop: 'name', width: 250 },
-        {id: 2, label: 'Country', prop: 'country' },
-        {id: 3, label: 'Continent', prop: 'continent' }
+        {id: 1, label: 'Name', prop: 'name', width: 190 },
+        {id: 2, label: 'Country', prop: 'country', width: 130 },
+        {id: 3, label: 'Continent', prop: 'continent', width: 130 },
+        {id: 4, label: 'Supernode', prop: 'supernode.name'}
       ],
       selectedRow: null,
       activeName: 'settings',
@@ -123,12 +124,11 @@ export default {
       this.selectedRow = row
     },
     handleDelete(){
-      debugger
-      console.log('Deleting')
+      alert('delete')
       if (this.selectedRow){
-        this.deleteLab(this.selectedRow).then(
-            (succes) => console.log('delete ok')
-        );
+        this.deleteLab(this.selectedRow).then( (success) => {
+              console.log('delete ok')
+        });
       }
     },
     ...mapActions(['deleteLab','loadLabs'])
@@ -170,6 +170,7 @@ export default {
   padding-top: 0px;
   overflow-y: scroll;
   overflow-x: none;
+  font-size: 0.8em;
 }
 .detail {
     background-color: #d2d8e2;

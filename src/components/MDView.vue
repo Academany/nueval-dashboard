@@ -13,7 +13,7 @@
 
   }
 </script>
-<style>
+<style scoped>
 
 .adjust {
   margin-bottom: -3px;

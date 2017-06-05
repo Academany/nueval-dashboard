@@ -27,18 +27,20 @@ export default {
   },
   watch: {
     currentCourse(val){
-      console.log('currentCourse changed to' + JSON.stringify(val))
+      // console.log('currentCourse changed to' + JSON.stringify(val))
       this.course = (val && val.id) ? val.id : null;
-      console.log(this.course);
+      // console.log(this.course);
     }
   },
   methods: {
     handleSelect(value){
-      console.log('selected ' + JSON.stringify(value))
+      // console.log('selected ' + JSON.stringify(value))
       var courses = this.courses.filter((el)=>el.id===value)
       var selected = courses.length > 0 ? courses[0] : null;
-      if (selected)
+      if (selected) {
         this.changeCourse(selected)
+        // this.$router.push('/apps/manager')
+      }
       if (!this.currentCourse){
         this.changeCourse(null)
       }

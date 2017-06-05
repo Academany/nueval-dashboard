@@ -1,16 +1,17 @@
 <template>
   <el-row type="flex">
     <el-col :lg="{ span: 18, offset: 3}">
-      <div class="apps">
-        <div v-for="(page,idx) in pages" :key="idx" >
+      <div class="apps" v-if="apps && apps.length > 0">
         <el-row  :gutter="12">
-           <el-col :xs="24" :sm="8" :md="8" :lg="8" :key="app.target"  v-for="app in page">
+           <el-col :xs="24" :sm="8" :md="8" :lg="8" :key="app.target"  v-for="app in apps">
              <div class="grid-content">
                <AppCard :item="app"></AppCard>
              </div>
            </el-col>
         </el-row>
-        </div>
+      </div>
+      <div v-if="apps.length == 0">
+        No apps available for you at the moment.
       </div>
     </el-col>
   </el-row>
@@ -26,11 +27,6 @@ export default {
   props: [
     'apps'
   ],
-  data (){
-    return {
-      pages: lodash.chunk(this.apps,3)
-    }
-  },
 }
 
 </script>

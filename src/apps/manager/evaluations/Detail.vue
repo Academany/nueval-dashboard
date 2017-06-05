@@ -8,8 +8,12 @@
     <el-form-item label="Session name" prop="name">
       <el-input v-model="form.name"></el-input>
     </el-form-item>
-    <el-form-item label="Date" prop="date">
-      <el-input v-model="form.date"></el-input>
+    <el-form-item label="Date" >
+      <el-date-picker
+      v-model="selectedDate"
+      type="date"
+      placeholder="Pick a day">
+    </el-date-picker>
     </el-form-item>
 
     <div style="margin-top:22px"><br></div>
@@ -25,44 +29,101 @@
 
 
 <script>
+import {
+  mapActions,
+  mapGetters
+} from 'vuex'
+import moment from 'moment'
+
 export default {
-    props: [
-      'item'
-    ],
-    data() {
-      return {
-        rules: {
-              name: [
-                   { required: true, message: 'Please enter Session Name', trigger: 'blur' }
-              ],
-              date: [
-                   { required: true, message: 'Please enter Session Date', trigger: 'blur' }
-              ],
-            
-        },
+  props: [
+    'item'
+  ],
+  data() {
+    return {
+      selectedDate: this.item && this.item.date || new Date(),
+      rules: {
+        name: [{
+          required: true,
+          message: 'Please enter Session Name',
+          trigger: 'blur'
+        }],
+        // selectedDate: [{
+        //   type: 'date',
+        //   required: true,
+        //   message: 'Please enter Session Date',
+        //   trigger: 'blur'
+        // }],
+
+      },
 
     }
   },
   computed: {
-      form: function(){ return  this.item || {} }
-  },
-    methods: {
-      submitForm(formName) {
-        this.$refs[formName].validate((valid) => {
-          if (valid) {
-            alert('submit!');
-          } else {
-            console.log('error submit!!');
-            return false;
-          }
-        });
-      },
-      resetForm(formName) {
-        this.$refs[formName].resetFields();
-        this.$emit('cancelEdit');
-      }
+    form: function () {
+      return this.item || {}
     }
+  },
+  methods: {
+    convertSelectedDate(){
+     return moment(this.selectedDate).format('YYYY-MM-DD')
+    },
+    submitForm(formName) {
+      console.log(this.selectedDate)
+      var vm = this;
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          if (!vm.item.id) {
+            vm.createEvaluation({
+              name: vm.item.name,
+              date: this.convertSelectedDate(),
+              courseId: vm.item.courseId
+            }).then((success) => {
+              vm.notify('Success', 'Session created')
+              vm.resetForm('myForm')
+            }).catch((error) => {
+              vm.notify('Error', 'Some error happened' + error)
+            })
+          } else {
+            vm.updateEvaluation({
+              id: vm.item.id,
+              name: vm.item.name,
+              date: this.convertSelectedDate(),
+              courseId: vm.item.courseId
+            }).then((success) => {
+              vm.notify('Success', 'Session updated');
+              vm.resetForm('myForm')
+            }).catch((error) => {
+              vm.notify('Error', 'Some error happened ' + error);
+            });
+          }
+        } else {
+          vm.notify('Error', 'Form is not valid');
+          return false;
+        }
+      });
+    },
+    resetForm(formName) {
+      if (this.$refs[formName])
+        this.$refs[formName].resetFields();
+      this.$nextTick(function () {
+        this.$emit('cancelEdit');
+      });
+    },
+
+    notify(title, msg) {
+      const h = this.$createElement;
+
+      this.$notify({
+        title: title,
+        message: h('i', {
+          style: 'color: teal'
+        }, msg)
+      });
+    },
+    ...mapActions(['createEvaluation', 'updateEvaluation'])
   }
+}
 </script>
 <style scoped>
 .form {

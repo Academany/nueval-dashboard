@@ -13,6 +13,7 @@
                 :selectedRow="selectedRow"
                 v-model="tabs"
                 @newItem="handleNew"
+                 @delete="handleDelete"
     slot="detail">
     <BasicDetail :item="selectedRow"
                   slot="tab-content-0"
@@ -30,7 +31,7 @@ import MDView from '../../../components/MDView.vue'
 import MDNotImplemented from '../../../components/MDNotImplemented.vue'
 import lodash from 'lodash'
 import BasicDetail from './Detail.vue'
-import {mapGetters,mapActions} from 'vuex'
+import {mapGetters,mapActions,createNamespacedHelpers} from 'vuex'
 
 let startId=0
 //
@@ -54,15 +55,22 @@ export default {
     BasicDetail,
     MDNotImplemented
   },
-  computed: mapGetters(['students','currentCourse']),
+  computed: {
+    ...mapGetters({
+      students: 'admin/students/students',
+      isLoading: 'admin/students/loading',
+      currentCourse: 'currentCourse'
+    })
+  },
   data() {
     return {
       entity: 'Student',
-
       tableColumns: [
-        {id: 1, label: 'Student id', prop: 'student_id', width: 200 },
-        {id: 2, label: 'Email', prop: 'user.email' },
-        {id: 3, label: 'Lab', prop: 'lab.name' }
+        {id: 1, label: 'Student id', prop: 'student_id' },
+        {id: 2, label: 'Username', prop: 'username'},
+        {id: 3, label: 'First', prop: 'first_name'},
+        {id: 4, label: 'Last', prop: 'last_name'},
+        {id: 3, label: 'Lab', prop: 'lab.lab_id', width: '200' },
       ],
       selectedRow: null,
       activeName: 'basic',
@@ -85,8 +93,7 @@ export default {
     },
     handleCancel() {
       this.$refs.masterTable.clearSelection()
-      this.selectedRow = null;
-      this.loadStudents(this.currentCourse.id);
+      this.selectedRow = null
     },
     handleClick (id,e){
       // tabs event handler
@@ -101,13 +108,30 @@ export default {
     },
     handleDelete( index,row){
       // console.log(index + ' ' + row)
+      const vm = this
       if (this.selectedRow){
         this.deleteStudent(this.selectedRow).then(
-            (succes) => console.log('delete ok')
+            (succes) => {
+              console.log('delete ok')
+              vm.notify("Success","Student deleted")
+            }
         );
       }
     },
-    ...mapActions(['loadStudents','deleteStudent'])
+    ...mapActions( {
+      loadStudents: 'admin/students/loadStudents',
+      deleteStudent: 'admin/students/deleteStudent'
+    }),
+     notify(title, msg) {
+      const h = this.$createElement;
+
+      this.$notify({
+        title: title,
+        message: h('i', {
+          style: 'color: teal'
+        }, msg)
+      });
+    },
   }
 }
 </script>

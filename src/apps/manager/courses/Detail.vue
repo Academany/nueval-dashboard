@@ -5,11 +5,18 @@
     <span v-if="!form.id">Fill the form to create a new</span>
      Course <span v-if="form.id">#{{form.id}}</span> </h3>
   <el-form ref="myForm" :rules="rules" :model="form" label-position="left" label-width="150px" >
+    <el-form-item label="Code" v-if="course_code">
+    <span>{{course_code}}</span>
+    </el-form-item>
     <el-form-item label="Course name" prop="name">
       <el-input v-model="form.name"></el-input>
     </el-form-item>
-    <el-form-item label="Year" prop="year">
-      <el-input type="number" v-model="form.year"></el-input>
+    <el-form-item label="Year" prop="selectedYear">
+       <el-date-picker
+          v-model="selectedYear"
+          type="year"
+          placeholder="Pick a year">
+  </el-date-picker>
     </el-form-item>
     <el-form-item label="Program" prop="program">
       <el-input v-model="form.program"></el-input>
@@ -31,21 +38,23 @@
 
 
 <script>
-import {mapActions} from 'vuex';
- export default {
+import moment from 'moment'
+import {mapActions} from 'vuex'
+export default {
     props: [
       'item'
     ],
     data() {
       return {
+        selectedYear: null,
         dialogVisible : false,
         rules: {
               name: [
                    { required: true, message: 'Please enter Course Name', trigger: 'blur' }
               ],
-              year: [
-                   { required: true, message: 'Please enter Course Year', trigger: 'blur' }
-              ],
+              // selectedYear: [
+              //      {  type: 'date', required: true, message: 'Please enter Course Year', trigger: 'blur' }
+              // ],
               program: [
                    { required: true, message: 'Please enter Course Program', trigger: 'blur' }
               ],
@@ -54,36 +63,55 @@ import {mapActions} from 'vuex';
     }
   },
   computed: {
+      course_code: function(){
+        if (!this.form.program) return null;
+        return this.form.program + '' + this.form.year;
+      },
       form: function(){ return  this.item || {} }
   },
-    methods: {
-
+  watch: {
+    item: function(newVal){
+       if (newVal && newVal.year) {
+         this.selectedYear = new Date(parseInt(''+newVal.year),1);
+       }
+    }
+  },
+  mounted(){
+     this.$nextTick(() => {
+       if (this.item && this.item.year) {
+         this.selectedYear = new Date(parseInt(''+this.item.year),1);
+       }
+     })
+  },
+  methods: {
       submitForm(formName,mode) {
+        this.item.year = this.selectedYear.getFullYear();
         var vm = this;
         var formW =this.$refs[formName];
         formW.validate((valid) => {
           if (valid) {
             if (mode == 'create') {
-              this.createCourse({
-                name: this.item.name,
-                year: this.item.year,
-                program: this.item.program
+              vm.createCourse({
+                name: vm.item.name,
+                year: moment(vm.selectedYear).year(),
+                program: vm.item.program
               }).then(function(success){
                 vm.notify('Success', 'New course created');
-                // vm.resetForm();
+                vm.resetForm();
                 //formW.resetFields();
               }).catch(function(error){
                 vm.notify('Error', 'Some error happened');
               });
             } else {
-              this.updateCourse({
-                id: this.item.id,
-                name: this.item.name,
-                year: this.item.year,
-                program: this.item.program
+              vm.updateCourse({
+                id: vm.item.id,
+                name: vm.item.name,
+                year: moment(vm.selectedYear).year(),
+                program: vm.item.program
               }).then(function(success){
                 vm.notify('Success', 'Course updated');
                 // vm.resetForm();
+                vm.resetForm();
                 //formW.resetFields();
               }).catch(function(error){
                 console.log(error);

@@ -5,18 +5,21 @@ import 'element-ui/lib/theme-default/index.css'
 import App from './App.vue'
 import locale from 'element-ui/lib/locale/lang/en'
 import Icon from 'vue-awesome/components/Icon.vue'
-import webix from 'webix'
-import 'webix/webix.css'
-import WebixWidget from './components/WebixWidget.vue'
-import './components/webix-controls'
+
+// uncomment here and in vendor.js to enable webix
+// import webix from 'webix'
+// import 'webix/webix.css'
+// import WebixWidget from './components/WebixWidget.vue'
+// import './components/webix-controls'
+
 import Vuex from 'vuex'
 import routes from './routes'
 import VueResource from 'vue-resource'
-
+import Vapi from "vuex-rest-api"
+ 
+// uncomment to add vue webix widgets
+// Vue.use(WebixUI) 
 Vue.use(VueResource);
-Vue.component('WebixWidget', WebixWidget)
-
-// Vue.use(WebixUI)
 Vue.use(ElementUI, { locale })
 Vue.use(Vuex)
 Vue.use(VueRouter)

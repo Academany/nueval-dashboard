@@ -117,7 +117,7 @@ export default {
     handleDelete(){
       // console.log(index + ' ' + row)
       if (this.selectedRow){
-        this.deleteCourse(this.selectedRow).then(
+        this.deleteUser(this.selectedRow).then(
             (succes) => console.log('delete ok')
         );
       }

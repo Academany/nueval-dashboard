@@ -5,20 +5,17 @@
   :data="items"
   style="width: 100%"
   highlight-current-row
-
   @current-change="handleCurrentChange"
   @sort-change="handleSortChange"
   >
 
-
-
-  <el-table-column v-for="col in columns" :prop="col.prop" :label="col.label" :key="col.id" :width="col.width" :sortable="true"></el-table-column>
-
+  <el-table-column v-for="col in columns" :prop="col.prop" :label="col.label" :key="col.id" :width="col.width" :sortable="true">
+  </el-table-column>
 
 </el-table>
 </template>
 <script>
-
+import moment from 'moment'
 /**
 <el-button
   size="small"
@@ -35,7 +32,13 @@ export default {
   ],
   computed: {
     items(){
-     return this.value;
+     return this.value
+    }
+  },
+  filters: {
+    date: (val)=>{
+      if (!val) return '';
+      return moment(val).toLocaleString()
     }
   },
   data(){

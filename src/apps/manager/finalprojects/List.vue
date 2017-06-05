@@ -13,11 +13,13 @@
                 :selectedRow="selectedRow"
                 v-model="tabs"
                 @newItem="handleNew"
+                 @delete="handleDelete"
     slot="detail">
     <BasicDetail :item="selectedRow"
                   slot="tab-content-0"
+                  
                   @cancelEdit="handleCancel"/>
-    <StudentsList :item="selectedRow" slot="tab-content-1"/>
+    <StudentsList v-if="selectedRow && selectedRow.id" :item="selectedRow" slot="tab-content-1"/>
   </MDDetailView>
 </MDView>
 </template>
@@ -65,9 +67,9 @@ export default {
         {'name': 'First Session', 'date': '7 June 2017', 'students' : '120', id: 1}
       ],
       tableColumns: [
-        {id: 1, label: 'Name', prop: 'name', width: 250 },
-        {id: 2, label: 'Date', prop: 'date' },
-        {id: 3, label: 'Students', prop: 'students' }
+        {id: 1, label: 'Name', prop: 'name', width: 200 },
+        {id: 2, label: 'Date', prop: 'date', width: 230},
+        {id: 3, label: 'Cap', prop: 'max' }
       ],
       selectedRow: null,
       activeName: 'basic',
@@ -87,10 +89,24 @@ export default {
       ]
     }
   },
-  computed: mapGetters(['presentations','currentCourse']),
+  filters: {
+    capitalize: function (value) {
+      if (!value) return ''
+      value = value.toString()
+      return value.charAt(0).toUpperCase() + value.slice(1)
+    }
+  },
+  computed: {
+    ...mapGetters(['presentations','currentCourse']),
+  },
   methods: {
     handleNew() {
-      this.selectedRow = {};
+      this.selectedRow = {
+        name: 'Final project session',
+        courseId: this.currentCourse.id,
+        max: 65,
+        id: null
+      };
     },
     handleCancel() {
       this.$refs.masterTable.clearSelection()
@@ -109,8 +125,28 @@ export default {
     },
     handleDelete( index,row){
       // console.log(index + ' ' + row)
+
+      const vm = this;
+      if (this.selectedRow){
+        this.deletePresentation(this.selectedRow).then((succes) => {
+            vm.notify("Success", "Item deleted succcessfully")
+            vm.handleCancel()
+        }).catch((error)=>{
+            vm.notify("Error", "Some error occurred:\n" + JSON.stringify(error));
+        });
+      }
     },
-    ...mapActions(['loadPresentations'])
+    notify(title, msg) {
+      const h = this.$createElement;
+
+      this.$notify({
+        title: title,
+        message: h('i', {
+          style: 'color: teal'
+        }, msg)
+      });
+    },
+    ...mapActions(['loadPresentations','deletePresentation'])
   }
 }
 </script>

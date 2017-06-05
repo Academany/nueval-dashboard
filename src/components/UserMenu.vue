@@ -1,6 +1,5 @@
 <template>
-<el-submenu class="right clearfix" index="profile">
-<template slot="title" v-if="!userProfile">{{title}}</template>
+<el-submenu class="right clearfix"  v-if="userProfile && userProfile.username" index="profile">
 <template slot="title" v-if="userProfile && userProfile.username">
   <img :src="userProfile.avatar" class="avatar">
   <span class="username">{{userProfile.username}}</span>
@@ -20,7 +19,7 @@ export default {
   computed: mapGetters(['userProfile']),
   mounted(){
     // setInterval(()=>{
-       this.refreshData()
+      //  this.refreshData()
     // }, 1000);
   },
   methods: {
@@ -34,7 +33,7 @@ export default {
          return;
        }
        // console.log(response)
-       let userProfile = response.body.user.identities[0].profile;
+       let userProfile = response.body.user;
        this.$store.dispatch("setUserProfile",userProfile);
      });
    },

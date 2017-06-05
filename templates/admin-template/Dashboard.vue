@@ -1,50 +1,35 @@
 <template>
   <div class="app" >
-  <div class="title" >
-  <el-menu router mode="horizontal" theme="light" class="nofrills">
-    <el-menu-item index="">
-        <router-link to="/"><fa-icon name="arrow-left"></fa-icon></router-link>
-    </el-menu-item>
-
-    <slot name="header-menu"></slot>
-  </el-menu>
+      <div class="title">
+        <AppBar></AppBar>
+      </div>
+      <div class="sidebar">
+        <SidebarMenu :apps="apps" @menuSelect="handleMenuSelect"></SidebarMenu>
+      </div>
+      <div class="childview">
+        <router-view ></router-view>
+      </div>
   </div>
-
-  <div class="sidebar">
-      <el-menu theme="dark"  mode="vertical" default-active="1" @select="handleMenuSelect">
-        <el-menu-item-group title="Menu">
-          <el-menu-item v-for="(app,index) in apps" :key="app.target" :index="app.target" >
-            <fa-icon :name="app.icon" class="fa-vc"></fa-icon> {{app.label}}</el-menu-item>
-        </el-menu-item-group>
-      </el-menu>
-  </div>
-  <div class="childview">
-
-    <router-view ></router-view>
-  </div>
-</div>
-</div>
 </template>
 
 <script>
+import SidebarMenu from '../../components/SidebarMenu.vue'
+import AppBar from '../../components/AppBar.vue'
 import {mapGetters,mapActions} from 'vuex'
 // or import all icons if you don't care about bundle size
 import 'vue-awesome/icons'
 
 export default {
   components:{
+    SidebarMenu,
+    AppBar,
   },
   methods: {
     handleMenuSelect(item){
       this.$router.push(item)
-      this.$store.dispatch("changeApp",item)
-    }
-  },
-  computed: {
-
-  },
-  mounted(){
-
+      this.changeApp(item);
+    },
+    ...mapActions(['changeApp'])
   },
   data (){
     return {

@@ -1,58 +1,36 @@
 <template>
   <div class="app" >
   <div class="title" >
-  <el-menu router mode="horizontal" theme="light" class="nofrills">
-    <el-menu-item index="">
-        <router-link to="/"><fa-icon name="arrow-left"></fa-icon></router-link>
-    </el-menu-item>
+  <AppBar>
+    <div slot="header-menu">
+        <el-menu-item index="">
+            <router-link to="/"><fa-icon name="arrow-left"></fa-icon></router-link>
+        </el-menu-item>
 
-    <el-menu-item v-if="currentCourse" index="">
-        {{ currentCourse.name }}
-    </el-menu-item>
+        <el-menu-item v-if="currentCourse" index="" :disabled="true">
+            {{ currentCourse.name }}
+        </el-menu-item>
 
-      <el-menu-item v-if="activeTab && currentCourse.id" :index="activeTab.target" class="larger">
-         <fa-icon  :name="activeTab.icon"></fa-icon>  {{activeTab.label}}
-      </el-menu-item>
-    <slot name="header-menu"></slot>
-    <CourseMenu v-if="currentCourse" class="right clearfix" />
-  </el-menu>
+          <el-menu-item v-if="activeTab && currentCourse.id" :index="activeTab.target" :disabled="true">
+            <fa-icon class="fa-fix" :name="activeTab.icon"></fa-icon>  {{activeTab.label}}
+          </el-menu-item>
+
+        <slot name="header-menu"></slot>
+        <CourseMenu v-if="currentCourse" class="right clearfix" />
+      </div>
+  </AppBar>
   </div>
   <div class="body" v-if="show == 'select'">
     <div class="wrap">
-      <el-row>
-        <el-col :span="14" :offset="5">
-          <h3>Welcome to the Academany Program Manager</h3>
-          <p>Before starting we need to select a course, or create a new one</p>
-          <el-card class="box-card">
-            <el-row>
-              <el-col :span="12">
-                <h1>Select a course</h1>
-                <div :key="course.id" v-for="course in courses">
-                    <el-button @click="handleCourseChange(course)">{{course.name}}</el-button>
-                </div>
-              </el-col>
-              <el-col :span="12">
-                <h1>Create a new course</h1>
-                <el-button type="success" @click="handleNewCourse">Create new course</el-button>
-              </el-col>
-            </el-row>
-          </el-card>
-        </el-col>
-      </el-row>
+      <CourseSelect @courseChange="handleCourseChange" @newCourse="handleNewCourse" :courses="courses"/>
     </div>
   </div>
   <div class="body" v-if="show == 'dashboard'">
-  <div class="sidebar">
-      <el-menu theme="dark"  mode="vertical" default-active="1" @select="handleMenuSelect">
-        <el-menu-item-group title="Menu">
-          <el-menu-item v-for="(app,index) in apps" :key="app.target" :index="app.target" >
-            <fa-icon :name="app.icon" class="fa-vc"></fa-icon> {{app.label}}</el-menu-item>
-        </el-menu-item-group>
-      </el-menu>
+  <div :class="{sidebar: true, full: fullSidebar }">
+        <SidebarMenu :label="fullSidebar"  :apps="apps" @menuSelect="handleMenuSelect" @toggleMenu="handleToggleMenu"></SidebarMenu>
   </div>
-  <div class="childview">
-
-    <router-view ></router-view>
+  <div :class="{childview: true, slim: fullSidebar}">
+      <router-view ></router-view>
   </div>
 </div>
 </div>
@@ -60,30 +38,41 @@
 
 <script>
 import CourseMenu from '../../components/CourseMenu.vue'
+import CourseSelect from '../../components/CourseSelect.vue'
+import SidebarMenu from '../../components/SidebarMenu.vue'
+import AppBar from '../../components/AppBar.vue'
+
 import {mapGetters,mapActions} from 'vuex'
 // or import all icons if you don't care about bundle size
 import 'vue-awesome/icons'
 
 export default {
   components:{
-    CourseMenu
+    CourseMenu,
+    SidebarMenu,
+    CourseSelect,
+    AppBar
   },
   methods: {
+    handleToggleMenu(){
+      // this.fullSidebar = !this.fullSidebar
+    },
     handleCourseChange(newCourse){
       // console.log('New course is ' + newCourse);
-      this.$store.dispatch("changeCourse", newCourse);
+      this.changeCourse(newCourse);
     },
     handleMenuSelect(item){
       this.$router.push(item)
-      this.$store.dispatch("changeApp",item)
+      this.changeApp(item)
     },
     handleNewCourse(){
       const item = '/apps/manager/courses'
       this.$router.push(item)
-      this.$store.dispatch("changeApp",item)
-
-    }
+      this.changeApp(item)
+    },
+    ...mapActions(['changeCourse','changeApp'])
   },
+
   computed: {
     show() {
       if (!this.currentCourse.id && !this.$route.path.startsWith('/apps/manager/courses')){
@@ -97,8 +86,8 @@ export default {
       return false;
     },
     activeTab() {
-      var path =  this.$store.state.currentApp;
-      var filtered = this.apps.filter((el) => el.target == path)
+      var path =  this.$route.path;
+      var filtered = this.apps.filter((el) => el.target.startsWith(path))
       var tab =  filtered.length > 0 ? filtered[0] : null
       return tab;
     },
@@ -106,10 +95,11 @@ export default {
   },
   mounted(){
     // this.$store.dispatch("changeCourse",'fabacademy2017')
-    this.$store.dispatch("changeApp",'/apps/manager')
+    this.changeApp('/apps/manager')
   },
   data (){
     return {
+      fullSidebar: true,
       selectedIndex:0,
       apps:[
         {
@@ -194,19 +184,25 @@ export default {
   /* dark theme */
   background-color: #324157;
   position: fixed;
-  width: 150px;
+  width: 36px;
   top: 120px;
   left: 0px;
   bottom: 0px;
 }
 
+.sidebar.full {
+  width: 150px;
+}
+
 .childview {
   position: absolute;
-  left: 150px;
+  left: 36px;
   right: 0px;
   top: 120px;
   bottom: 0px;
-
+}
+.childview.slim {
+  left: 151px;
 }
 
 .inverted {

@@ -8,6 +8,15 @@
     <el-form-item label="Email" prop="email">
       <el-input v-model="form.email"></el-input>
     </el-form-item>
+    <el-form-item label="Username" prop="username">
+      <el-input v-model="form.username"></el-input>
+    </el-form-item>
+    <el-form-item label="First" prop="first_name">
+      <el-input v-model="form.first_name"></el-input>
+    </el-form-item>
+    <el-form-item label="Last" prop="last_name">
+      <el-input v-model="form.last_name"></el-input>
+    </el-form-item>
 
     <div style="margin-top:22px"><br></div>
 
@@ -35,6 +44,9 @@ import {mapActions} from 'vuex';
         rules: {
               name: [
                    { required: true, message: 'Please enter Email', trigger: 'blur' }
+              ],
+              username: [
+                  { required: true, message: 'Please enter Username', trigger: 'blur'}
               ]
 
         },
@@ -54,7 +66,9 @@ import {mapActions} from 'vuex';
             if (mode == 'create') {
               this.createUser({
                 email: this.item.email,
-
+                first_name: this.item.first_name,
+                last_name: this.item.last_name,
+                username: this.item.username
               }).then(function(success){
                 vm.notify('Success', 'New user created');
                 vm.resetForm();
@@ -65,7 +79,10 @@ import {mapActions} from 'vuex';
             } else {
               this.updateUser({
                 id: this.item.id,
-                name: this.item.name
+                email: this.item.email,
+                first_name: this.item.first_name,
+                last_name: this.item.last_name,
+                username: this.item.username
               }).then(function(success){
                 vm.notify('Success', 'User updated');
                 vm.resetForm();

@@ -11,8 +11,25 @@
 <script>
 import {mapGetters,mapActions} from 'vuex'
 export default {
-  computed: mapGetters(['currentCourse','students','labs']),
-  methods:mapActions(['loadStudents','loadLabs']),
+  computed: {
+  ...mapGetters({
+    currentCourse: 'currentCourse',
+    labs: 'labs',
+    students: 'admin/students/students'
+  })
+  },
+  methods: {
+    ...mapActions({
+      loadStudents: 'admin/students/loadStudents'
+    }),
+    ...mapActions(['loadLabs']),
+  },
+  watch: {
+    currentCourse(val){
+      this.loadStudents(this.currentCourse.id);
+      this.loadLabs(this.currentCourse.id);      
+    }
+  },
   mounted(){
     this.loadStudents(this.currentCourse.id);
     this.loadLabs(this.currentCourse.id);

@@ -6,20 +6,18 @@
         <router-link to="/"><fa-icon name="arrow-left"></fa-icon></router-link>
     </el-menu-item>
 
-    <slot name="header-menu"></slot>
+    <slot name="header-menu">
+           <el-menu-item v-if="activeTab" :index="activeTab.target" :disabled="true">
+            <fa-icon style="margin-bottom: -3px" :name="activeTab.icon"></fa-icon>  {{activeTab.label}}
+          </el-menu-item>
+    </slot>
   </el-menu>
   </div>
 
   <div class="sidebar">
-      <el-menu theme="dark"  mode="vertical" default-active="1" @select="handleMenuSelect">
-        <el-menu-item-group title="Menu">
-          <el-menu-item v-for="(app,index) in apps" :key="app.target" :index="app.target" >
-            <fa-icon :name="app.icon" class="fa-vc"></fa-icon> {{app.label}}</el-menu-item>
-        </el-menu-item-group>
-      </el-menu>
+      <SidebarMenu :apps="apps" :label="true" :collapse="false" @menuSelect="handleMenuSelect" @toggleMenu="handleToggleMenu" />
   </div>
   <div class="childview">
-
     <router-view ></router-view>
   </div>
 </div>
@@ -27,21 +25,31 @@
 </template>
 
 <script>
+import SidebarMenu from '../../components/SidebarMenu.vue'
 import {mapGetters,mapActions} from 'vuex'
 // or import all icons if you don't care about bundle size
 import 'vue-awesome/icons'
 
 export default {
   components:{
+    SidebarMenu
   },
   methods: {
+    handleToggleMenu(){
+
+    },
     handleMenuSelect(item){
       this.$router.push(item)
       this.$store.dispatch("changeApp",item)
     }
   },
   computed: {
-
+      activeTab() {
+          var path =  this.$route.path;
+          var filtered = this.apps.filter((el) => el.target.startsWith(path))
+          var tab =  filtered.length > 0 ? filtered[0] : null
+          return tab;
+      }
   },
   mounted(){
 

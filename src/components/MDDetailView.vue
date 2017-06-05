@@ -2,7 +2,7 @@
   <div>
       <div class="tableTop">
         <el-button type="success" v-show="!selectedRow" @click="handleNew()"><fa-icon name="plus" class="adjust"></fa-icon> New {{entity}}</el-button>
-        <el-button type="danger" v-if="selectedRow" @click="handleDelete()"><fa-icon name="trash" class="adjust"></fa-icon> Delete</el-button>
+        <el-button type="danger" v-if="selectedRow && selectedRow.id" @click="handleDelete()"><fa-icon name="trash" class="adjust"></fa-icon> Delete</el-button>
       </div>
       <el-tabs ref="tabWidget" type="border-card" v-if="selectedRow" v-model="activeName" @tab-click="handleClick">
         <el-tab-pane

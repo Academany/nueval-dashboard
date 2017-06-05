@@ -1,44 +1,43 @@
 <template>
-  <div class="master-detail-view">
-        <div class="master">
-          <MLTable :value="tableData" :tableColumns="tableColumns" @select="handleSelect" @edit="handleEdit" @delete="handleDelete"/>
-        </div>
-        <div class="detail" >
-            <div class="tableTop">
-              <el-button type="success" @click="handleNew()"><fa-icon name="plus" class="adjust"></fa-icon> New supernode</el-button>
-              <el-button type="danger" v-if="selectedRow" @click="deleteLab()"><fa-icon name="trash" class="adjust"></fa-icon> Delete</el-button>
-            </div>
-            <el-tabs type="border-card" v-if="selectedRow" v-model="activeName" @tab-click="handleClick">
-             <el-tab-pane label="Basic Information" name="settings">
-               <div>
-                 <MLDetail :item="selectedRow"/>
-               </div>
-             </el-tab-pane>
-             <el-tab-pane label="Nodes" name="nodes">
-               <div>
-                 <MDRel :item="selectedRow"/>
-               </div>
-             </el-tab-pane>
-             <el-tab-pane label="Permissions" name="permissions">
-               <div>
-                 <Permissions :item="selectedRow"/>
-               </div>
-             </el-tab-pane>
-           </el-tabs>
-          <br/>
-        </div>
-  </div>
+  <MDView>
+    <MLTable
+      slot="master"
+      ref="masterTable"
+      :value="supernodes"
+      :selectedRow="selectedRow"
+      :tableColumns="tableColumns"
+      @select="handleSelect"
+      @edit="handleEdit"
+      @delete="handleDelete"/>
+    <MDDetailView :entity="entity"
+                  :selectedRow="selectedRow"
+                  v-model="tabs"
+                  @newItem="handleNew"
+                  @delete="handleDelete"
+      slot="detail">
+      <BasicDetail :item="selectedRow"
+                    slot="tab-content-0"
+                    @cancelEdit="handleCancel"/>
+      <LabsList :item="selectedRow"
+                    slot="tab-content-1"
+                    @cancelEdit="handleCancel"/>
+      
+    </MDDetailView>
+  </MDView>
 </template>
 
 <script>
-// import sampleData from './sample-data.js'
-import MLDetail from './Detail.vue'
-import MDRel from './Rel.vue'
+import BasicDetail from './Detail.vue'
+import LabsList from './Labs.vue'
+import MLPermissionsRel from '../../../components/Permissions.vue'
 import MLHeader from './Header.vue'
 import MLTable from '../../../components/MDTable.vue'
-import Permissions from '../../../components/Permissions.vue'
+import MDView from '../../../components/MDView.vue'
+import MDDetailView from '../../../components/MDDetailView.vue'
+import MDNotImplemented from '../../../components/MDNotImplemented.vue'
 import lodash from 'lodash'
 let startId=0
+import {mapGetters,mapActions} from 'vuex'
 
 // lodash.forEach(sampleData.data, (el)=>{
 //   el.id = ++startId;
@@ -48,35 +47,54 @@ let startId=0
 
 export default {
   components: {
-    MLDetail,
+    BasicDetail,
     MLHeader,
     MLTable,
-    MDRel,
-    Permissions
+    MLPermissionsRel,
+    MDView,
+    MDDetailView,
+    LabsList
   },
+  mounted(){
+    this.loadSupernodes(this.currentCourse.id);
+  },
+  computed: mapGetters(['supernodes','currentCourse']),
   data() {
     return {
-      tableData: [
-        {'name': 'Fab Lab Toscana', id: 1, 'nodes': 4, 'country': 'Italy', 'contact_name' : 'Fiore Basile', 'contact_email' : 'fiore.basile@gmail.com'}
-      ],
+      entity: 'Supernode',
       tableColumns: [
-        {id: 1, label: 'Name', prop: 'name', width: 250 },
-        {id: 2, label: 'Nodes', prop: 'nodes'}
+        {id: 1, label: 'Name', prop: 'name' },
+        {id: 1, label: 'Contact', prop: 'contact_name' },
+        {id: 1, label: 'Email', prop: 'contact_email' },
       ],
       selectedRow: null,
-      activeName: 'settings'
+      activeName: 'settings',
+      tabs: [
+        {
+          id: 'basic',
+          label: 'Basic',
+          name: 'basic',
+          hide: false,
+        },
+        {
+          id: 'nodes',
+          label: 'Nodes',
+          name: 'nodes',
+          hide: true
+        }
+      ]
     }
   },
   methods: {
     handleNew() {
-      this.selectedRow = {
-      };
+      this.selectedRow = {};
     },
-    deleteLab(){
-
+    handleCancel() {
+      this.$refs.masterTable.clearSelection()
+      this.selectedRow = null
     },
     handleClick (id,e){
-
+      // tabs event handler
     },
     handleSelect (index,row){
       // console.log(row)
@@ -86,13 +104,19 @@ export default {
       // console.log(row)
       this.selectedRow = row
     },
-    handleDelete( index,row){
-      // console.log(index + ' ' + row)
-    }
+    handleDelete(){
+      var vm = this;
+      if (this.selectedRow){
+        this.deleteSupernode(this.selectedRow).then( (success) => {
+              console.log('delete ok')
+              
+        });
+      }
+    },
+    ...mapActions(['deleteSupernode','loadSupernodes'])
   }
 }
 </script>
-
 <style scoped>
 .adjust {
   margin-bottom: -3px;
@@ -139,5 +163,19 @@ export default {
    padding-top: 24px;
    overflow-y: scroll;
    overflow-x: none;
+}
+.master::-webkit-scrollbar,
+.detail::-webkit-scrollbar {
+width: 5px;
+}
+
+.master::-webkit-scrollbar-track,
+.detail::-webkit-scrollbar-track {
+  background: #ddd;
+}
+
+.master::-webkit-scrollbar-thumb,
+.detail::-webkit-scrollbar-thumb {
+  background: #ff4949;
 }
 </style>

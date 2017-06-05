@@ -60,6 +60,12 @@ module.exports = (options = {}) => ({
       '/api/': {
         target: 'http://127.0.0.1:3000/',
         changeOrigin: true,
+        onProxyReq: function onProxyReq(proxyReq, req, res) {
+            // add custom header to request
+            if (req.headers['X-Access-Token'])
+              proxyReq.setHeader('X-Access-Token', req.headers['X-Access-Token']);
+            // or log the req
+        }
         // pathRewrite: {
           // '^/api': ''
         // }

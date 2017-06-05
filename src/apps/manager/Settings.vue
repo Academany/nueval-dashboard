@@ -13,7 +13,7 @@ export default {
 </script>
 <style scoped>
 .sheet {
-  padding-left:12px;
-  padding-top:0px;
+  padding-left: 12px;
+  padding-top: 0px;
 }
 </style>

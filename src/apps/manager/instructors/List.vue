@@ -1,39 +1,38 @@
 <template>
-  <div class="master-detail-view">
-        <div class="master">
-          <MLTable :value="tableData" :tableColumns="tableColumns" @select="handleSelect" @edit="handleEdit" @delete="handleDelete"/>
-        </div>
-        <div class="detail" >
-            <div class="tableTop">
-              <el-button type="success" @click="handleNew()"><fa-icon name="plus" class="adjust"></fa-icon> New instructor</el-button>
-              <el-button type="danger" v-if="selectedRow" @click="deleteLab()"><fa-icon name="trash" class="adjust"></fa-icon> Delete</el-button>
-            </div>
-            <el-tabs type="border-card" v-if="selectedRow" v-model="activeName" @tab-click="handleClick">
-             <el-tab-pane label="Basic Information" name="settings">
-               <div>
-                 <MLDetail :item="selectedRow"/>
-               </div>
-             </el-tab-pane>
-             <el-tab-pane label="Mentored Nodes" name="nodes">
-               <div>
-                 <MDRel :item="selectedRow"/>
-               </div>
-             </el-tab-pane>
-
-           </el-tabs>
-          <br/>
-        </div>
-  </div>
+<MDView>
+  <MLTable
+    slot="master"
+    ref="masterTable"
+    :value="instructors"
+    :selectedRow="selectedRow"
+    :tableColumns="tableColumns"
+    @select="handleSelect"
+    @edit="handleEdit"
+    @delete="handleDelete"/>
+  <MDDetailView :entity="entity"
+                :selectedRow="selectedRow"
+                v-model="tabs"
+                @newItem="handleNew"
+                 @delete="handleDelete"
+    slot="detail">
+    <BasicDetail :item="selectedRow"
+                  slot="tab-content-0"
+                  @cancelEdit="handleCancel"/>
+    <BasicDetail :item="selectedRow" slot="tab-content-1"/>
+  </MDDetailView>
+</MDView>
 </template>
 
 <script>
-// import sampleData from './sample-data.js'
-import MLDetail from './Detail.vue'
-import MDRel from './Rel.vue'
-import MLHeader from './Header.vue'
+import MDDetailView from '../../../components/MDDetailView.vue'
+// import MLHeader from './Header.vue'
 import MLTable from '../../../components/MDTable.vue'
-//import Permissions from '../../../components/Permissions.vue'
+import MDView from '../../../components/MDView.vue'
+import MDNotImplemented from '../../../components/MDNotImplemented.vue'
 import lodash from 'lodash'
+import BasicDetail from './Detail.vue'
+import {mapGetters,mapActions,createNamespacedHelpers} from 'vuex'
+// import sampleData from './sample-data.js'
 let startId=0
 
 // lodash.forEach(sampleData.data, (el)=>{
@@ -44,36 +43,54 @@ let startId=0
 
 export default {
   components: {
-    MLDetail,
-    MLHeader,
     MLTable,
-    MDRel,
+    MDDetailView,
+    // MLPermissionsRel,
+    MDView,
+    BasicDetail,
+    MDNotImplemented,
   //  Permissions
   },
+  computed: {
+    ...mapGetters({
+      instructors: 'admin/instructors/instructors',
+      isLoading: 'admin/instructors/loading',
+      currentCourse: 'currentCourse'
+    })
+  },
   data() {
-    return {
-      tableData: [
-        {'name': 'Fiore Basile', id: 1, 'labs': 4,  'email' : 'fiore.basile@gmail.com'}
-      ],
+   return {
+      entity: 'Instructor',
       tableColumns: [
-        {id: 1, label: 'Name', prop: 'name', width: 250 },
-        {id: 2, label: 'Labs', prop: 'labs', width: 150},
-        {id: 3, label: 'Email', prop: 'mail', width: 150 }
+        {id: 2, label: 'Username', prop: 'username'},
+        {id: 3, label: 'First', prop: 'first_name'},
+        {id: 4, label: 'Last', prop: 'last_name'},
       ],
       selectedRow: null,
-      activeName: 'settings'
+      activeName: 'basic',
+      tabs: [
+        {
+          id: 'basic',
+          label: 'Basic',
+          name: 'basic',
+          hide: false,
+        }
+      ]
     }
+  },
+  mounted(){
+    this.loadInstructors(this.currentCourse.id)
   },
   methods: {
     handleNew() {
-      this.selectedRow = {
-      };
+      this.selectedRow = {};
     },
-    deleteLab(){
-
+    handleCancel() {
+      this.$refs.masterTable.clearSelection()
+      this.selectedRow = null
     },
     handleClick (id,e){
-
+      // tabs event handler
     },
     handleSelect (index,row){
       // console.log(row)
@@ -85,7 +102,30 @@ export default {
     },
     handleDelete( index,row){
       // console.log(index + ' ' + row)
-    }
+      const vm = this
+      if (this.selectedRow){
+        this.deleteInstructor(this.selectedRow).then(
+            (succes) => {
+              console.log('delete ok')
+              vm.notify("Success","Instructor deleted")
+            }
+        );
+      }
+    },
+    ...mapActions( {
+      loadInstructors: 'admin/instructors/loadInstructors',
+      deleteInstructor: 'admin/instructors/deleteInstructor'
+    }),
+     notify(title, msg) {
+      const h = this.$createElement;
+
+      this.$notify({
+        title: title,
+        message: h('i', {
+          style: 'color: teal'
+        }, msg)
+      });
+    },
   }
 }
 </script>

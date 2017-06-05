@@ -18,7 +18,11 @@
     <BasicDetail :item="selectedRow"
                   slot="tab-content-0"
                   @cancelEdit="handleCancel"/>
-    <StudentsList :item="selectedRow" slot="tab-content-2"/>
+    <RepoForm v-if="selectedRow && selectedRow.id" :item="selectedRow" slot="tab-content-1"/>
+    <ModulesList v-if="selectedRow && selectedRow.id" :item="selectedRow" slot="tab-content-2"/>
+    <StudentsList v-if="selectedRow && selectedRow.id" :item="selectedRow" slot="tab-content-3"/>
+    <InstructorsList v-if="selectedRow && selectedRow.id" :item="selectedRow" slot="tab-content-4"/>
+    <LabsList v-if="selectedRow && selectedRow.id" :item="selectedRow" slot="tab-content-5"/>
   </MDDetailView>
 </MDView>
 </template>
@@ -32,7 +36,12 @@ import MDNotImplemented from '../../../components/MDNotImplemented.vue'
 import lodash from 'lodash'
 import BasicDetail from './Detail.vue'
 import StudentsList from './Students.vue'
+import ModulesList from './Modules.vue'
+import InstructorsList from './Instructors.vue'
+import LabsList from './Labs.vue'
+import RepoForm from './Repo.vue'
 import {mapActions,mapGetters} from 'vuex'
+
 let startId=0
 //
 // lodash.forEach(sampleData.data, (el)=>{
@@ -54,6 +63,10 @@ export default {
     MDView,
     BasicDetail,
     StudentsList,
+    ModulesList,
+    RepoForm,
+    LabsList,
+    InstructorsList,
     MDNotImplemented
   },
   computed: mapGetters(['courses']),
@@ -80,7 +93,12 @@ export default {
           name: 'basic',
           hide: false,
         },
-
+        {
+          id: 'repo',
+          label: 'Repository',
+          name: 'repo',
+          hide: true,
+        },
         {
           id: 'modules',
           label: 'Modules',
@@ -91,6 +109,12 @@ export default {
           id: 'students',
           label: 'Students',
           name: 'students',
+          hide: true
+        },
+        {
+          id: 'instructors',
+          label: 'Instructors',
+          name: 'instructors',
           hide: true
         },
         {
@@ -115,7 +139,7 @@ export default {
     },
     handleCancel() {
       this.$refs.masterTable.clearSelection()
-      this.selectedRow = null
+      this.selectedRow = {};
     },
     handleClick (id,e){
       // tabs event handler

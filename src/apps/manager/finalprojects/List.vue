@@ -14,6 +14,7 @@
                 v-model="tabs"
                 @newItem="handleNew"
                  @delete="handleDelete"
+                 :readonly="true"
     slot="detail">
     <BasicDetail :item="selectedRow"
                   slot="tab-content-0"
@@ -68,8 +69,10 @@ export default {
       ],
       tableColumns: [
         {id: 1, label: 'Name', prop: 'name', width: 200 },
-        {id: 2, label: 'Date', prop: 'date', width: 230},
-        {id: 3, label: 'Cap', prop: 'max' }
+        {id: 2, label: 'Date', prop: 'date'},
+        {id: 3, label: 'Cap', prop: 'max' },
+        {id: 3, label: 'Booked', prop: 'booked.length' },
+        
       ],
       selectedRow: null,
       activeName: 'basic',

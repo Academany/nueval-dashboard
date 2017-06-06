@@ -98,7 +98,7 @@ export default {
     },
     getters: {
         currentCourse: state => {
-            return state.instructor.course
+            return state.instructor && state.instructor.course || null
         },
         currentApp: state => {
             return state.currentApp

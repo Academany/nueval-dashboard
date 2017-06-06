@@ -31,7 +31,7 @@ export default {
     sessions: function(val){
       if (val.length > 0){
         this.radio2 = val[0].id
-        this.$emit('selectedSession',val);
+        this.$emit('selectedSession',val[0]);
       }        
     },
     radio2: function(val) {

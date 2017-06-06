@@ -9,7 +9,7 @@
   @sort-change="handleSortChange"
   >
 
-  <el-table-column v-for="col in columns" :prop="col.prop" :label="col.label" :key="col.id" :width="col.width" :sortable="true">
+  <el-table-column v-for="col in columns" :prop="col.prop" :label="col.label" :key="col.id" fit :width="col.width" :sortable="true">
   </el-table-column>
 
 </el-table>

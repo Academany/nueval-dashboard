@@ -21,6 +21,8 @@ export default {
     actions: {
         loadSession({commit},session){
             return new Promise((resolve,reject)=>{
+                debugger
+                if (!session || !session.id) return reject("Invalid session")
                 commit(LOAD_SESSION, session.id)
                 api.get('/api/presentations/' + session.id + '?filter=' +
                     encodeURIComponent(
@@ -39,10 +41,10 @@ export default {
                 })
             })
         },
-        bookStudent({commit,state},{ session, studentId}){
+        bookStudent({commit,dispatch, state},{ session, studentId}){
            return new Promise((resolve,reject)=>{
             commit(BOOK_STUDENT, studentId)
-            debugger
+            
             api.get('/api/students/' + studentId + "/booked/count").then((response)=>{
                 const count = response.body && response.body.count || 0;
                 if (count > 0) {
@@ -61,7 +63,7 @@ export default {
                                 presentationId: session.id
                             }).then((success)=>{
                                 commit(BOOKED_STUDENT, success)
-                                commit(LOAD_SESSION, session)
+                                dispatch('loadSession', session)
                                 resolve(success)
                             }).catch((error)=>{
                                 commit(API_FAILURE, error, {root: true})

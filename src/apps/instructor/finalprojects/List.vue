@@ -102,9 +102,13 @@ export default {
     //   }).catch((error)=>{
 
     //   })
-        this.loadSession(newVal)
+        // if (Array.isArray(newVal)){
+        //     newVal = newVal[0]
+        // }
+        if (newVal)
+            this.loadSession(newVal)
     },
-          notify(title, msg){
+    notify(title, msg){
         const h = this.$createElement;
 
         this.$notify({

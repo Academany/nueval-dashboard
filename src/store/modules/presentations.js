@@ -18,7 +18,9 @@ export default {
     }, courseId) {
       commit(LOAD_PRESENTATIONS);
       const opts = {
-        url: '/api/courses/' + courseId + '/presentations'
+        url: '/api/courses/' + courseId + '/presentations?filter' + encodeURIComponent(JSON.stringify({
+          include: ['booked', 'presented']
+        }))
       }
       api.get(opts.url)
         .then(function (response) {

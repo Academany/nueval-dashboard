@@ -13,7 +13,7 @@ export default {
     getters: {
         labs: state => {
             return state.labs
-        },
+        }
     },
     mutations: {
         [LOAD_LABS](state) {

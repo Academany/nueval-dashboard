@@ -91,7 +91,7 @@ export default {
                     reject(error);
                 })
             });
-        },
+        }
 
     },
     mutations: {

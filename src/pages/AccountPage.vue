@@ -7,23 +7,24 @@
       <el-col>
         <h3>Personal information</h3>
         <el-card class="box-card" v-if="userProfile">
-          <el-form :v-model="userProfile" label-position="left">
-
-            <el-form-item label="First Name" prop="first_name">
-              <el-input type="text" v-model="userProfile.first_name"/>
-            </el-form-item>
-            <el-form-item label="Last Name" prop="last_name">
-              <el-input type="text" v-model="userProfile.last_name"/>
-            </el-form-item>
+          <el-form :model="form" :rules="rules" ref="myForm" label-position="left">
             <el-form-item label="Username" prop="username">
-                <el-input disabled type="text" v-model="userProfile.username"/>
+                <el-input disabled type="text" v-model="form.username"/>
             </el-form-item>
             <el-form-item label="Email" prop="email">
-              <el-input type="text" v-model="userProfile.email"/>
+              <el-input disabled type="text" v-model="form.email"/>
             </el-form-item>
+
+            <el-form-item label="First Name" prop="first_name">
+              <el-input type="text" v-model="form.first_name"/>
+            </el-form-item>
+            <el-form-item label="Last Name" prop="last_name">
+              <el-input type="text" v-model="form.last_name"/>
+            </el-form-item>
+
             <el-form-item label="Avatar" prop="avatar">
-              <img :src="userProfile.avatar" v-if="userProfile.avatar" class="avatar">
-              <el-input type="text" v-model="userProfile.avatar"/>
+              <img :src="form.avatar" v-if="form.avatar && form.avatar == userProfile.avatar" class="avatar">
+              <el-input type="text" v-model="form.avatar"/>
             </el-form-item>
             <el-form-item class="buttonbar">
               <el-button type="primary" style="width:100%;" @click.native.prevent="handleSubmit" :loading="loading">Save</el-button>
@@ -55,8 +56,6 @@
          </el-form>
        </el-card>
      </el-col>
-
-
     </el-row>
   </div>
 </el-col>
@@ -68,41 +67,77 @@ export default {
   data() {
     return {
       loading: false,
-      email_notifications: false
+      email_notifications: false,
+      form: {},
+      rules: {
+          first_name: [
+                { required: true, message: 'Please enter First Name', trigger: 'blur' }
+          ],
+          last_name: [
+                { required: true, message: 'Please enter Last Name', trigger: 'blur' }
+          ],
+          email: [
+                { required: true, message: 'Please enter Email', trigger: 'blur' }
+          ],
+          username: [
+              { required: true, message: 'Please enter Username', trigger: 'blur'}
+          ]
+      }
     }
   },
   computed:{
     accessToken:  () => localStorage.getItem("token"),
     ...mapGetters(['userProfile'])
   },
+  watch: {
+    userProfile(val){
+      if (val)
+        this.form = {...val}
+      else
+        this.form = {}
+    }
+  },
+  mounted(){
+    this.form = {...this.userProfile}
+    this.loadUserProfile()
+  },
   methods:{
     handleSubmit(){
-      const self = this;
-      this.loading=true;
-      // alert('submit');
-      // this.loading=false;
-      this.updateProfile({
-        url: '/api/me/profile',
-        data: {
-          first_name: this.userProfile.first_name,
-          last_name: this.userProfile.last_name,
-          email: this.userProfile.email,
-          avatar: this.userProfile.avatar
-        },
-        callback(err,res){
-          console.log('callback');
-          self.loading=false;
-          const h = self.$createElement;
-
-          self.$notify({
-            title: 'Profile updated',
-            message: h('i', { style: 'color: teal' }, 'Your profile was successfully updated')
-          });
+      const formW = this.$refs.myForm;
+      formW.validate((valid) => {
+          if (valid) {
+            const self = this;
+            this.loading=true;
+            // alert('submit');
+            // this.loading=false;
+            this.updateProfile({
+              url: '/api/me/profile',
+              data: {
+                first_name: this.form.first_name,
+                last_name: this.form.last_name,
+                email: this.form.email,
+                avatar: this.form.avatar
+              },
+              callback(err,res){
+                const h = self.$createElement;
+                console.log('callback');
+                self.loading=false;
+                if (err) {
+                  return self.$notify({
+                        title: 'Profile update error',
+                        message: h('i', { style: 'color: teal' }, 'Your profile could not be updated, please retry')
+                  });
+                }
+                self.$notify({
+                  title: 'Profile updated',
+                  message: h('i', { style: 'color: teal' }, 'Your profile was successfully updated')
+                });
+              }
+            });
         }
-      });
-
+      })
     },
-    ...mapActions(['logout','updateProfile'])
+    ...mapActions(['logout','loadUserProfile', 'updateProfile'])
   }
 }
 </script>

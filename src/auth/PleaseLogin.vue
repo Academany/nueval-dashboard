@@ -16,17 +16,14 @@
 </template>
 <script>
 import {mapGetters} from 'vuex'
+import config from '../config'
 export default {
   methods:{
     loginWithFablabs(){
-      // this.$refs.btn.loading = true;
-
-        document.location.href="http://localhost:3000/auth/fablabs";
-
+        document.location.href=config.api_url + "/auth/fablabs";
     }
   },
   computed: mapGetters(['isLoggedIn']),
-
 }
 </script>
 <style scoped>

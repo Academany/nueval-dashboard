@@ -15,15 +15,15 @@ import Icon from 'vue-awesome/components/Icon.vue'
 import Vuex from 'vuex'
 import routes from './routes'
 import VueResource from 'vue-resource'
-import Vapi from "vuex-rest-api"
- 
+import Vapi from 'vuex-rest-api'
+import VueMoment from 'vue-moment'
 // uncomment to add vue webix widgets
 // Vue.use(WebixUI) 
 Vue.use(VueResource);
 Vue.use(ElementUI, { locale })
 Vue.use(Vuex)
 Vue.use(VueRouter)
-
+Vue.use(VueMoment)
 
 // globally (in your main .js file)
 Vue.component('fa-icon', Icon)

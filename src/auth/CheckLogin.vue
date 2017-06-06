@@ -17,6 +17,8 @@ import {
   mapGetters,
   mapActions
 } from 'vuex'
+import config from '../config'
+
 export default {
   computed: {
     token() {
@@ -71,7 +73,7 @@ export default {
   methods: {
     checkAccessToken(token){
       console.log('Checking ' + token)
-      return this.$http.get('http://localhost:3000/auth/me?access_token=' + token)
+      return this.$http.get(config.api_url + '/auth/me?access_token=' + token)
     },
     notify(title, msg) {
       const h = this.$createElement

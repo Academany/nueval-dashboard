@@ -18,7 +18,7 @@
       <el-input v-model="form.lecture_url"></el-input>
     </el-form-item>
     <el-form-item label="Assessment URL" prop="assess_url">
-      <el-input v-model="form.assess_url">
+      <el-input v-model="form.assess_url"></el-input>
   </el-form-item>
     <div style="margin-top:22px"><br></div>
 
@@ -51,7 +51,7 @@ import {mapActions,mapGetters} from 'vuex';
         },
 
     }
-  }
+  },
   computed: {
       form: function(){ return  this.item || {} }
   },

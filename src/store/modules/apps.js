@@ -15,7 +15,6 @@ export default {
         loading: false
     },
     getters: {
-        
         installedApps: (state) => {
             return state.installedApps
         },
@@ -74,7 +73,31 @@ export default {
         }, data) {
             commit(SET_INSTALLED_APPS, data.apps);
             commit(SET_INSTALLED_ROLES, data.roles)
-        }
+        },
+        getInstructor({commit,state}, courseId) {
+
+            var roles = state.roles
+            const instructRoles =  roles.filter((userRole) => {
+                return userRole.role === 'instructor'
+            });
+            const res= instructRoles.filter((userRole) => {
+                return (userRole.instructor.courseId === courseId);
+            })
+            if (res && res.length > 0 ) return res[0];
+            return null;
+        },
+        getStudent({commit,state}, courseId) {
+
+            var roles = state.roles
+            const studentRoles =  roles.filter((userRole) => {
+                return userRole.role === 'student'
+            });
+            const res = studentRoles.filter((userRole) => {
+                return (userRole.student.courseId === courseId);
+            })
+            if (res && res.length > 0 ) return res[0];
+            return null;
+        },
     },
     mutations: {
         [LOAD_INSTALLED_APPS](state) {

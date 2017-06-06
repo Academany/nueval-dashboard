@@ -2,23 +2,15 @@
   <div class="app" >
   <div class="title" >
     <el-menu mode="horizontal" defaultActive="/" theme="light" class="nofrills">
-          <el-menu-item index="/">
-            <router-link to="/"><fa-icon name="arrow-left"></fa-icon></router-link>
-         </el-menu-item>
-
-        <el-menu-item v-if="currentCourse" index="" :disabled="true">
-            {{ currentCourse.name }}
+        <el-menu-item index="/">
+          <router-link to="/"><fa-icon name="arrow-left"></fa-icon></router-link>
         </el-menu-item>
-
-        <CourseMenu v-if="currentCourse"  class="right clearfix" />
+        <el-menu-item v-if="instructor" index="">
+          {{instructor.course.name}}
+        </el-menu-item>
     </el-menu>
   </div>
-  <div class="body" v-if="show == 'select'">
-    <div class="wrap">
-      <CourseSelect @courseChange="handleCourseChange" :hideCreate="true" :courses="courses"/>
-    </div>
-  </div>
-  <div class="body" v-if="show == 'dashboard'">
+  <div class="body">
       <div :class="{sidebar: true, full: fullSidebar }">
           <SidebarMenu :apps="apps" :label="true" :collapse="false" @menuSelect="handleMenuSelect" @toggleMenu="handleToggleMenu" />
       </div>
@@ -38,10 +30,11 @@ import AppBar from '../../components/AppBar.vue'
 import {mapGetters,mapActions} from 'vuex'
 // or import all icons if you don't care about bundle size
 export default {
+  name: 'ManagerDashboard',
   components:{
-    CourseMenu,
+    // CourseMenu,
     SidebarMenu,
-    CourseSelect,
+    // CourseSelect,
     AppBar
   },
   methods: {
@@ -56,38 +49,21 @@ export default {
       this.$router.push(item)
       this.changeApp(item)
     },
-    getInstructor(courseId) {
-      var roles = this.userRoles
-      const instructRoles =  roles.filter((userRole) => {
-          return userRole.role === 'instructor'
-      });
-      const res= instructRoles.filter((userRole) => {
-          return (userRole.instructor.courseId === courseId);
-      })
-      if (res && res.length > 0 ) return res[0];
-      return null;
-    },
     ...mapActions({
-      'loadInstructor' : 'instructor_app/loadInstructor',
-      'loadCourses' : 'instructor_app/loadCourses',
-      'changeCourse' : 'instructor_app/changeCourse',
+      // 'bootApp': 'instructor_app/bootApp',
+      // 'loadInstructor' : 'instructor_app/loadInstructor',
+      // 'loadCourses' : 'instructor_app/loadCourses',
+      // 'changeCourse' : 'instructor_app/changeCourse',
       'changeApp': 'instructor_app/changeApp',
-      'loadInstalledApps': 'apps/loadInstalledApps'
+      // 'loadInstalledApps': 'apps/loadInstalledApps'
     })
   },
-
+  mounted() {
+    if (!this.instructor){
+      this.$router.push('/app/instructor')
+    }
+  },
   computed: {
-    show() {
-      if (!this.currentCourse.id){
-        if (this.$route.path != '/apps/instructor'){
-          this.$router.push('/apps/instructor')
-        }
-        return 'select';
-      }
-      if (this.currentCourse.id )
-        return 'dashboard';
-      return false;
-    },
     activeTab() {
       var path =  this.$route.path;
       var filtered = this.apps.filter((el) => el.target.indexOf(path)==0)
@@ -97,84 +73,47 @@ export default {
     ...mapGetters({
       'instructor' : 'instructor_app/instructor',
       // 'getInstructor' : 'apps/getInstructor',
-      'userRoles': 'apps/userRoles',
-      'instructorCourses': 'apps/instructorCourses',
-      'currentCourse':'instructor_app/currentCourse',
-      'courses': 'instructor_app/courses'
+      // 'courses': 'instructor_app/courses'
     })
-  },
-  mounted(){
-    // this.$store.dispatch("changeCourse",'fabacademy2017')
-    //
-    const vm = this;
-    this.$nextTick(function(){
-
-        vm.loadInstalledApps().then((success) => {
-        
-          if (vm.currentCourse && vm.currentCourse.id) {
-            const instr =  vm.getInstructor(vm.currentCourse.id)
-            if (instr && instr.instructor) {
-              console.log('Found instructor')
-              console.log(instr.instructor)
-              vm.loadInstructor(instr.instructor.id)
-            }
-          }
-          if (this.instructorCourses){
-            vm.loadCourses(this.instructorCourses)
-          }
-        }).catch((error)=>{
-          console.log('error')
-          console.log(error)
-          // this.$router.push('/')
-        });
-    })
-
-    this.changeApp('/apps/instructor')
-  },
-  watch: {
-    currentCourse(val){
-      if (val){
-        const instr =  this.getInstructor(val.id)
-        console.log(instr)
-        if (instr && instr.instructor) {
-          console.log(instr.instructor)
-          this.loadInstructor(instr.instructor.id)
-        }
-      }
-    }
   },
   data (){
     return {
       fullSidebar: true,
       selectedIndex:0,
       apps:[
-
         {
           'label': 'Home',
           'description': 'Home',
-          'target' : '/apps/instructor/',
+          'target' : '/apps/instructor/d/home',
           'icon' : 'home'
           // 'component' : Programs
         },
         {
           'label': 'Students',
           'description': 'Monitor student progress',
-          'target' : '/apps/instructor/students',
+          'target' : '/apps/instructor/d/students',
           'icon' : 'users'
           // 'component' : Programs
         },
+        // {
+        //   'label': 'Labs',
+        //   'description': 'Monitor overall lab progress',
+        //   'target' : '/apps/instructor/d/labs',
+        //   'icon' : 'users'
+        //   // 'component' : Programs
+        // },
         {
           'label': 'Final Projects',
           'description': 'Manage Final projects presentations and tracking',
-          'target' : '/apps/instructor/finalprojects',
+          'target' : '/apps/instructor/d/finalprojects',
           'icon' : 'rocket'
         },
-        {
-          'label': 'Evaluations',
-          'description': 'Manage Evaluation sessions',
-          'target' : '/apps/instructor/evaluations',
-          'icon' : 'graduation-cap'
-        }
+        // {
+        //   'label': 'Evaluations',
+        //   'description': 'Manage Evaluation sessions',
+        //   'target' : '/apps/instructor/d/evaluations',
+        //   'icon' : 'graduation-cap'
+        // }
 
       ]
     }

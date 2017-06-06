@@ -14,6 +14,7 @@
                 v-model="tabs"
                 @newItem="handleNew"
                  @delete="handleDelete"
+                :readonly="true"
     slot="detail">
     <BasicDetail :item="selectedRow"
                   slot="tab-content-0"
@@ -67,11 +68,11 @@ export default {
     return {
       entity: 'Student',
       tableColumns: [
-        {id: 1, label: 'Student id', prop: 'student_id' },
-        {id: 2, label: 'Username', prop: 'username'},
-        {id: 3, label: 'First', prop: 'first_name'},
-        {id: 4, label: 'Last', prop: 'last_name'},
-        {id: 3, label: 'Lab', prop: 'lab.lab_id', width: '200' },
+        {id: 1, label: 'ID', prop: 'student_id', width: 80 },
+        {id: 2, label: 'Username', prop: 'username', width: 150},
+        {id: 3, label: 'First', prop: 'first_name', width: 130},
+        {id: 4, label: 'Last', prop: 'last_name', width: 130},
+        {id: 3, label: 'Lab', prop: 'lab.name', width: 150 },
       ],
       selectedRow: null,
       activeName: 'basic',

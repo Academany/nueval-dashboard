@@ -4,10 +4,7 @@ import Vuex from 'vuex'
 
 // Step 2 
 const notifications = new Vapi({
-  baseURL: "https://jsonplaceholder.typicode.com",
-    state: {
-      notifications: []
-    }
+  baseURL: "/api"
   })
   // Step 3a 
   .get({

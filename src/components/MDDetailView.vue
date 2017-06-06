@@ -1,6 +1,6 @@
 <template>
   <div>
-      <div class="tableTop">
+      <div class="tableTop" v-if="!readonly">
         <el-button type="success" v-show="!selectedRow" @click="handleNew()"><fa-icon name="plus" class="adjust"></fa-icon> New {{entity}}</el-button>
         <el-button type="danger" v-if="selectedRow && selectedRow.id" @click="handleDelete()"><fa-icon name="trash" class="adjust"></fa-icon> Delete</el-button>
       </div>
@@ -45,7 +45,8 @@ export default {
   props: [
     'value',
     'selectedRow',
-    'entity'
+    'entity',
+    'readonly'
   ],
   components: {
     MDNotImplemented
@@ -83,7 +84,7 @@ export default {
   }
 }
 </script>
-<style>
+<style scoped>
 .tableTop {
   text-align: right;
   margin-bottom: 20px;

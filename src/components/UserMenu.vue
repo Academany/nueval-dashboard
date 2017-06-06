@@ -1,7 +1,7 @@
 <template>
 <el-submenu class="right clearfix"  v-if="userProfile && userProfile.username" index="profile">
 <template slot="title" v-if="userProfile && userProfile.username">
-  <img :src="userProfile.avatar" class="avatar">
+  <img v-if="avatar" :src="avatar" class="avatar">
   <span class="username">{{userProfile.username}}</span>
 </template>
 <el-menu-item index="/profile/account">Account</el-menu-item>
@@ -16,11 +16,34 @@ export default {
       title: 'User Profile'
     }
   },
-  computed: mapGetters(['userProfile']),
+  computed:{
+    avatar(){
+      let ret=null;
+      console.log(this.userProfile)
+      if (this.userProfile && this.userProfile.avatar) {
+        if (this.userProfile.avatar.indexOf('/')===0)
+          ret = 'https://www.fablabs.io' + this.userProfile.avatar
+        else
+          ret = this.userProfile.avatar
+      }
+      console.log('Avatar ' + ret)
+      return ret;
+    },
+
+    ...mapGetters(['userProfile','isLoggedIn']),
+  },
   mounted(){
     // setInterval(()=>{
       //  this.refreshData()
     // }, 1000);
+    this.refreshData()
+  },
+  watch: {
+    isLoggedIn: (val)=>{
+      if (val){
+        this.refreshData()
+      }
+    }
   },
   methods: {
     refreshData(){

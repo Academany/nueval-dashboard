@@ -60,7 +60,7 @@ export default {
   }
 }
 </script>
-<style>
+<style scoped>
 .embcontrol {
   padding: 12px;
 }

@@ -1,73 +1,69 @@
 <template>
-  <el-card style="margin-top: 24px">
+  <el-card>
     <div slot="header">
       <h4 style="margin:0">Add a student</h4>
     </div>
     <el-form v-model="form" label-position="top">
       <el-form-item label="Select your Lab" prop="labId">
-        <el-select v-model="form.labId" placeholder="Select Lab">
+        <el-select v-model="form.lab" placeholder="Select Lab">
         <el-option
           v-for="item in labs"
           :key="item.id"
           :label="item.name"
-          :value="item.id">
+          :value="item">
         </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item v-if="form.labId" label="Students" prop="selected_students">
-        <el-select v-model="form.studentIds" multiple placeholder="Select">
+      <el-form-item v-if="form.lab" label="Students" prop="selected_students">
+        <el-select v-model="form.students" multiple placeholder="Select">
           <el-option
-            v-for="student in filterStudents()"
-            :key="student.student_id"
-            :label="'['+student.student_id+'] '+student.first + ' ' + student.last"
+            v-for="student in labStudents"
+            :key="student.id"
+            :label="'['+student.student_id+'] '+student.first_name + ' ' + student.last_name"
             @visible-change="handleVisibleChange"
-            :value="student"
-            :disabled="student.booked">
+            :value="student.id"
+            :disabled="student.booked && student.booked.length > 0">
           </el-option>
         </el-select>
+        <br>
+        <small>Grayed out students are already booked!</small>
       </el-form-item>
-      <el-button v-if="form.labId" @click="handleBookStudents" :disabled="form.studentIds.length==0
-      ||selectVisible">Book selected students</el-button>
+      <el-button type="success" v-if="form.lab" @click="handleBookStudents" :disabled="form.students.length==0
+      ||selectVisible">Book students!</el-button>
     </el-form>
   </el-card>
 </template>
 <script>
-// var db = firebaseApp.database();
 export default{
   props: [
     'session',
     'labs',
-    'filteredStudents',
     'sessions'
   ],
-  template: '#student-form',
-
-  watch: {
-    'form.labId': function(val){
-      this.filter = {
-        lab_id: val
-      }
+  computed:{
+    labStudents() {
+      return this.form && this.form.lab && this.form.lab.students || [];
     }
   },
   methods: {
-    getDBRef: function(student){
-      return db.ref('/students/' + student['.key']);
-    },
     checkCount: function(session,students, cb){
+
+      /**
       // check session count
       var sa = students || [];
-      var studentIds = sa.map(function(el){return el.student_id}) || [];
       if (studentIds.length > 0){
-        if ((session.max_students - Object.keys(session.students||{}).length) >= studentIds.length) {
+        if ((session.max_students - Object.keys(session.students||{}).length) >= sa.length) {
           console.log('check count ok');
           return cb(null,true);
         }
       }
       console.log('check count fail');
-      cb("Maximum count reached");
+      cb("Maximum count reached");**/
+      cb(null,true)
+
     },
     checkDupes: function(students, sessions, cb){
-      var sa = students || [];
+      /** var sa = students || [];
       var studentIds = sa.map(function(el){return el.student_id}) || [];
 
       // check studentIds are not present in another session
@@ -84,9 +80,12 @@ export default{
       });
       // ok no dupes found
       console.log('check dupes ok');
+      **/
       cb(null);
+
     },
     bookStudents: function(sessions, session, students, callback){
+      /**
       var vm = this;
 
       this.checkCount(session,students, function(err,ok){
@@ -97,6 +96,7 @@ export default{
           if (err){
             return callback(err);
           }
+          
           students.forEach(function(student){
             var dbRef = vm.getDBRef(student);
             if (!dbRef){
@@ -140,38 +140,30 @@ export default{
           callback(null);
         });
       });
+      **/
     },
     handleBookStudents: function(){
+
       var vm=this;
-      if (this.form.studentIds.length == 0){
+      if (this.form.students.length == 0){
         return alert('You need to select students first');
       }
-      var students = this.form.studentIds;
-      this.bookStudents(this.sessions, this.session, students, function(err,res){
-        if (err){
-          return alert('An error occurred:\n\n' + err);
-        }
-
+        var students = this.form.students;
+        this.$emit('bookStudents', {
+          session: this.session,
+          students
+        });
+        
         vm.filter= {};
         vm.form = {
-          studentIds: [],
-          labId: null,
+          students: [],
+          lab: null,
         };
         vm.$emit("refresh");
 
         // return alert('All fine');
-      });
+      
 
-    },
-    filterStudents: function(){
-      var f = this.filter && this.filter.lab_id || null;
-      if (!f) return this.filteredStudents;
-      console.log(this.filteredStudents);
-      var ret = this.filteredStudents.filter(function(el){
-        return (el.lab_id === f);
-      });
-      console.log(ret);
-      return ret;
     },
     handleVisibleChange:function(visible){
       this.selectVisible = visible;
@@ -182,8 +174,8 @@ export default{
       filter: {},
       selectVisible: false,
       form: {
-        studentIds: [],
-        labId: null,
+        students: [],
+        lab: null,
       }
     }
   }

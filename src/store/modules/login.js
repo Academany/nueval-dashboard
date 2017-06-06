@@ -32,6 +32,8 @@ export default {
                         commit(LOGIN_SUCCESS)
                         dispatch('apps/loadInstalledApps')
                         dispatch('loadUserProfile')
+                        // dispatch('getNotifications')
+                        // dispatch('messages/loadMessages')
                         return resolve("Login Success")
                     }
                 }

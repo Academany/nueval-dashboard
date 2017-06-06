@@ -8,6 +8,7 @@
                >
             <h3 v-if="userProfile.username" style="margin-left: 24px">Hi {{userProfile.username}}!</h3>
             <div v-if="isLoading">Loading apps...</div>
+            
         </el-col>
         </el-row>
         <AppsGrid :apps="apps" v-if="apps && apps.length > 0"/>
@@ -65,21 +66,21 @@ export default {
     ...mapActions({
       'loadInstalledApps': 'apps/loadInstalledApps'
     }),
-    startHacking() {
-      if (!this.isLoggedIn) return;
-      let localStore = window.localStorage;
-      if (localStore.getItem('nag1')) {
-        console.log('skipping nag this time');
-      } else {
-        this.$notify.success({
-          title: 'This is your dashboard',
-          message: 'Select one of the apps to start',
-          duration: 6000,
-          offset: 72
-        })
-        localStore.setItem('nag1', 'ok')
-      }
-    },
+    // startHacking() {
+    //   if (!this.isLoggedIn) return;
+    //   let localStore = window.localStorage;
+    //   if (localStore.getItem('nag1')) {
+    //     console.log('skipping nag this time');
+    //   } else {
+    //     this.$notify.success({
+    //       title: 'This is your dashboard',
+    //       message: 'Select one of the apps to start',
+    //       duration: 6000,
+    //       offset: 72
+    //     })
+    //     localStore.setItem('nag1', 'ok')
+    //   }
+    // },
     loadIfLoggedIn() {
       if (this.isLoggedIn && !this.isLoading) {
         this.loadInstalledApps();

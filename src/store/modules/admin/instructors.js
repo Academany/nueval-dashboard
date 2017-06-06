@@ -43,7 +43,13 @@ export default {
                     course_id +
                     '/instructors?filter=' +
                     encodeURIComponent(JSON.stringify({
-                        "include": ["labs", "course", "user"]
+                        "include": {
+                            "labs": {
+                                "students" : ['booked', 'presented']
+                            }, 
+                            "course": true, 
+                            "user":true
+                        }
                     }))
             }
             api.get(opts.url)

@@ -1,11 +1,15 @@
 <template>
-  <div style="padding: 24px">
-  <h2>Home</h2>
-  <p>Here we'll have some sort of dashboard</p>
-  <WebixWidget :config='ui'/>
-</div>
+
 </template>
 <script>
+// <template>
+//   <div style="padding: 24px">
+//   <h2>Home</h2>
+//   <p>Here we'll have some sort of dashboard</p>
+//   <WebixWidget :config='ui'/>
+// </div>
+// </template>
+/*
 import WebixWidget from '../../components/WebixWidget.vue'
 
 export default {
@@ -38,5 +42,5 @@ export default {
           }
     }
   }
-}
+}*/
 </script>

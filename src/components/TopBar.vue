@@ -3,13 +3,13 @@
 <el-menu-item index="/"><router-link to="/" class="logo">{{title}}</router-link></el-menu-item>
 <LoginMenu></LoginMenu>
 <UserMenu v-if="isLoggedIn"/>
-<el-menu-item v-if="isLoggedIn" class="right clearfix" index="notifications">
-  <el-badge class="item" :value="12" >
+<el-menu-item v-if="isLoggedIn" class="right clearfix" index="/profile/notifications">
+  <el-badge class="item" :value="notifications.length" >
     <fa-icon class="icon" name="comment"></fa-icon>
   </el-badge>
 </el-menu-item>
-<el-menu-item v-if="isLoggedIn" class="right clearfix" index="feedback">
-    <el-badge class="item" :value="12" >
+<el-menu-item v-if="isLoggedIn" class="right clearfix" index="/profile/feedback">
+    <el-badge class="item" :value="0" >
       <fa-icon class="icon" name="bell"></fa-icon>
     </el-badge>
     </el-menu-item>
@@ -21,7 +21,7 @@ import LoginMenu from './LoginMenu.vue';
 import UserMenu from './UserMenu.vue';
 // or import all icons if you don't care about bundle size
 import 'vue-awesome/icons'
-import {mapGetters} from 'vuex'
+import {mapGetters,mapState} from 'vuex'
 
 export default {
   data(){
@@ -35,7 +35,12 @@ export default {
     LoginMenu,
     UserMenu
   },
-  computed: mapGetters(['isLoggedIn']),
+  computed: {
+    ...mapGetters({
+      'isLoggedIn':'isLoggedIn'
+    }),
+    ...mapState(['notifications'])
+  },
   methods: {
       handleSelect(key, keyPath) {
         console.log(key, keyPath);

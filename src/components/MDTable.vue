@@ -67,7 +67,7 @@ export default {
   }
 }
 </script>
-<style>
+<style scoped>
 .el-table__body tr.current-row>td {
   background-color: #cdfdcd;
 }

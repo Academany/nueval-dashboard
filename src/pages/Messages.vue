@@ -1,7 +1,6 @@
 <template>
 <div class="sheet">
-<h1>Final project presentations</h1>
-<p>Coming soon</p>
+    <h1>Coming soon</h1>
 </div>
 </template>
 <style scoped>

@@ -7,6 +7,7 @@ const CONFIRM_STUDENT = "CONFIRM_STUDENT"
 const CONFIRMED_STUDENT = "CONFIRMED_STUDENT"
 const CANCEL_STUDENT = "CANCEL_STUDENT"
 const CANCELED_STUDENT = "CANCELED_STUDENT"
+const UNBOOK_STUDENT = "UNBOOK_STUDENT"
 
 import {
   API_FAILURE,
@@ -142,6 +143,25 @@ export default {
           })
       })
     },
+    unbookStudent({
+      commit,
+    }, { session, student }) {
+      return new Promise((resolve, reject) => {
+        const studentId = student.id
+        api.delete('/api/presentations/' + session.id + '/booked/rel/' + studentId,
+          {
+            studentId: studentId,
+            presentationId: session.id,
+          }).then((success) => {
+            commit(UNBOOK_STUDENT, studentId)
+            // dispatch('loadSession', session)
+            resolve(success)
+          }).catch((error) => {
+            commit(API_FAILURE, error, { root: true })
+            reject(error)
+          })
+      })
+    },
   },
   mutations: {
     [LOAD_PRESENTATIONS](state) {
@@ -181,6 +201,7 @@ export default {
     [CANCELED_STUDENT](state, studentId) {},
     [CONFIRM_STUDENT](state, studentId) {},
     [CONFIRMED_STUDENT](state, studentId) {},
+    [UNBOOK_STUDENT](state, studentId) {},
   },
 
   getters: {

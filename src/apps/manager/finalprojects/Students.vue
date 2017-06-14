@@ -8,7 +8,7 @@
       </el-table-column>
       <el-table-column prop="last_name" label="Last" :width="130">
       </el-table-column>
-      <el-table-column prop="status" label="Status" :width="100">
+      <el-table-column prop="status" label="Status" :width="100" :filters="[{ text: 'Booked', value: 'booked' }, { text: 'Presented', value: 'presented' }, {text: 'No Show', value: 'no show'}]" :filter-method="filterTag" filter-placement="bottom-end">
         <template scope="scope">
           <el-tag :type="statusIcon(scope.row.status)">{{ scope.row.status }}</el-tag>
         </template>
@@ -17,6 +17,7 @@
         <template scope="scope">
           <el-button @click="handleNoshow(scope.row)" :disabled="scope.row.status != 'booked'" size="mini" type="warning">No-show</el-button>
           <el-button @click="handlePresented(scope.row)" :disabled="scope.row.status != 'booked'" size="mini" type="success">Presented</el-button>
+          <el-button @click="handleUnbook(scope.row)" :disabled="scope.row.status != 'booked'" size="mini" type="danger">Remove</el-button>
         </template>
       </el-table-column>
   
@@ -61,8 +62,12 @@ export default {
   methods: {
     ...mapActions([
       'confirmStudent',
-      'cancelStudent'
+      'cancelStudent',
+      'unbookStudent'
     ]),
+    filterTag(value, row) {
+      return row.status === value;
+    },
     statusIcon(status) {
       if (status === 'no show')
         return 'warning'
@@ -71,7 +76,6 @@ export default {
       return 'success'
     },
     studentStatus(student) {
-      debugger
       var booked = this.item && this.item.booked || []
       var presented = this.item && this.item.presented || []
       var noshow = this.item && this.item.noshow || []
@@ -115,6 +119,18 @@ export default {
       this.$confirm('Are you sure ' + row.username + ' didn\'t show up?')
         .then(_ => {
           vm.cancelStudent({ session: vm.item, student: row }).then((success) => {
+            vm.$emit("refresh")
+          }).catch((err) => {
+            vm.$notice("Error", "Error updating student ")
+          })
+        })
+        .catch(_ => { });
+    },
+    handleUnbook(row) {
+      const vm = this
+      this.$confirm('Do your really want to remove ' + row.username + ' from this session?')
+        .then(_ => {
+          vm.unbookStudent({ session: vm.item, student: row }).then((success) => {
             vm.$emit("refresh")
           }).catch((err) => {
             vm.$notice("Error", "Error updating student ")

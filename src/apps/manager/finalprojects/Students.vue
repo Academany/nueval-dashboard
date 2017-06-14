@@ -1,78 +1,134 @@
 <template>
-<div class="form clearfix">
-
-  <el-table
-    :data="item.booked"
-    style="width: 100%">
-    <el-table-column
-      prop="student_id"
-      label="ID"
-      fit>
-    </el-table-column>
-    <el-table-column
-      prop="first_name"
-      label="First"
-      fit>
-    </el-table-column>
-    <el-table-column
-      prop="last_name"
-      label="Last"
-      fit>
-    </el-table-column>
-    <el-table-column
-      label=""
-      :width="50">
-      <el-button size="small"><fa-icon name="gear"></fa-icon></el-button>
-    </el-table-column>
-  </el-table>
-
-
-</div>
-
+  <div class="form clearfix">
+  
+    <el-table :data="students" style="width: 100%">
+      <el-table-column prop="student_id" label="ID" :width="60">
+      </el-table-column>
+      <el-table-column prop="first_name" label="First" :width="130">
+      </el-table-column>
+      <el-table-column prop="last_name" label="Last" :width="130">
+      </el-table-column>
+      <el-table-column prop="status" label="Status" :width="100">
+        <template scope="scope">
+          <el-tag :type="statusIcon(scope.row.status)">{{ scope.row.status }}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column fit>
+        <template scope="scope">
+          <el-button @click="handleNoshow(scope.row)" :disabled="scope.row.status != 'booked'" size="mini" type="warning">No-show</el-button>
+          <el-button @click="handlePresented(scope.row)" :disabled="scope.row.status != 'booked'" size="mini" type="success">Presented</el-button>
+        </template>
+      </el-table-column>
+  
+    </el-table>
+  
+  </div>
 </template>
 <script>
+import { mapActions, mapGetters } from 'vuex'
 export default {
-    props: [
-      'item'
-    ],
-    data() {
-      return {
-        form: {
-          input: ''
-        },
-        rules: {
+  props: [
+    'item'
+  ],
+  data() {
+    return {
+      form: {
+        input: ''
+      },
+      rules: {
 
-        },
-        links: [
-          { "value": "vue", "link": "https://github.com/vuejs/vue" },
-          { "value": "element", "link": "https://github.com/ElemeFE/element" },
-          { "value": "cooking", "link": "https://github.com/ElemeFE/cooking" },
-          { "value": "mint-ui", "link": "https://github.com/ElemeFE/mint-ui" },
-          { "value": "vuex", "link": "https://github.com/vuejs/vuex" },
-          { "value": "vue-router", "link": "https://github.com/vuejs/vue-router" },
-          { "value": "babel", "link": "https://github.com/babel/babel" }
-         ]
-      }
-    },
-    computed: {
-    },
-    methods: {
-      querySearch(queryString, cb) {
-        var links = this.links
-        var results = queryString ? links.filter(this.createFilter(queryString)) : links
-        // call callback function to return suggestions
-        cb(results)
       },
-      createFilter(queryString) {
-        return (link) => {
-          return (link.value.indexOf(queryString.toLowerCase()) === 0);
-        };
-      },
-      handleSelect(item) {
-        console.log(item);
-      }
+
+
     }
+  },
+  computed: {
+    students: function () {
+      let tstudents = []
+
+      if (this.filter === 'presented')
+        tstudents = (this.item && this.item.presented) || []
+      else
+        tstudents = (this.item && this.item.booked) || []
+
+      tstudents = tstudents.map((e) => {
+        e.status = this.studentStatus(e)
+        return e
+      }, this)
+      return tstudents
+    }
+  },
+  methods: {
+    ...mapActions([
+      'confirmStudent',
+      'cancelStudent'
+    ]),
+    statusIcon(status) {
+      if (status === 'no show')
+        return 'warning'
+      if (status === 'booked')
+        return 'primary'
+      return 'success'
+    },
+    studentStatus(student) {
+      debugger
+      var booked = this.item && this.item.booked || []
+      var presented = this.item && this.item.presented || []
+      var noshow = this.item && this.item.noshow || []
+      var isBooked = booked.filter((e) => { return (e.id === student.id) }).length > 0
+      var isPresented = presented.filter((e) => { return (e.id === student.id) }).length > 0
+      var isNoshow = noshow.filter((e) => { return (e.id === student.id) }).length > 0
+      if (isPresented) {
+        return 'presented'
+      } else if (isNoshow) {
+        return 'no show'
+      }
+      return 'booked'
+    },
+    querySearch(queryString, cb) {
+      var links = this.links
+      var results = queryString ? links.filter(this.createFilter(queryString)) : links
+      // call callback function to return suggestions
+      cb(results)
+    },
+    createFilter(queryString) {
+      return (link) => {
+        return (link.value.indexOf(queryString.toLowerCase()) === 0);
+      };
+    },
+    handlePresented(row) {
+      // this.$alert("Student " + item.username + " presented");
+      const vm = this
+      this.$confirm('Are you sure ' + row.username + ' presented?')
+        .then(_ => {
+          vm.confirmStudent({ session: vm.item, student: row }).then((success) => {
+            vm.$emit("refresh")
+            done()
+          }).catch((err) => {
+            vm.$notice("Error", "Error updating student ")
+          })
+        })
+        .catch(_ => { });
+    },
+    handleNoshow(row) {
+      const vm = this
+      this.$confirm('Are you sure ' + row.username + ' didn\'t show up?')
+        .then(_ => {
+          vm.cancelStudent({ session: vm.item, student: row }).then((success) => {
+            vm.$emit("refresh")
+          }).catch((err) => {
+            vm.$notice("Error", "Error updating student ")
+          })
+        })
+        .catch(_ => { });
+    },
+    handleSelect(item) {
+      console.log(item);
+    }
+
+  }
 }
 </script>
 <style scoped>
+
 </style>

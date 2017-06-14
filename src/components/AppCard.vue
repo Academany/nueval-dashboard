@@ -1,15 +1,15 @@
 <template>
   <el-card class="box-card">
-     <div slot="header" class="card-header clearfix">
-    <router-link :to="item.target" class="header-link">{{item.label}}</router-link>
-
-  </div>
+    <div slot="header" class="card-header clearfix">
+      <router-link :to="item.target" class="header-link">
+        <fa-icon :name="item.icon"></fa-icon> {{item.label}}</router-link>
+    </div>
     {{item.description}}
-  <div class="card-footer">
-    <el-button class="opbutton clearfix" type="primary" @click="$router.push(item.target)">
-      Open
-    </el-button>
-  </div>
+    <div class="card-footer">
+      <el-button class="opbutton clearfix" type="primary" @click="$router.push(item.target)">
+        Open
+      </el-button>
+    </div>
   </el-card>
 </template>
 
@@ -21,22 +21,25 @@ export default {
 
 <style scoped>
 .box-card {
-  position:relative;
+  position: relative;
   margin-bottom: 4px;
   min-height: 200px;
 }
+
 .card-header {
   height: 12px;
   font-weight: bold;
   text-transform: uppercase;
 }
+
 a.header-link {
   color: black;
   text-decoration: none;
 }
+
 .card-footer {
   position: absolute;
-  left:0;
+  left: 0;
   bottom: 50px;
   right: 0;
   height: 10px;
@@ -45,6 +48,7 @@ a.header-link {
   margin-right: -20px;
   border-top: 1px solid #cdcdcd;
 }
+
 .opbutton {
   display: block;
   width: 80%;

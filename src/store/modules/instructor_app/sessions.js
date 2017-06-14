@@ -21,13 +21,13 @@ export default {
     actions: {
         loadSession({commit},session){
             return new Promise((resolve,reject)=>{
-                debugger
+                // debugger
                 if (!session || !session.id) return reject("Invalid session")
                 commit(LOAD_SESSION, session.id)
                 api.get('/api/presentations/' + session.id + '?filter=' +
                     encodeURIComponent(
                         JSON.stringify({
-                            include: ['booked', 'presented']
+                            include: ['booked', 'presented','noshow']
                         })
                     )
                 ).

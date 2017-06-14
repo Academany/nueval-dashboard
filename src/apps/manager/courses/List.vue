@@ -1,30 +1,12 @@
 <template>
-<MDView>
-  <MLTable
-    slot="master"
-    ref="masterTable"
-    :value="courses"
-    :selectedRow="selectedRow"
-    :tableColumns="tableColumns"
-    @select="handleSelect"
-    @edit="handleEdit"
-    @delete="handleDelete"/>
-  <MDDetailView :entity="entity"
-                :selectedRow="selectedRow"
-                v-model="tabs"
-                @newItem="handleNew"
-                @delete="handleDelete"
-    slot="detail">
-    <BasicDetail :item="selectedRow"
-                  slot="tab-content-0"
-                  @cancelEdit="handleCancel"/>
-    <RepoForm v-if="selectedRow && selectedRow.id" :item="selectedRow" slot="tab-content-1"/>
-    <ModulesList v-if="selectedRow && selectedRow.id" :item="selectedRow" slot="tab-content-2"/>
-    <StudentsList v-if="selectedRow && selectedRow.id" :item="selectedRow" slot="tab-content-3"/>
-    <InstructorsList v-if="selectedRow && selectedRow.id" :item="selectedRow" slot="tab-content-4"/>
-    <LabsList v-if="selectedRow && selectedRow.id" :item="selectedRow" slot="tab-content-5"/>
-  </MDDetailView>
-</MDView>
+  <MDView>
+    <MLTable slot="master" ref="masterTable" :value="courses" :selectedRow="selectedRow" :tableColumns="tableColumns" @select="handleSelect" @edit="handleEdit" @delete="handleDelete" />
+    <MDDetailView :entity="entity" :selectedRow="selectedRow" v-model="tabs" @newItem="handleNew" @delete="handleDelete" slot="detail">
+      <BasicDetail :item="selectedRow" slot="tab-content-0" @cancelEdit="handleCancel" />
+      <RepoForm v-if="selectedRow && selectedRow.id" :item="selectedRow" slot="tab-content-1" />
+      <ModulesList v-if="selectedRow && selectedRow.id" :item="selectedRow" slot="tab-content-2" />
+    </MDDetailView>
+  </MDView>
 </template>
 
 <script>
@@ -40,9 +22,9 @@ import ModulesList from './Modules.vue'
 import InstructorsList from './Instructors.vue'
 import LabsList from './Labs.vue'
 import RepoForm from './Repo.vue'
-import {mapActions,mapGetters} from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
-let startId=0
+let startId = 0
 //
 // lodash.forEach(sampleData.data, (el)=>{
 //   el.id = ++startId;
@@ -70,7 +52,7 @@ export default {
     MDNotImplemented
   },
   computed: mapGetters(['courses']),
-  mounted(){
+  mounted() {
     this.loadCourses();
   },
   data() {
@@ -78,11 +60,11 @@ export default {
       saved: true,
       entity: 'Course',
       tableColumns: [
-        {id: 1, label: 'Name', prop: 'name', width: 170 },
-        {id: 2, label: 'Year', prop: 'year'},
-        {id: 3, label: 'Program', prop: 'program', width: 150 },
-        {id: 4, label: 'Students', prop: 'students.length' },
-        {id: 5, label: 'Module', prop: 'modules.length'}
+        { id: 1, label: 'Name', prop: 'name', width: 170 },
+        { id: 2, label: 'Year', prop: 'year' },
+        { id: 3, label: 'Program', prop: 'program', width: 150 },
+        { id: 4, label: 'Students', prop: 'students.length' },
+        { id: 5, label: 'Module', prop: 'modules.length' }
       ],
       selectedRow: null,
       activeName: 'basic',
@@ -104,29 +86,11 @@ export default {
           label: 'Modules',
           name: 'modules',
           hide: true
-        },
-        {
-          id: 'students',
-          label: 'Students',
-          name: 'students',
-          hide: true
-        },
-        {
-          id: 'instructors',
-          label: 'Instructors',
-          name: 'instructors',
-          hide: true
-        },
-        {
-          id: 'labs',
-          label: 'Labs',
-          name: 'labs',
-          hide: true
-        },
+        }
       ]
     }
   },
-  beforeRouteLeave (to, from, next) {
+  beforeRouteLeave(to, from, next) {
     if (this.saved || window.confirm('Not saved, are you sure you want to navigate away?')) {
       next()
     } else {
@@ -141,26 +105,26 @@ export default {
       this.$refs.masterTable.clearSelection()
       this.selectedRow = {};
     },
-    handleClick (id,e){
+    handleClick(id, e) {
       // tabs event handler
     },
-    handleSelect (index,row){
+    handleSelect(index, row) {
       // console.log(row)
       this.selectedRow = row
     },
-    handleEdit (index,row){
+    handleEdit(index, row) {
       // console.log(row)
       this.selectedRow = row
     },
-    handleDelete(){
+    handleDelete() {
       // console.log(index + ' ' + row)
-      if (this.selectedRow){
+      if (this.selectedRow) {
         this.deleteCourse(this.selectedRow).then(
-            (succes) => console.log('delete ok')
+          (succes) => console.log('delete ok')
         );
       }
     },
-    ...mapActions(['loadCourses','deleteCourse']),
+    ...mapActions(['loadCourses', 'deleteCourse']),
   }
 }
 </script>

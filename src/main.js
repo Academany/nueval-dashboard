@@ -18,7 +18,7 @@ import VueResource from 'vue-resource'
 import Vapi from 'vuex-rest-api'
 import VueMoment from 'vue-moment'
 // uncomment to add vue webix widgets
-// Vue.use(WebixUI) 
+// Vue.use(WebixUI)
 Vue.use(VueResource);
 Vue.use(ElementUI, { locale })
 Vue.use(Vuex)
@@ -28,6 +28,7 @@ Vue.use(VueMoment)
 // globally (in your main .js file)
 Vue.component('fa-icon', Icon)
 
+import Truncate from './filters'
 export const store = require('./store').default
 export const router = routes
 
@@ -35,5 +36,5 @@ new Vue({
   router,
   store,
   el: '#app',
-  render: h => h(App)
+  render: h => h(App),
 })

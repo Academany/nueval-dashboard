@@ -1,28 +1,11 @@
 <template>
-<MDView>
-  <MLTable
-    slot="master"
-    ref="masterTable"
-    :value="presentations"
-    :selectedRow="selectedRow"
-    :tableColumns="tableColumns"
-    @select="handleSelect"
-    @edit="handleEdit"
-    @delete="handleDelete"/>
-  <MDDetailView :entity="entity"
-                :selectedRow="selectedRow"
-                v-model="tabs"
-                @newItem="handleNew"
-                 @delete="handleDelete"
-                 :readonly="true"
-    slot="detail">
-    <BasicDetail :item="selectedRow"
-                  slot="tab-content-0"
-                  
-                  @cancelEdit="handleCancel"/>
-    <StudentsList v-if="selectedRow && selectedRow.id" :item="selectedRow" slot="tab-content-1"/>
-  </MDDetailView>
-</MDView>
+  <MDView>
+    <MLTable slot="master" ref="masterTable" :value="presentations" :selectedRow="selectedRow" :tableColumns="tableColumns" @select="handleSelect" @edit="handleEdit" @delete="handleDelete" />
+    <MDDetailView :entity="entity" :selectedRow="selectedRow" v-model="tabs" @newItem="handleNew" @delete="handleDelete" :readonly="true" slot="detail">
+      <BasicDetail :item="selectedRow" slot="tab-content-0" @cancelEdit="handleCancel" />
+      <StudentsList v-if="selectedRow && selectedRow.id" :item="selectedRow" @refresh="handleRefresh" slot="tab-content-1" />
+    </MDDetailView>
+  </MDView>
 </template>
 
 <script>
@@ -34,8 +17,8 @@ import MDNotImplemented from '../../../components/MDNotImplemented.vue'
 import lodash from 'lodash'
 import BasicDetail from './Detail.vue'
 import StudentsList from './Students.vue'
-import {mapActions,mapGetters} from 'vuex'
-let startId=0
+import { mapActions, mapGetters } from 'vuex'
+let startId = 0
 //
 // lodash.forEach(sampleData.data, (el)=>{
 //   el.id = ++startId;
@@ -65,14 +48,15 @@ export default {
     return {
       entity: 'Final Project presentation',
       tableData: [
-        {'name': 'First Session', 'date': '7 June 2017', 'students' : '120', id: 1}
+        { 'name': 'First Session', 'date': '7 June 2017', 'students': '120', id: 1 }
       ],
       tableColumns: [
-        {id: 1, label: 'Name', prop: 'name', width: 200 },
-        {id: 2, label: 'Date', prop: 'date'},
-        {id: 3, label: 'Cap', prop: 'max' },
-        {id: 3, label: 'Booked', prop: 'booked.length' },
-        
+        { id: 1, label: 'Name', prop: 'name', width: 200 },
+        { id: 2, label: 'Date', prop: 'date', width: 110 },
+        { id: 3, label: 'Cap', prop: 'max' },
+        { id: 4, label: 'Booked', prop: 'booked.length' },
+        { id: 5, label: 'Pres.', prop: 'presented.length' },
+        { id: 6, label: 'Noshow', prop: 'noshow.length' },
       ],
       selectedRow: null,
       activeName: 'basic',
@@ -92,6 +76,19 @@ export default {
       ]
     }
   },
+  watch: {
+    presentations(newVal) {
+      if (this.selectedRow && this.selectedRow.id) {
+        if (!newVal) return;
+        const candidates = newVal.filter((e) => e.id === this.selectedRow.id)
+        if (candidates.length > 0) {
+          this.selectedRow = candidates[0]
+        } else {
+          this.selectedRow = null
+        }
+      }
+    }
+  },
   filters: {
     capitalize: function (value) {
       if (!value) return ''
@@ -100,7 +97,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['presentations','currentCourse']),
+    ...mapGetters(['presentations', 'currentCourse']),
   },
   methods: {
     handleNew() {
@@ -111,31 +108,36 @@ export default {
         id: null
       };
     },
+
+    handleRefresh() {
+      this.loadPresentations(this.currentCourse.id);
+
+    },
     handleCancel() {
       this.$refs.masterTable.clearSelection()
       this.selectedRow = null
     },
-    handleClick (id,e){
+    handleClick(id, e) {
       // tabs event handler
     },
-    handleSelect (index,row){
+    handleSelect(index, row) {
       // console.log(row)
       this.selectedRow = row
     },
-    handleEdit (index,row){
+    handleEdit(index, row) {
       // console.log(row)
       this.selectedRow = row
     },
-    handleDelete( index,row){
+    handleDelete(index, row) {
       // console.log(index + ' ' + row)
 
       const vm = this;
-      if (this.selectedRow){
+      if (this.selectedRow) {
         this.deletePresentation(this.selectedRow).then((succes) => {
-            vm.notify("Success", "Item deleted succcessfully")
-            vm.handleCancel()
-        }).catch((error)=>{
-            vm.notify("Error", "Some error occurred:\n" + JSON.stringify(error));
+          vm.notify("Success", "Item deleted succcessfully")
+          vm.handleCancel()
+        }).catch((error) => {
+          vm.notify("Error", "Some error occurred:\n" + JSON.stringify(error));
         });
       }
     },
@@ -149,7 +151,7 @@ export default {
         }, msg)
       });
     },
-    ...mapActions(['loadPresentations','deletePresentation'])
+    ...mapActions(['loadPresentations', 'deletePresentation'])
   }
 }
 </script>

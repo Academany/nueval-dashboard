@@ -9,21 +9,21 @@ export const RELOAD_INSTRUCTOR = "RELOAD_INSTRUCTOR"
 
 import sessions from './sessions.js'
 import {
-    API_FAILURE
+    API_FAILURE,
 } from '../failure'
 import api from '../api'
 
 export default {
-    namespaced: true,
-    modules: {
-        sessions
-    },
-    actions: {
-        bootApp({
+  namespaced: true,
+  modules: {
+    sessions,
+  },
+  actions: {
+    bootApp({
             commit,
-            dispatch
+            dispatch,
         }, instructor) {
-            return new Promise((resolve, reject) => {
+      return new Promise((resolve, reject) => {
                 // booting the app means loading all the stuff needed to show it correctly
                 // we already loaded installed apps
                 // instead of the course selector we'll have the instructor selector
@@ -32,99 +32,102 @@ export default {
 
                 // then:
                 //  pick the instructor with the most recent active program
-                //  then: 
+                //  then:
                 //      load the instructor courses
                 //      load the instructor labs
                 //      load the instructor students
-                console.log(instructor)
-                commit(SET_INSTRUCTOR, instructor)
-                resolve()
-
-            })
-        },
-        reloadInstructor({
+        console.log(instructor)
+        commit(SET_INSTRUCTOR, instructor)
+        resolve()
+      })
+    },
+    reloadInstructor({
             commit,
             state,
-            dispatch
+            dispatch,
         }) {
-            return new Promise((resolve, reject) => {
-                commit(RELOAD_INSTRUCTOR)
-                api.get('/api/instructors/' + state.instructor.id + '?filter=' + encodeURIComponent(
+      return new Promise((resolve, reject) => {
+        commit(RELOAD_INSTRUCTOR)
+        api.get('/api/instructors/' + state.instructor.id + '?filter=' + encodeURIComponent(
                     JSON.stringify({
-                        include: [{
-                                course: {
-                                    'presentations': ['booked', 'presented']
-                                }
-                            },
-                            {
-                                labs: {
-                                    'students': ['booked', 'presented','lab']
-                                }
-                            }
-                        ]
+                      include: [{
+                        course: {
+                          'presentations': ['booked', 'presented'],
+                          'modules': true,
+                        },
+                      },
+                      {
+                        labs: {
+                          'students': ['booked', 'presented', 'lab'],
+                        },
+                      },
+                      ],
                     }))).then((response) => {
-                    commit(SET_INSTRUCTOR, response)
-                    resolve(response)
-                }).catch((error) => {
-                    commit(API_FAILURE, error)
-                    reject(error)
-                })
-
-            })
-
-        },
-        changeApp({
-            commit
+                      commit(SET_INSTRUCTOR, response)
+                      resolve(response)
+                    }).catch((error) => {
+                      commit(API_FAILURE, error)
+                      reject(error)
+                    })
+      })
+    },
+    changeApp({
+            commit,
         }, newApp) {
-            commit(CHANGE_APP, newApp)
-        }
+      commit(CHANGE_APP, newApp)
     },
-    state: {
-        currentApp: 0,
-        courses: [],
-        instructor: null
-    },
-    mutations: {
+  },
+  state: {
+    currentApp: 0,
+    courses: [],
+    instructor: null,
+  },
+  mutations: {
 
-        [CHANGE_APP](state, newApp) {
-            state.currentApp = newApp;
-        },
-        [SET_INSTRUCTOR](state, data) {
-            state.instructor = data
-        },
-        [RELOAD_INSTRUCTOR](state,data){
-
-        }
+    [CHANGE_APP](state, newApp) {
+      state.currentApp = newApp;
     },
-    getters: {
-        currentCourse: state => {
-            return state.instructor && state.instructor.course || null
-        },
-        currentApp: state => {
-            return state.currentApp
-        },
-        courses: state => {
-            return state.courses
-        },
-        instructor: state => {
-            return state.instructor
-        },
-        labs: state => {
-            return state.instructor && state.instructor.labs || []
-        },
-        students: state => {
-            if (state.instructor && state.instructor.labs) {
-                let myStudents = []
-                state.instructor.labs.forEach(function (element) {
-                    if (!element) return
-                    element.students.forEach(function (student) {
-                        student.lab = element
-                        myStudents.push(student)
-                    }, this)
-                }, this)
-                return myStudents
-            }
-            return [];
-        }
-    }
+    [SET_INSTRUCTOR](state, data) {
+      state.instructor = data
+    },
+    [RELOAD_INSTRUCTOR](state, data) {},
+  },
+  getters: {
+    currentCourse: state => state.instructor && state.instructor.course || null,
+    currentApp: state => state.currentApp,
+    courses: state => state.courses,
+    instructor: state => state.instructor,
+    labs: state => state.instructor && state.instructor.labs || [],
+    labStudents: state => (lab) => {
+      if (!lab) return []
+      if (state.instructor && state.instructor.labs) {
+        let students = []
+        state.instructor.labs.some(function (alab) {
+          if (alab.id === lab.id) {
+            students = lab.students.map((s) => {
+              s.lab = alab
+              return s
+            })
+            return
+          }
+        })
+        return students
+      }
+      return []
+    },
+    students: (state) => {
+      if (state.instructor && state.instructor.labs) {
+        let myStudents = []
+        state.instructor.labs.forEach(function (element) {
+          if (!element) return
+          element.students.forEach(function (student) {
+            student.lab = element
+            myStudents.push(student)
+          }, this)
+        }, this)
+        return myStudents
+      }
+      return [];
+    },
+  },
 }

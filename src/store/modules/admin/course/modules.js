@@ -33,11 +33,10 @@ export default {
         return dispatch('createModule', module)
       }
       return new Promise((resolve, reject) => {
-        api.put('/api/courses/' + state.courseId + '/modules/' + module.id, {
-          name: module.name,
-          description: module.description,
-          date: module.date,
-        }).then((response) => {
+        const doUpdate = () => {
+          api.put('/api/courses/' + state.courseId + '/modules/' + module.id,
+          module
+        ).then((response) => {
           commit(UPDATE_MODULE, response.body)
           dispatch('loadModules', state.courseId)
           resolve(response.body)
@@ -45,15 +44,24 @@ export default {
           commit(API_FAILURE, error, { root: true })
           reject(error)
         })
+        }
+        if (module.assess_url) {
+          const axios = require('axios')
+          const jsonURL = module.assess_url
+          axios.get(jsonURL).then((response) => {
+            console.log(response)
+            module.rules = response.data
+            doUpdate()
+          }).catch(reject)
+        }
       })
     },
     createModule({ commit, state, dispatch }, module) {
       return new Promise((resolve, reject) => {
-        api.post('/api/courses/' + state.courseId + '/modules', {
-          name: module.name,
-          description: module.description,
-          date: module.date,
-        }).then((response) => {
+        const doCreate = () => {
+          api.post('/api/courses/' + state.courseId + '/modules',
+          module
+        ).then((response) => {
           commit(CREATE_MODULE, response.body)
           dispatch('loadModules', state.courseId)
           resolve(response.body)
@@ -61,6 +69,17 @@ export default {
           commit(API_FAILURE, error, { root: true })
           reject(error)
         })
+        }
+        if (module.assess_url) {
+          const axios = require('axios')
+          const jsonURL = module.assess_url
+          axios.get(jsonURL).then((response) => {
+            console.log(response)
+            doCreate()
+          }).catch(reject)
+        } else {
+          doCreate()
+        }
       })
     },
     deleteModule({ commit, dispatch, state }, module) {

@@ -4,11 +4,14 @@
             <el-form-item label="Name" :label-width="formLabelWidth" prop="name">
                 <el-input v-model="form.name" auto-complete="off"></el-input>
             </el-form-item>
-            <el-form-item label="Description" :label-width="formLabelWidth">
+            <el-form-item label="Description" :label-width="formLabelWidth" prop="description">
                 <el-input v-model="form.description" auto-complete="off"></el-input>
             </el-form-item>
-            <el-form-item label="Lecture URL" :label-width="formLabelWidth">
+            <el-form-item label="Lecture URL" :label-width="formLabelWidth" prop="lecture_url">
                 <el-input v-model="form.lecture_url" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="Assessment Rules URL" :label-width="formLabelWidth" prop="assess_url">
+                <el-input v-model="form.assess_url" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item label="Date" :label-width="formLabelWidth">
                 <el-date-picker v-model="formDate" type="date" placeholder="Pick a date">

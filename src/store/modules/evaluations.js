@@ -4,21 +4,21 @@ const CREATE_EVALUATION = "CREATE_EVALUATION"
 const UPDATE_EVALUATION = "UPDATE_EVALUATION"
 const DELETE_EVALUATION = "DELETE_EVALUATION"
 import {
-  API_FAILURE
+  API_FAILURE,
 } from './failure'
 import api from './api'
 
 export default {
   state: {
-    evaluations: []
+    evaluations: [],
   },
   actions: {
     loadEvaluations({
-      commit
+      commit,
     }, courseId) {
       commit(LOAD_EVALUATIONS);
       const opts = {
-        url: '/api/courses/' + courseId + '/evaluations'
+        url: '/api/courses/' + courseId + '/evaluations',
       }
       api.get(opts.url)
         .then(function (response) {
@@ -29,12 +29,12 @@ export default {
         });
     },
     setEvaluations({
-      commit
+      commit,
     }, item) {
       commit(SET_EVALUATIONS, item)
     },
     createEvaluation({
-      commit
+      commit,
     }, item) {
       return new Promise((resolve, reject) => {
         // Do something here... lets say, a http call using vue-resource
@@ -54,11 +54,11 @@ export default {
       })
     },
     updateEvaluation({
-      commit
+      commit,
     }, item) {
       return new Promise((resolve, reject) => {
         // Do something here... lets say, a http call using vue-resource
-        api.put("/api/courses/" + item.courseId + "/evaluations/" + item.id, item).then(response => {
+        api.put("/api/courses/" + item.courseId + "/evaluations/" + item.id, item).then((response) => {
           // http success, call the mutator and change something in state
           commit(UPDATE_EVALUATION, response.body)
           // Let the calling function know that http is done. You may send some data back
@@ -73,11 +73,11 @@ export default {
       });
     },
     deleteEvaluation({
-      commit
+      commit,
     }, item) {
       return new Promise((resolve, reject) => {
         // Do something here... lets say, a http call using vue-resource
-        api.delete("/api/courses/" + item.courseId + "/evaluations/" + item.id).then(response => {
+        api.delete("/api/courses/" + item.courseId + "/evaluations/" + item.id).then((response) => {
           // http success, call the mutator and change something in state
           commit(DELETE_EVALUATION, item)
           // Let the calling function know that http is done. You may send some data back
@@ -90,11 +90,11 @@ export default {
           reject(error);
         })
       })
-    }
+    },
   },
   mutations: {
     [LOAD_EVALUATIONS](state) {
-      //nop
+      // nop
     },
     [SET_EVALUATIONS](state, newList) {
       state.evaluations = newList;
@@ -125,13 +125,13 @@ export default {
         }
       });
       state.evaluations = newc;
-    }
+    },
 
   },
 
   getters: {
     evaluations(state) {
       return state.evaluations
-    }
-  }
+    },
+  },
 }

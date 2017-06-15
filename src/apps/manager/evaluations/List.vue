@@ -1,26 +1,12 @@
 <template>
-<MDView>
-  <MLTable
-    slot="master"
-    ref="masterTable"
-    :value="evaluations"
-    :selectedRow="selectedRow"
-    :tableColumns="tableColumns"
-    @select="handleSelect"
-    @edit="handleEdit"
-    @delete="handleDelete"/>
-  <MDDetailView :entity="entity"
-                :selectedRow="selectedRow"
-                v-model="tabs"
-                @newItem="handleNew"
-                 @delete="handleDelete"
-    slot="detail">
-    <BasicDetail :item="selectedRow"
-                  slot="tab-content-0"
-                  @cancelEdit="handleCancel"/>
-    <StudentsList :item="selectedRow" slot="tab-content-1"/>
-  </MDDetailView>
-</MDView>
+  <MDView>
+    <MLTable slot="master" ref="masterTable" :value="evaluations" :selectedRow="selectedRow" :tableColumns="tableColumns" @select="handleSelect" @edit="handleEdit" @delete="handleDelete" />
+    <MDDetailView :entity="entity" :selectedRow="selectedRow" v-model="tabs" @newItem="handleNew" @delete="handleDelete" slot="detail">
+      <BasicDetail :item="selectedRow" slot="tab-content-0" @cancelEdit="handleCancel" />
+      <StudentsList :item="selectedRow" slot="tab-content-1" />
+      <Evaluators :item="selectedRow" slot="tab-content-2" />
+    </MDDetailView>
+  </MDView>
 </template>
 
 <script>
@@ -32,8 +18,9 @@ import MDNotImplemented from '../../../components/MDNotImplemented.vue'
 import lodash from 'lodash'
 import BasicDetail from './Detail.vue'
 import StudentsList from './Students.vue'
-import {mapActions,mapGetters} from 'vuex'
-let startId=0
+import Evaluators from './Evaluators.vue'
+import { mapActions, mapGetters } from 'vuex'
+let startId = 0
 //
 // lodash.forEach(sampleData.data, (el)=>{
 //   el.id = ++startId;
@@ -54,15 +41,17 @@ export default {
     MDView,
     BasicDetail,
     StudentsList,
+    Evaluators,
     MDNotImplemented
   },
   data() {
     return {
       entity: 'Evaluation Session',
       tableColumns: [
-        {id: 1, label: 'Name', prop: 'name', width: 250 },
-        {id: 2, label: 'Date', prop: 'date' },
-        {id: 3, label: 'Students', prop: 'students' }
+        { id: 1, label: 'Name', prop: 'name', width: 250 },
+        { id: 2, label: 'Date', prop: 'date' },
+        { id: 3, label: 'Students', prop: 'students' },
+        { id: 4, label: 'Kind', prop: 'kind' }
       ],
       selectedRow: null,
       activeName: 'basic',
@@ -78,6 +67,12 @@ export default {
           label: 'Students',
           name: 'students',
           hide: true
+        },
+        {
+          id: 'evaluators',
+          label: 'Evaluators',
+          name: 'evaluators',
+          hide: true
         }
       ]
     }
@@ -89,7 +84,7 @@ export default {
     this.loadEvaluations(this.currentCourse.id);
   },
   methods: {
-    
+
     handleNew() {
       this.selectedRow = {
         courseId: this.currentCourse.id,
@@ -99,27 +94,27 @@ export default {
       this.$refs.masterTable.clearSelection()
       this.selectedRow = null
     },
-    handleClick (id,e){
+    handleClick(id, e) {
       // tabs event handler
     },
-    handleSelect (index,row){
+    handleSelect(index, row) {
       // console.log(row)
       this.selectedRow = row
     },
-    handleEdit (index,row){
+    handleEdit(index, row) {
       // console.log(row)
       this.selectedRow = row
     },
-    handleDelete( index,row){
+    handleDelete(index, row) {
       // console.log(index + ' ' + row)
 
       const vm = this;
-      if (this.selectedRow){
+      if (this.selectedRow) {
         this.deleteEvaluation(this.selectedRow).then((succes) => {
-            vm.notify("Success", "Item deleted succcessfully")
-            vm.handleCancel()
-        }).catch((error)=>{
-            vm.notify("Error", "Some error occurred:\n" + JSON.stringify(error));
+          vm.notify("Success", "Item deleted succcessfully")
+          vm.handleCancel()
+        }).catch((error) => {
+          vm.notify("Error", "Some error occurred:\n" + JSON.stringify(error));
         });
       }
     },
@@ -133,7 +128,7 @@ export default {
         }, msg)
       });
     },
-    ...mapActions(['loadEvaluations','deleteEvaluation'])
+    ...mapActions(['loadEvaluations', 'deleteEvaluation'])
   }
 }
 </script>

@@ -1,40 +1,29 @@
 <template>
   <div class="form clearfix">
-    <h3>Students</h3>
+    <h3>Evaluators</h3>
   
     <el-form ref="myForm" :rules="rules" :model="form" label-position="left" label-width="150px">
       <el-autocomplete class="inline-input" v-model="form.input" :fetch-suggestions="querySearch" placeholder="Please Input" :trigger-on-focus="false" @select="handleSelect"></el-autocomplete>
-      <el-button type="primary" @click="submitForm('myForm')">Add Student</el-button>
+      <el-button type="primary" @click="submitForm('myForm')">Add Evaluator</el-button>
     </el-form>
   
     <div>
       <br/>
     </div>
   
-    <el-table :data="tableData" border style="width: 100%">
-      <el-table-column prop="name" sortable label="Name" fit>
+    <el-table border :data="tableData" sortable style="width: 100%">
+      <el-table-column prop="username" sortable label="Username" :width="120">
       </el-table-column>
-      <el-table-column prop="email" sortable label="Email" fit>
+      <el-table-column prop="first" sortable label="First" :width="120">
       </el-table-column>
-      <el-table-column prop="evaluator" sortable label="Evaluator" fit>
-        <template scope="scope">
-          <span v-if="scope.row.evaluator">{{scope.row.evaluator.name}}</span>
-          <span v-else>
-            <el-select v-model="value" placeholder="Select" size="mini">
-              <el-option v-for="a in options" :key="a.value" :label="a.label" :value="a.value">
-              </el-option>
-            </el-select>
-          </span>
-        </template>
+      <el-table-column prop="last" sortable label="Last" :width="120">
+      </el-table-column>
+      <el-table-column prop="email" sortable label="Email" :width="200">
       </el-table-column>
       <el-table-column label="" fit>
         <template scope="scope">
-  
-          <el-button type="primary" size="mini">
-            Assign
-          </el-button>
-          <el-button type="danger" size="mini">
-            Reset
+          <el-button size="small">
+            <fa-icon name="gear"></fa-icon>
           </el-button>
         </template>
       </el-table-column>
@@ -55,22 +44,6 @@ export default {
       rules: {
 
       },
-      options: [{
-        value: 'Option1',
-        label: 'Option1'
-      }, {
-        value: 'Option2',
-        label: 'Option2'
-      }, {
-        value: 'Option3',
-        label: 'Option3'
-      }, {
-        value: 'Option4',
-        label: 'Option4'
-      }, {
-        value: 'Option5',
-        label: 'Option5'
-      }],
       links: [
         { "value": "vue", "link": "https://github.com/vuejs/vue" },
         { "value": "element", "link": "https://github.com/ElemeFE/element" },

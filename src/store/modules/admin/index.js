@@ -1,6 +1,7 @@
 import students from './students'
 import instructors from './instructors'
 import course from './course'
+import logs from './logs'
 import Vuex from 'vuex'
 
 export default {
@@ -10,5 +11,6 @@ export default {
     students,
     instructors,
     course,
+    logs,
   },
 }

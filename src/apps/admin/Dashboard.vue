@@ -74,6 +74,12 @@ export default {
           'icon': 'key'
           // 'component' : Programs
         },
+        {
+          'label': 'Logs',
+          'description': 'Activity and system logs',
+          'target': '/apps/admin/logs',
+          'icon': 'eye'
+        }
       ]
     }
   }
@@ -102,6 +108,7 @@ export default {
 
 .childview {
   position: absolute;
+  background-color: #d2d8e2;
   left: 150px;
   right: 0px;
   top: 120px;

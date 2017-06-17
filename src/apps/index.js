@@ -1,18 +1,3 @@
-// // import ManagerDashboard from './manager/Dashboard.vue'
-// import InstructorDashboard from './instructor/Dashboard.vue'
-// import InstructorDashboardBoot from './instructor/Boot.vue'
-// import InstructorDashboardError from './instructor/Error.vue'
-// import InstructorDashboardHome from './instructor/Home.vue'
-// import InstructorDashboardStudents from './instructor/students/List.vue'
-// import InstructorDashboardLabs from './instructor/students/List.vue'
-// import InstructorDashboardEvaluation from './instructor/evaluations/List.vue'
-// import InstructorDashboardPresentations from './instructor/presentations/List.vue'
-
-import AdminDashboard from './admin/Dashboard.vue'
-import AdminHome from './admin/Home.vue'
-import users from './admin/users/List.vue'
-import roles from './admin/roles/List.vue'
-
 const applist = ['labs','supernodes','finalprojects','programs']
 
 const lazy = (path) => {
@@ -83,11 +68,12 @@ let apps =
   'routes': [
     {
       path:'/',
-      component: AdminDashboard,
+      component: lazy('./admin/Dashboard.vue'),
       children: [
-        {path: '', component: AdminHome},
-        {path: 'users', component: users},
-        {path: 'roles', component: roles},
+        {path: '', component: lazy('./admin/Home.vue')},
+        {path: 'users', component: lazy('./admin/users/List.vue')},
+        {path: 'roles', component: lazy('./admin/roles/List.vue')},
+        {path: 'logs', component: lazy('./admin/logs/Index.vue')}
       ]
     }
   ]},

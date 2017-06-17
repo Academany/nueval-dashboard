@@ -1,9 +1,11 @@
 <template>
   <div class="form clearfix">
     <h3>Students</h3>
+    <p v-if="item.kind === 'local'">Local evaluation covers all students in the course</p>
+    <p v-else>Assign students to this evaluation round</p>
   
-    <el-form ref="myForm" :rules="rules" :model="form" label-position="left" label-width="150px">
-      <el-autocomplete class="inline-input" v-model="form.input" :fetch-suggestions="querySearch" placeholder="Please Input" :trigger-on-focus="false" @select="handleSelect"></el-autocomplete>
+    <el-form ref="myForm" :rules="rules" :model="form" v-if="item.kind === 'global'" label-position="left" label-width="150px">
+      <el-autocomplete class="inline-input" v-model="student_option" :fetch-suggestions="querySearch" placeholder="Please Input" :trigger-on-focus="false" @select="handleSelect"></el-autocomplete>
       <el-button type="primary" @click="submitForm('myForm')">Add Student</el-button>
     </el-form>
   
@@ -11,29 +13,34 @@
       <br/>
     </div>
   
-    <el-table :data="tableData" border style="width: 100%">
-      <el-table-column prop="name" sortable label="Name" fit>
+    <el-table :data="students" v-if="item.kind === 'global'" border style="width: 100%">
+      <el-table-column prop="student_id" sortable label="ID" :width="80">
       </el-table-column>
-      <el-table-column prop="email" sortable label="Email" fit>
+      <el-table-column prop="username" sortable label="Username" :width="130">
       </el-table-column>
-      <el-table-column prop="evaluator" sortable label="Evaluator" fit>
+      <el-table-column prop="email" sortable label="Email" :width="230">
+  
+      </el-table-column>
+      <el-table-column prop="evaluator.username" sortable label="Evaluator" :width="130">
         <template scope="scope">
-          <span v-if="scope.row.evaluator">{{scope.row.evaluator.name}}</span>
-          <span v-else>
-            <el-select v-model="value" placeholder="Select" size="mini">
-              <el-option v-for="a in options" :key="a.value" :label="a.label" :value="a.value">
-              </el-option>
-            </el-select>
+          <span v-if="scope.row.evaluator">
+            {{scope.row.evaluator.username}}
           </span>
+          <span v-else>
+            <EvaluatorSelect :userObject="scope.row" :keys="evaluators" @keySelected="updateEvaluatorOption" />
+          </span>
+          <!--<span v-if="scope.row.evaluator">{{scope.row.evaluator.username}}</span>-->
+          <!--<span v-else>-->
+  
+          <!--</span>-->
         </template>
       </el-table-column>
       <el-table-column label="" fit>
         <template scope="scope">
-  
-          <el-button type="primary" size="mini">
+          <el-button v-if="!scope.row.evaluator && evaluator_option[scope.row.id]" @click="handleAssignEvaluator(scope.row)" type="primary" size="mini">
             Assign
           </el-button>
-          <el-button type="danger" size="mini">
+          <el-button v-if="scope.row.evaluator" @click="handleRemoveEvaluator(scope.row)" type="danger" size="mini">
             Reset
           </el-button>
         </template>
@@ -43,73 +50,141 @@
   </div>
 </template>
 <script>
+import { mapGetters, mapActions } from 'vuex'
+import Vue from 'vue'
+import EvaluatorSelect from '../../../components/EvaluatorSelect.vue'
 export default {
   props: [
     'item'
   ],
+  components: {
+    EvaluatorSelect
+  },
   data() {
     return {
       form: {
-        input: ''
+        input: '',
+        candidate: null
       },
+      student_option: null,
+      evaluator_option: {},
       rules: {
+      }
 
-      },
-      options: [{
-        value: 'Option1',
-        label: 'Option1'
-      }, {
-        value: 'Option2',
-        label: 'Option2'
-      }, {
-        value: 'Option3',
-        label: 'Option3'
-      }, {
-        value: 'Option4',
-        label: 'Option4'
-      }, {
-        value: 'Option5',
-        label: 'Option5'
-      }],
-      links: [
-        { "value": "vue", "link": "https://github.com/vuejs/vue" },
-        { "value": "element", "link": "https://github.com/ElemeFE/element" },
-        { "value": "cooking", "link": "https://github.com/ElemeFE/cooking" },
-        { "value": "mint-ui", "link": "https://github.com/ElemeFE/mint-ui" },
-        { "value": "vuex", "link": "https://github.com/vuejs/vuex" },
-        { "value": "vue-router", "link": "https://github.com/vuejs/vue-router" },
-        { "value": "babel", "link": "https://github.com/babel/babel" }
-      ],
-      tableData: [
-        { username: 'username', name: 'Full Name', email: 'email@provider.com' }
-      ],
-      students: this.item.students
     }
   },
   computed: {
+    evaluators() {
+      const ev = this.item && this.item.evaluators || [];
+      return ev.map((e) => { return e.username })
+      // return ev.map((e) => {
+      //   return {
+      //     value: e.username,
+      //     link: e
+      //   }
+      // })
+    },
+    students() {
+      if (!this.item) return []
+      let students = []
+      if (this.item.kind && this.item.kind === 'global') {
+        students = this.evaluationStudents(this.item) || []
+      }
+      // if (this.item.kind && this.item.kind === 'local') {
+      //   students = this.allStudents || []
+      // }
+      // console.log('unknown session kind')
+      return students
+    },
+
+    ...mapGetters({
+      evaluationStudents: 'evaluationStudents',
+      allStudents: 'admin/students/students'
+    })
   },
   methods: {
+    updateEvaluatorOption({ userObject, key }) {
+      Vue.set(this.evaluator_option, userObject.id, key)
+    },
+    ...mapActions({
+      loadStudents: 'admin/students/loadStudents'
+    }),
+    findEvaluator(student) {
+      const pairs = this.item.pairings || []
+      const idx = pairs.findIndex((e) => e.studentId === student.id)
+      if (idx == -1) return null;
+      const evalId = this.item.pairings[idx]
+      const candidates = this.item.evaluators.filter((s) => s.id === evalId)
+      return candidates.length > 0 ? candidates[0] : null
+    },
     querySearch(queryString, cb) {
-      var links = this.links
-      var results = queryString ? links.filter(this.createFilter(queryString)) : links
+      let links = this.allStudents.map((s) => {
+        return {
+          value: s.username,
+          student: s
+        }
+      })
+      let results = queryString ? links.filter(this.createFilter(queryString)) : links
+      // console.log(results)
       // call callback function to return suggestions
       cb(results)
     },
+    findInstructor(option) {
+      // debugger
+      const evaluators = this.item.evaluators || []
+      const idx = Array.findIndex(evaluators, (el) => {
+        return el.username === option
+      })
+      if (idx != -1) return evaluators[idx]
+      return null
+    },
     createFilter(queryString) {
       return (link) => {
-        return (link.value.indexOf(queryString.toLowerCase()) === 0);
+        return (link.student.username.toLowerCase().indexOf(queryString.toLowerCase()) != -1) ||
+          (link.student.email.indexOf(queryString.toLowerCase()) != -1)
+          ;
       };
     },
-    loadAll() {
-      return [
-        { "value": "vue", "link": "https://github.com/vuejs/vue" },
-        { "value": "element", "link": "https://github.com/ElemeFE/element" },
-        { "value": "cooking", "link": "https://github.com/ElemeFE/cooking" },
-        { "value": "mint-ui", "link": "https://github.com/ElemeFE/mint-ui" },
-        { "value": "vuex", "link": "https://github.com/vuejs/vuex" },
-        { "value": "vue-router", "link": "https://github.com/vuejs/vue-router" },
-        { "value": "babel", "link": "https://github.com/babel/babel" }
-      ]
+    submitForm(formName) {
+      const vm = this
+      const form = this.$refs[formName]
+      form.validate((valid) => {
+        if (valid) {
+          if (vm.student_option) {
+            const res = vm.allStudents.filter((e) => (e.username === vm.student_option))
+            vm.$emit('submit', res[0])
+          }
+        }
+      })
+    },
+
+    handleAssignEvaluator(student) {
+      // get it from this.evaluator_option
+      if (!this.evaluator_option[student.id]) {
+        this.$notify({
+          title: "Error",
+          message: "Please select an evaluator"
+        });
+        return
+      }
+      console.log(this.evaluator_option[student.id])
+      const instr = this.findInstructor(this.evaluator_option[student.id])
+      const params = {
+        student: student,
+        evaluator: instr,
+        session: this.item
+      }
+      this.$emit("assign", params)
+    },
+    handleRemoveEvaluator(student) {
+      // remove current evaluator from student
+
+      const params = {
+        student: student,
+        evaluator: null,
+        session: this.item
+      }
+      this.$emit("remove", params)
     },
     handleSelect(item) {
       console.log(item);

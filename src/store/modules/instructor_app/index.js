@@ -83,7 +83,6 @@ export default {
     instructor: null,
   },
   mutations: {
-
     [CHANGE_APP](state, newApp) {
       state.currentApp = newApp;
     },
@@ -108,7 +107,7 @@ export default {
               s.lab = alab
               return s
             })
-            return
+            return true
           }
         })
         return students

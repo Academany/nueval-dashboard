@@ -1,29 +1,40 @@
 <template>
   <div class="form clearfix">
     <h3>Evaluators</h3>
+    <p v-if="item.kind === 'local'">Local evaluation is done by local instructors in the course</p>
+    <p v-else>Define evaluators for this evaluation round</p>
   
-    <el-form ref="myForm" :rules="rules" :model="form" label-position="left" label-width="150px">
-      <el-autocomplete class="inline-input" v-model="form.input" :fetch-suggestions="querySearch" placeholder="Please Input" :trigger-on-focus="false" @select="handleSelect"></el-autocomplete>
-      <el-button type="primary" @click="submitForm('myForm')">Add Evaluator</el-button>
-    </el-form>
+    <div v-if="item.kind === 'global'">
+      <el-form ref="myForm" :rules="rules" :model="form" label-position="left" label-width="150px">
+        <el-autocomplete class="inline-input" v-model="form.instructor" :fetch-suggestions="querySearch" placeholder="Username or email" :trigger-on-focus="false" @select="handleSelect"></el-autocomplete>
+        <el-button type="primary" @click="submitForm('myForm')">Add Evaluator</el-button>
+      </el-form>
+    </div>
   
     <div>
       <br/>
     </div>
   
-    <el-table border :data="tableData" sortable style="width: 100%">
+    <el-table :data="evaluators(this.item)" border stripe v-if="item.kind === 'global'" style="width: 100%">
       <el-table-column prop="username" sortable label="Username" :width="120">
       </el-table-column>
-      <el-table-column prop="first" sortable label="First" :width="120">
+  
+      <el-table-column prop="email" label="Email" :width="300">
       </el-table-column>
-      <el-table-column prop="last" sortable label="Last" :width="120">
-      </el-table-column>
-      <el-table-column prop="email" sortable label="Email" :width="200">
+      <el-table-column prop="candidates" label="Assigned">
+        <template scope="scope">
+          <small>{{ scope.row.candidates && scope.row.candidates.length }} candidates
+            <br>
+            <div v-for="c in scope.row.candidates" :key="c">
+              - {{ `[${c.student_id}] ${c.first_name} ${c.last_name}` }}
+            </div>
+          </small>
+        </template>
       </el-table-column>
       <el-table-column label="" fit>
         <template scope="scope">
-          <el-button size="small">
-            <fa-icon name="gear"></fa-icon>
+          <el-button @click="handleRemove(scope.row)" size="mini" type="danger">
+            <fa-icon name="trash"></fa-icon>
           </el-button>
         </template>
       </el-table-column>
@@ -32,6 +43,7 @@
   </div>
 </template>
 <script>
+import { mapGetters, mapActions } from 'vuex'
 export default {
   props: [
     'item'
@@ -39,53 +51,75 @@ export default {
   data() {
     return {
       form: {
-        input: ''
+        input: '',
+        instructor: null
       },
       rules: {
-
-      },
-      links: [
-        { "value": "vue", "link": "https://github.com/vuejs/vue" },
-        { "value": "element", "link": "https://github.com/ElemeFE/element" },
-        { "value": "cooking", "link": "https://github.com/ElemeFE/cooking" },
-        { "value": "mint-ui", "link": "https://github.com/ElemeFE/mint-ui" },
-        { "value": "vuex", "link": "https://github.com/vuejs/vuex" },
-        { "value": "vue-router", "link": "https://github.com/vuejs/vue-router" },
-        { "value": "babel", "link": "https://github.com/babel/babel" }
-      ],
-      tableData: [
-        { username: 'username', name: 'Full Name', email: 'email@provider.com' }
-      ],
-      students: this.item.students
+        instructor: [
+          { required: true, message: 'Select an instructor', trigger: 'blur' }
+        ],
+      }
     }
   },
   computed: {
+    // evaluators() { return this.item.evaluators && this.item.evaluators || [] },
+    instructors() {
+      const instructors = this.allInstructors || []
+      var links = instructors.map(e => {
+        return {
+          link: e, value: e.username
+        }
+      })
+      return links
+    },
+    ...mapGetters({
+      'allInstructors': 'admin/instructors/instructors',
+      'evaluators': 'evaluators',
+      'currentCourse': 'currentCourse'
+    })
+  },
+  mounted() {
+    this.loadInstructors(this.currentCourse.id)
   },
   methods: {
+    ...mapActions({
+      'loadInstructors': 'admin/instructors/loadInstructors'
+    }),
+    loadCandidate(c) {
+      // console.log(c)
+      return c
+    },
+    submitForm(formName) {
+      const vm = this
+      const form = this.$refs[formName]
+      form.validate((valid) => {
+        if (valid) {
+          if (vm.form.instructor) {
+            const res = vm.instructors.filter((e) => (e.link.username === vm.form.instructor))
+            vm.$emit('submit', res[0].link)
+          }
+        }
+      })
+    },
     querySearch(queryString, cb) {
-      var links = this.links
-      var results = queryString ? links.filter(this.createFilter(queryString)) : links
+      const links = this.instructors
+      let results = queryString ? links.filter(this.createFilter(queryString)) : links
       // call callback function to return suggestions
       cb(results)
     },
     createFilter(queryString) {
-      return (link) => {
-        return (link.value.indexOf(queryString.toLowerCase()) === 0);
-      };
-    },
-    loadAll() {
-      return [
-        { "value": "vue", "link": "https://github.com/vuejs/vue" },
-        { "value": "element", "link": "https://github.com/ElemeFE/element" },
-        { "value": "cooking", "link": "https://github.com/ElemeFE/cooking" },
-        { "value": "mint-ui", "link": "https://github.com/ElemeFE/mint-ui" },
-        { "value": "vuex", "link": "https://github.com/vuejs/vuex" },
-        { "value": "vue-router", "link": "https://github.com/vuejs/vue-router" },
-        { "value": "babel", "link": "https://github.com/babel/babel" }
-      ]
+      return (instructor) => {
+        return (instructor.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0)
+          || (instructor.link.email.indexOf(queryString.toLowerCase()) === 0)
+
+      }
     },
     handleSelect(item) {
       console.log(item);
+    },
+    handleRemove(item) {
+      console.log("Remove");
+      console.log(item)
     }
   }
 }

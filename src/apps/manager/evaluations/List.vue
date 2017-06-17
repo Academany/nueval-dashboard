@@ -3,8 +3,8 @@
     <MLTable slot="master" ref="masterTable" :value="evaluations" :selectedRow="selectedRow" :tableColumns="tableColumns" @select="handleSelect" @edit="handleEdit" @delete="handleDelete" />
     <MDDetailView :entity="entity" :selectedRow="selectedRow" v-model="tabs" @newItem="handleNew" @delete="handleDelete" slot="detail">
       <BasicDetail :item="selectedRow" slot="tab-content-0" @cancelEdit="handleCancel" />
-      <StudentsList :item="selectedRow" slot="tab-content-1" />
-      <Evaluators :item="selectedRow" slot="tab-content-2" />
+      <StudentsList ref="studentsList" :item="selectedRow" @submit="handleAddStudent" @assign="handleAssignEvaluator" @remove="handleResetEvaluator" slot="tab-content-1" />
+      <Evaluators :item="selectedRow" @submit="handleAddEvaluator" slot="tab-content-2" />
     </MDDetailView>
   </MDView>
 </template>
@@ -50,7 +50,7 @@ export default {
       tableColumns: [
         { id: 1, label: 'Name', prop: 'name', width: 250 },
         { id: 2, label: 'Date', prop: 'date' },
-        { id: 3, label: 'Students', prop: 'students' },
+        { id: 3, label: 'Students', prop: 'students.length' },
         { id: 4, label: 'Kind', prop: 'kind' }
       ],
       selectedRow: null,
@@ -78,13 +78,92 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['currentCourse', 'evaluations'])
+    ...mapGetters(['currentCourse', 'evaluations', 'evaluationStudents'])
+  },
+  watch: {
   },
   mounted() {
+    const vm = this
     this.loadEvaluations(this.currentCourse.id);
   },
   methods: {
+    handleAssignEvaluator(params) {
+      const vm = this;
+      this.assignEvaluator(params)
+        .then((response) => {
+          vm.notify(
+            "Success",
+            "Assigned evaluator"
+          )
+          // this.handleCancel()
+        }).catch((error) => {
+          vm.notify("Error", "Failed to assign evaluator")
+        })
+    },
+    handleResetEvaluator(params) {
+      const vm = this;
+      this.resetEvaluator(params)
+        .then((response) => {
+          vm.notify(
+            "Success",
+            "Evaluator reset"
+          )
+          // this.handleCancel()
+          // vm.$refs['studentsList'].$forceUpdate()
 
+        }).catch((error) => {
+          vm.notify("Error", "Failed to assign evaluator")
+        })
+    },
+    handleAddStudent(student) {
+      const vm = this;
+      this.addStudent({
+        'session': vm.selectedRow,
+        'student': student
+      }).then((succes) => {
+        vm.notify(
+          "Success",
+          "Added student"
+        )
+      }).catch((error) => {
+        vm.notify("Error", "Failed to add student")
+      })
+    },
+    handleRemoveStudent(student) {
+      const vm = this;
+      this.removeStudent({
+        'session': vm.selectedRow,
+        'student': evaluator
+      }).then((succes) => {
+
+        vm.notify("Success", "Removed student")
+      }).catch((error) => {
+        vm.notify("Error", "Failed to remove student")
+      })
+    },
+    handleAddEvaluator(evaluator) {
+      const vm = this;
+      vm.addEvaluator({
+        'session': vm.selectedRow,
+        'evaluator': evaluator
+      }).then((succes) => {
+        vm.notify("Success", "Added evaluator")
+      }).catch((error) => {
+        vm.notify("Error", "Failed to add evaluator")
+      })
+    },
+    handleRemoveEvaluator(evaluator) {
+      const vm = this;
+      this.removeEvaluator({
+        'session': vm.selectedRow,
+        'evaluator': evaluator
+      }).then((succes) => {
+
+        vm.notify("Success", "Removed evaluator")
+      }).catch((error) => {
+        vm.notify("Error", "Failed to remove evaluator")
+      })
+    },
     handleNew() {
       this.selectedRow = {
         courseId: this.currentCourse.id,
@@ -107,7 +186,6 @@ export default {
     },
     handleDelete(index, row) {
       // console.log(index + ' ' + row)
-
       const vm = this;
       if (this.selectedRow) {
         this.deleteEvaluation(this.selectedRow).then((succes) => {
@@ -128,7 +206,7 @@ export default {
         }, msg)
       });
     },
-    ...mapActions(['loadEvaluations', 'deleteEvaluation'])
+    ...mapActions(['loadEvaluations', 'deleteEvaluation', 'addEvaluator', 'removeEvaluator', 'addStudent', 'removeStudent', 'assignEvaluator', 'resetEvaluator'])
   }
 }
 </script>

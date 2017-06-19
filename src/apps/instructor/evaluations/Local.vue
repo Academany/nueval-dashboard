@@ -81,11 +81,19 @@ export default {
             this.currentRow = val;
         },
         handleClick(tab, event) {
+            ß
             console.log(tab, event);
         },
         handleModuleChange(val) {
 
         }
+    },
+    mounted() {
+
+        // load Evaluation sessions
+
+
+
     },
     computed: {
         tableData() {

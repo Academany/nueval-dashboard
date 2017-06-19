@@ -51,7 +51,8 @@ let apps =
               {path: 'home', component: lazy('./instructor/Home.vue')},
               {path: 'students', component: lazy('./instructor/students/List.vue')},
               {path: 'labs',  component: lazy('./instructor/labs/List.vue')},
-              {path: 'evaluations',  component: lazy('./instructor/evaluations/List.vue')},
+              {path: 'evaluations',  component: lazy('./instructor/evaluations/Local.vue')},
+              {path: 'globaleval',  component: lazy('./instructor/evaluations/Global.vue')},
               {path: 'finalprojects', component: lazy('./instructor/finalprojects/List.vue')},
             ]
           }

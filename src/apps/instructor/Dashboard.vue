@@ -115,15 +115,14 @@ export default {
           'description': 'Manage Evaluation sessions',
           'target': '/apps/instructor/d/evaluations',
           'icon': 'graduation-cap',
-          'children': [
-            {
-              'label': 'Local',
-              'description': 'Local Evaluation sessions',
-              'target': '/apps/instructor/d/evaluations',
-              'icon': 'graduation-cap'
-            }
-          ]
+        },
+        {
+          'label': 'Global Eval',
+          'description': 'Manage Global Evaluation sessions',
+          'target': '/apps/instructor/d/globaleval',
+          'icon': 'graduation-cap',
         }
+
 
       ]
     }

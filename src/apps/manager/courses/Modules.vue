@@ -68,7 +68,7 @@ export default {
   watch: {
     item: function (val) {
       if (val) {
-        debugger
+        // debugger
         this.loadModules(val.id)
       }
     }

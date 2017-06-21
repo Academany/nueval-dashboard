@@ -8,6 +8,9 @@ export const SET_INSTRUCTOR = "SET_INSTRUCTOR"
 export const RELOAD_INSTRUCTOR = "RELOAD_INSTRUCTOR"
 
 import sessions from './sessions.js'
+import evaluations from './evaluations.js'
+import records from './records.js'
+
 import {
     API_FAILURE,
 } from '../failure'
@@ -17,6 +20,8 @@ export default {
   namespaced: true,
   modules: {
     sessions,
+    evaluations,
+    records,
   },
   actions: {
     bootApp({

@@ -1,15 +1,7 @@
 <template>
     <el-row :gutter="12">
-        <el-col :span="8">
-            <ProgressUnits />
-            <br>
-            <ProgressFeedback />
-        </el-col>
-        <el-col :span="8">
-            <ProgressUnits />
-        </el-col>
-        <el-col :span="8">
-            <ProgressUnits />
+        <el-col v-for="ev in evaluations" :key="ev.id" :span="8">
+            <ProgressUnits :evaluation="ev" @showDetails="handleDetails" />
         </el-col>
     </el-row>
 </template>
@@ -18,9 +10,17 @@
 import ProgressUnits from '../cards/ProgressUnits.vue'
 import ProgressFeedback from '../cards/ProgressFeedback.vue'
 export default {
+    props: [
+        'evaluations'
+    ],
     components: {
         ProgressUnits,
         ProgressFeedback,
+    },
+    methods: {
+        handleDetails(ev) {
+            this.$emit('showDetails', ev)
+        }
     }
 }
 </script>

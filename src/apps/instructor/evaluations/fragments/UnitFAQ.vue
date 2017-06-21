@@ -1,18 +1,34 @@
 <template>
-    <div>
-        <h4>Can I use the Inkscape clone tool for my pressfit kit?</h4>
-        <p>Answer: 1. No. The clone tool is not a real parametric software.</p>
-        <h4>Is it compulsory to design my own file in Vinyl cutting?</h4>
-        <p>Answer: 1. Yes. Or modify existing one, and acknowledge where you found it.</p>
+    <div class="faq">
+        <vue-markdown v-if="body">{{body}}</vue-markdown>
     </div>
 </template>
 
 <script>
-export default {
+import VueMarkdown from 'vue-markdown'
 
+export default {
+    components: {
+        VueMarkdown
+    },
+    props: [
+        'module'
+    ],
+    computed: {
+        body() {
+            const module = this.module || {}
+            if (module && module.rules && module.rules.faq) {
+                return module.rules.faq
+            } else {
+                return 'Not available yet'
+            }
+        }
+    }
 }
 </script>
 
-<style>
-
+<style scoped>
+.faq {
+    font-size: 80%;
+}
 </style>

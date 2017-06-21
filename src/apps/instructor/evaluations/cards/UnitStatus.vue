@@ -1,26 +1,81 @@
 <template>
-    <el-card>
-        <div slot="header">Status</div>
-        <el-row>
-            <el-col :span="12">
-                <div class="text-center">
-                    <el-progress type="circle" :percentage="35"></el-progress>
-                    <br> In progress
-                </div>
-            </el-col>
-            <el-col :span="12">
-                <el-button class="fullwidth pad">Mark unit complete</el-button>
-                <br>
-                <el-button class="fullwidth pad">Leave Feedback</el-button>
-            </el-col>
-        </el-row>
-    
-    </el-card>
+    <el-row>
+        <el-col :span="6">
+            <div class="text-center">
+                <el-progress type="circle" :percentage="unitProgress" :status="record && record.completed ? 'success' : ''"></el-progress>
+                <br> {{progressLabel(unitProgress)}}
+            </div>
+        </el-col>
+        <el-col :span="6">
+            <p>
+                <el-button size="large" type="success" :disabled="record && record.completed" @click="handleButton1">
+                    <fa-icon class="fa-fix" name="check" /> Mark unit complete</el-button>
+            </p>
+            <p>
+                <el-button size="large" type="primary" @click="handleButton2">
+                    <fa-icon class="fa-fix" name="envelope" /> Leave Feedback</el-button>
+            </p>
+        </el-col>
+        <el-col :span="18" :offset="6">
+            <RecentChanges :record="record" />
+        </el-col>
+    </el-row>
 </template>
 
 <script>
+import RecentChanges from '../fragments/RecentChanges.vue'
 export default {
+    components: {
+        RecentChanges
+    },
+    props: [
+        'record', 'module', 'readonly'
+    ],
+    data() {
+        return {
+            unitProgress: 0
+        }
+    },
+    watch: {
+        record: function (val) {
+            // console.log("Watch works")
+            const vm = this
+            this.$nextTick(() => {
+                vm.updateProgress()
+            })
+        }
+    },
+    mounted() {
+        this.updateProgress()
+    },
+    methods: {
+        updateProgress(val) {
+            let progress = 0
+            if (this.record && this.record.progress) {
+                progress = parseInt(this.record.progress)
+            } else {
+                progress = 0
+            }
+            this.unitProgress = progress
+        },
+        progressLabel(val) {
+            if (!val) return 'Pending'
+            if (this.record && this.record.completed) return 'Completed'
+            if (val < 20) return 'Pending'
+            else if (val >= 20 && val < 50) return 'In progress'
+            else if (val >= 50 && val < 90) return 'Almost done'
+            else return 'Ready'
+        },
+        handleButton1() {
+            this.$emit('markComplete')
+        },
+        handleButton2() {
+            this.$emit('showFeedback')
+        },
+        handleChange(val) {
 
+        }
+    }
 }
 </script>
 <style scoped>
@@ -34,5 +89,9 @@ export default {
 
 .fullwidth {
     width: 100%;
+}
+
+.fa-fix {
+    margin-bottom: -3px;
 }
 </style>

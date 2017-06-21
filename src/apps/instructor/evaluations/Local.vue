@@ -1,119 +1,194 @@
 <template>
-    <div class="sheet">
+    <div class="sheet" v-loading="loading">
         <el-row class="fullheight">
             <el-col :span="4" class="topPad leftPad rightPad tealbg fullheight selector">
-                <SelectStudent :labs="labs" :lab="lab" :students="tableData" />
+                <SelectStudent :labs="labs" :lab="lab" :students="tableData" @select="handleSelectStudent" />
             </el-col>
             <el-col :span="20" class="fullheight vscroll detail">
-                <TableHead/>
-                <el-tabs v-model="activeName" @tab-click="handleClick" class="tabs">
-                    <el-tab-pane label="Overall progress" name="general">
-                        <TabGeneral/>
+                <TableHead v-if="currentStudent" :student="currentStudent" @action="handleAction" />
+                <div v-if="needsSetup" class="tabs">
+                    <el-card :span="10" style="width:50%">
+                        <div slot="header">
+                            <h2 style="margin:0">Evaluation setup</h2>
+                        </div>
+                        <p>Looks like this student has never been evaluated.</p>
+                        <p>Click the button below to setup the evaluation sheet.</p>
+                        <div style="text-align:right">
+                            <el-button size="large" type="success" @click="handleSetup">Setup evaluation sheet &raquo;</el-button>
+                        </div>
+                    </el-card>
+                </div>
+                <el-tabs v-if="!needsSetup" v-model="activeName" class="tabs" @tabClick="handleClick">
+                    <el-tab-pane label=" Overall progress " name="general">
+                        <TabGeneral :evaluations="overallProgress " @showDetails="handleDetails" />
                     </el-tab-pane>
-                    <el-tab-pane label="Local Evaluation" name="local">
-                        <TabEvaluation :modules="modulesData" />
-                    </el-tab-pane>
-                    <el-tab-pane label="Global Evaluation #1" name="global1">
-                        <TabEvaluation :modules="modulesData" />
+                    <el-tab-pane v-for="session in overallProgress " :key="session.id " :name="session.id" :label="`${session.evaluation.name} ${session.evaluation.date} ${session.completed ? '- ok' : ''}` ">
+                        <TabEvaluation :session="session " :modules="currentCourse.modules" @updateModule="handleUpdateModule" />
                     </el-tab-pane>
                 </el-tabs>
             </el-col>
         </el-row>
+        <SelectSessionDialog :visible="dialogVisible" :sessions="evaluations" @cancel="dialogVisible=false" @confirm="handleSelectSession" />
     </div>
 </template>
 <script>
-/**
-<el-row>
-                    <el-col :span="13">
-                        <el-card class="bottomMargin">
-                            <div slot="header">
-                                Student info</div>
-                            Student id
-                            <br>First
-                            <br>Last
-                            <br>Email
-    
-                        </el-card>
-                        Units
-                        <el-table :show-header="false" highlight-current-row ref="modulesTable" @current-change="handleCurrentChange" :data="modulesData" style="width: 100%">
-                            <el-table-column prop="desc" label="" />
-                        </el-table>
-                    </el-col>
-                    <el-col :span="11" class="topPad rightPad">
-    
-                        <el-card>
-                            <div slot="header">
-                                Student progress</div>
-                            Student id
-                            <br>First
-                            <br>Last
-                            <br>Email
-    
-                        </el-card>
-                    </el-col>
-                </el-row>
-                **/
-import { mapGetters } from 'vuex'
+//   <el-tabs v-model="activeName" @tab-click="handleClick" class="tabs">
+//         <el-tab-pane label="Overall progress" name="general">
+//             <TabGeneral/>
+//         </el-tab-pane>
+//         <el-tab-pane label="Local Evaluation" name="local">
+//             <TabEvaluation :modules="modulesData" />
+//         </el-tab-pane>
+//         <el-tab-pane label="Global Evaluation #1" name="global1">
+//             <TabEvaluation :modules="modulesData" />
+//         </el-tab-pane>
+//     </el-tabs>
+
+import { mapGetters, mapActions } from 'vuex'
 import SelectStudent from './forms/SelectStudent.vue'
-import TableHead from './cards/TableHead.vue'
+import TableHead from './fragments/TableHead.vue'
 import TabEvaluation from './tabs/TabEvaluation.vue'
 import TabGeneral from './tabs/TabGeneral.vue'
-
+import SelectSessionDialog from './fragments/SelectSessionDialog.vue'
 export default {
     data() {
         return {
             lab: null,
             currentRow: null,
-            activeName: 'general'
+            activeName: 'general',
+            dialogVisible: false
         }
     },
     components: {
         SelectStudent,
         TableHead,
         TabEvaluation,
-        TabGeneral
+        TabGeneral,
+        SelectSessionDialog
     },
     methods: {
+        handleAction(actionName) {
+            if (actionName === 'requestEval') {
+                // this.$confirm('Do you really want to request global evaluation for this student?', 'Confirm', {
+                //     confirmButtonText: 'OK',
+                //     cancelButtonText: 'Cancel',
+                //     type: 'info'
+                // }).then(() => {
+                //     // 
+                //     // this.requestEval({session, student})
+                //     // .then((success)=> console.log(success))
+
+                // })
+                this.dialogVisible = true
+
+            } else if (actionName === 'cancelStudent') {
+
+            } else if (actionName === 'nextCycle') {
+
+            }
+        },
+        requestEval() {
+            // this.bookStudent({
+            // session: 
+            // student: 
+            // })
+        },
+        handleDetails(session) {
+            // alert('Details!')
+            this.activeName = session.id
+        },
         setCurrent(row) {
             this.$refs.studentsTable.setCurrentRow(row);
         },
+        handleSelectStudent(student) {
+            // alert('select student ' + student.student_id)
+            this.selectStudent(student)
+            this.activeName = 'general'
+        },
         handleCurrentChange(val) {
-            this.currentRow = val;
+            this.currentRow = val
         },
         handleClick(tab, event) {
-            ß
-            console.log(tab, event);
+            console.log(tab, event)
         },
         handleModuleChange(val) {
 
-        }
+        },
+        handleSelectSession(val) {
+            this.bookStudent(
+                {
+                    session: val.session,
+                    student: this.currentStudent
+                })
+                .then((success) => {
+                    this.$notify({
+                        title: "Success",
+                        message: "Student booked successfully"
+                    })
+                })
+                .catch((error) => {
+                    this.$notify({
+                        title: "Error",
+                        message: "Unable to book student:\n " + JSON.stringify(error)
+                    })
+                })
+        },
+
+        handleUpdateModule({ module, record }) {
+            // debugger
+            this.syncProgress({ module, record })
+        },
+        handleSetup(val) {
+            this.prepareLocalEvaluation({
+                student_id: this.currentStudent.id,
+                instructor_id: this.instructor.id
+            }).then((succes) => {
+                this.selectStudent(this.currentStudent)
+            }).catch((error) => {
+                this.$notify({
+                    title: "Error",
+                    message: "Unable to setup student:\n " + JSON.stringify(error)
+                })
+            })
+        },
+        ...mapActions({
+            'bookStudent': 'instructor_app/evaluations/bookStudent',
+            'selectStudent': 'instructor_app/evaluations/selectStudent',
+            'loadEvaluations': 'instructor_app/evaluations/loadEvaluations',
+            'prepareLocalEvaluation': 'instructor_app/evaluations/prepareLocalEvaluation',
+            'syncProgress': 'instructor_app/evaluations/syncProgress'
+        })
     },
     mounted() {
-
-        // load Evaluation sessions
-
-
-
+        if (this.currentCourse)
+            this.loadEvaluations(this.currentCourse.id)
     },
     computed: {
         tableData() {
             const stud = this.labStudents(this.lab) || []
+            // debugger
             return stud.map((s) => {
                 return { desc: s.student_id + '. ' + s.first_name + ' ' + s.last_name }
             })
         },
         modulesData() {
             if (!this.currentCourse) return []
-            debugger
+            // debugger
             const mods = this.currentCourse.modules || []
             return mods.map((m, idx) => {
                 return { idx: idx + 1, name: m.name, id: m.id }
             })
         },
         ...mapGetters({
+            'loading': 'instructor_app/evaluations/loading',
+            'instructor': 'instructor_app/instructor',
             'labs': 'instructor_app/labs',
+            'evaluations': 'instructor_app/evaluations/evaluations',
+            'needsSetup': 'instructor_app/evaluations/needsSetup',
             'labStudents': 'instructor_app/labStudents',
-            'currentCourse': 'instructor_app/currentCourse'
+            'currentCourse': 'instructor_app/currentCourse',
+            'currentStudent': 'instructor_app/evaluations/currentStudent',
+            'overallProgress': 'instructor_app/evaluations/overallProgress'
         })
     }
 }

@@ -12,6 +12,7 @@ import Icon from 'vue-awesome/components/Icon.vue'
 // import WebixWidget from './components/WebixWidget.vue'
 // import './components/webix-controls'
 
+
 import Vuex from 'vuex'
 import routes from './routes'
 import VueResource from 'vue-resource'

@@ -7,77 +7,84 @@ const publicPath = ''
 module.exports = (options = {}) => ({
   entry: {
     vendor: './src/vendor',
-    index: './src/main.js'
+    index: './src/main.js',
   },
   output: {
     path: resolve(__dirname, 'dist'),
     filename: options.dev ? '[name].js' : '[name].js?[chunkhash]',
     chunkFilename: '[id].js?[chunkhash]',
-    publicPath: options.dev ? '/assets/' : publicPath
+    publicPath: options.dev ? '/assets/' : publicPath,
   },
   module: {
     rules: [{
-        test: /\.vue$/,
-        use: ['vue-loader']
-      },
-      {
-        test: /\.js$/,
-        use: ['babel-loader'],
-        exclude: /node_modules/
-      },
-      {
-        test: /\.css$/,
-        use: ['style-loader', 'css-loader', 'postcss-loader']
-      },
-      {
-        test: /\.(png|jpg|jpeg|gif|eot|ttf|woff|woff2|svg|svgz)(\?.+)?$/,
-        use: [{
-          loader: 'url-loader',
-          options: {
-            limit: 10000
-          }
-        }]
-      }
-    ]
+      test: /\.vue$/,
+      use: ['vue-loader'],
+    },
+    {
+      test: /\.js$/,
+      use: ['babel-loader'],
+      exclude: /node_modules/,
+    },
+    {
+      test: /\.css$/,
+      use: ['style-loader', 'css-loader', 'postcss-loader'],
+    },
+    {
+      test: /\.(png|jpg|jpeg|gif|eot|ttf|woff|woff2|svg|svgz)(\?.+)?$/,
+      use: [{
+        loader: 'url-loader',
+        options: {
+          limit: 10000,
+        },
+      }],
+    },
+    ],
   },
   plugins: [
     new webpack.optimize.CommonsChunkPlugin({
-      names: ['vendor', 'manifest']
+      names: ['vendor', 'manifest'],
     }),
     new HtmlWebpackPlugin({
-      template: 'src/index.html'
-    })
+      template: 'src/index.html',
+    }),
+    new webpack.NamedModulesPlugin(),
   ],
   resolve: {
     alias: {
-      '~': resolve(__dirname, 'src')
-    }
+      '~': resolve(__dirname, 'src'),
+    },
   },
   devServer: {
     host: '127.0.0.1',
     port: 8010,
     proxy: {
       '/api/': {
-        target: 'http://127.0.0.1:3000/',
+        target: 'http://nueval.fabacademy.org/',
         changeOrigin: true,
         onProxyReq: function onProxyReq(proxyReq, req, res) {
             // add custom header to request
-            if (req.headers['X-Access-Token'])
-              proxyReq.setHeader('X-Access-Token', req.headers['X-Access-Token']);
+          if (req.headers['X-Access-Token']) {
+            proxyReq.setHeader('X-Access-Token', req.headers['X-Access-Token']);
+          }
             // or log the req
-        }
+        },
         // pathRewrite: {
           // '^/api': ''
         // }
       },
       '/roles/': {
-        target: 'http://127.0.0.1:3000/',
-        changeOrigin: true,        
+        target: 'http://nueval.fabacademy.org/',
+        changeOrigin: true,
+      },
+      '/auth/': {
+	target: 'http://nueval.fabacademy.org/',
+        changeOrigin: true
       }
     },
     historyApiFallback: {
-      index: url.parse(options.dev ? '/assets/' : publicPath).pathname
-    }
+      index: url.parse(options.dev ? '/assets/' : publicPath).pathname,
+    },
   },
-  devtool: options.dev ? '#eval-source-map' : '#source-map'
+  // was eval-source-map
+  devtool: options.dev ? '#eval' : '#source-map',
 })

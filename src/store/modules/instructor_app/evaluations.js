@@ -13,6 +13,7 @@ export const PREPARE_EVALUATION = "PREPARE_EVALUATION"
 export const NEEDS_SETUP = "NEEDS_SETUP"
 export const UPDATE_PROGRESS = "UPDATE_PROGRESS"
 export const BOOK_STUDENT = "BOOK_STUDENT"
+export const HAS_FAILURE = "HAS_FAILURE"
 
 export default {
   namespaced: true,
@@ -45,6 +46,7 @@ export default {
                       commit(API_FAILURE, error, {
                         root: true,
                       })
+                      commit(HAS_FAILURE)
                       reject(error)
                     })
       })
@@ -111,6 +113,8 @@ export default {
                       commit(API_FAILURE, error, {
                         root: true,
                       })
+                      commit(HAS_FAILURE)
+
                       reject(error)
                     })
                 // load evaluation sheets and evaluation records
@@ -130,6 +134,8 @@ export default {
         })
         .catch((error) => {
           commit(API_FAILURE, error);
+          commit(HAS_FAILURE)
+
           reject(error)
         })
       })
@@ -172,11 +178,18 @@ export default {
       state.loading = false
       state.overallProgress = progress
     },
-    [PREPARE_EVALUATION](state, studentId) {},
+    [PREPARE_EVALUATION](state, studentId) {
+      state.loading = false
+    },
     [NEEDS_SETUP](state, studentId) {
       state.needsSetup = true
+      state.loading = false
     },
     [BOOK_STUDENT](state, { session, student }) {},
+    [HAS_FAILURE](state) {
+      state.loading = false
+      state.failure = true
+    },
   },
   getters: {
     evaluations: state => state.evaluations,
@@ -220,5 +233,6 @@ export default {
     local: true,
     needsSetup: false,
     canGraduate: false,
+    failure: true,
   },
 }

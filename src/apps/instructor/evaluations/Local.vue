@@ -82,8 +82,10 @@ export default {
                 this.dialogVisible = true
 
             } else if (actionName === 'cancelStudent') {
+                this.$notify({ title: "Error", message: "Not implemented yet" })
 
             } else if (actionName === 'nextCycle') {
+                this.$notify({ title: "Error", message: "Not implemented yet" })
 
             }
         },
@@ -115,6 +117,7 @@ export default {
 
         },
         handleSelectSession(val) {
+            this.dialogVisible = true;
             this.bookStudent(
                 {
                     session: val.session,
@@ -125,6 +128,7 @@ export default {
                         title: "Success",
                         message: "Student booked successfully"
                     })
+
                 })
                 .catch((error) => {
                     this.$notify({

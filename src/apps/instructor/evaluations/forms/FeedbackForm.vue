@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div style="padding: 12px">
         <el-form ref="feedbackForm" :model="form" :rules="rules" class="feedback">
     
             <el-form-item label="Leave feedback" prop="subject">

@@ -21,7 +21,7 @@ export default {
       commit(SELECT_MODULE, { module, record })
     },
     markComplete({ commit, state, dispatch }) {
-      console.log('Mark complete!')
+      // console.log('Mark complete!')
       commit(MARK_COMPLETE)
       dispatch("persistRecord").then((success) => {
         commit(RECORD_PERSISTED, success)
@@ -43,8 +43,8 @@ export default {
       })
     },
     leaveFeedback({ commit, state, dispatch }, message) {
-      console.log('Leave feedback!')
-      console.log(message)
+      // console.log('Leave feedback!')
+      // console.log(message)
       return new Promise((resolve, reject) => {
         api.post('/api/messages', {
           from: message.from,
@@ -82,32 +82,35 @@ export default {
       })
     },
     updateProgress({ commit, state, dispatch }, { totalProgress, outcomes }) {
-      console.log('Leave progress!')
-      console.log(totalProgress)
+      // console.log('Leave progress!')
+      // console.log(totalProgress)
       commit(UPDATE_PROGRESS, outcomes)
       commit(UPDATE_TOTAL, totalProgress)
       dispatch("persistRecord").then((success) => {
+        // dispatch('loadRecord')
         commit(RECORD_PERSISTED, success)
         dispatch('loadRecord')
       })
     },
     updateChecklist({ commit, state, dispatch }, checklist) {
-      console.log('Leave checkList!')
-      console.log(checklist)
+      // console.log('Leave checkList!')
+      // console.log(checklist)
       commit(UPDATE_CHECKLIST, checklist)
       dispatch("persistRecord").then((success) => {
+        // dispatch('loadRecord')
         commit(RECORD_PERSISTED, success)
         dispatch('loadRecord')
       })
     },
     loadRecord({ commit, state, dispatch }) {
+      commit(LOAD_RECORD)
       return new Promise((resolve, reject) => {
         if (state && state.record && state.record.id) {
           api.get('/api/records/' + state.record.id + '/?filter=' + encodeURIComponent(JSON.stringify({
             include: ['messages', 'logs'],
           })))
           .then((success) => {
-            commit(SET_RECORD, success.body)
+            commit(SET_RECORD, success)
             resolve(success)
           })
           .catch((error) => {
@@ -158,16 +161,19 @@ export default {
       state.record = rec
     },
     [RECORD_PERSISTED](state, response) {
-      console.log('Record persisted')
-      // console.log(response)
-      state.record = response.body
+      // console.log('Record persisted')
+      if (response.body) {
+        state.record = response.body
+      }
     },
     [CREATE_FEEDBACK](state, feedback) {
-      console.log('Feedback created')
-      console.log(feedback)
+      // console.log('Feedback created')
+      // console.log(feedback)
     },
     [LOAD_RECORD](state) {},
     [SET_RECORD](state, record) {
+      // console.log("Setting record to ")
+      // console.log(record)
       state.record = record
     },
   },

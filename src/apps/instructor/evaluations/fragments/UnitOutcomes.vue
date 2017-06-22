@@ -3,13 +3,13 @@
         <h4>Unit progress</h4>
         <el-progress class="smallProgress" :percentage="totalProgress || 0" :status="colorOf(totalProgress)"></el-progress>
     
-        <div v-for="(task,task_idx) in module.rules.tasks" :key="task_idx">
+        <div v-for="(task,task_idx) in tasks" :key="task_idx">
             <h4>
                 Task: {{task.name}} </h4>
             <div v-for="(outcome,idx) in task.outcomes" :key="idx">
                 <p class="label">{{outcome}}</p>
                 <div class="slider-pad">
-                    <el-slider :disabled="readonly" v-model="sliders[task.name + ':'+outcome]" :step="25" show-stops @change="handleSlider"></el-slider>
+                    <el-slider v-model="sliders[task.name + ':'+outcome]" :step="25" show-stops @change="handleSlider"></el-slider>
                 </div>
             </div>
         </div>
@@ -40,22 +40,29 @@ export default {
             totalProgress: 0,
         }
     },
+    computed: {
+        tasks() {
+            if (this.module && this.module.rules) {
+                return this.module.rules.tasks
+            }
+            return []
+        }
+    },
     watch: {
         module(val) {
             this.sliders = {}
-            if (!this.isUpdating)
+            if (val && this.record)
                 this.updateSliders(val, this.record)
         },
         record(val) {
             this.sliders = {}
-            if (!this.isUpdating)
+            if (val && this.module)
                 this.updateSliders(this.module, val)
         }
     },
     mounted() {
         if (this.module && this.record)
-            if (!this.isUpdating)
-                this.updateSliders(this.module, this.record)
+            this.updateSliders(this.module, this.record)
     },
     methods: {
         colorOf(progress) {
@@ -87,7 +94,7 @@ export default {
                 cancelButtonText: 'Cancel',
                 type: 'info'
             }).then(() => {
-                const rules = vm.module.rules
+                const rules = vm.module.rules || {}
                 const tasks = rules.tasks || []
                 let outcomes = []
                 tasks.forEach(function (t, idx) {
@@ -112,7 +119,7 @@ export default {
             var vm = this;
             // this.$nextTick(function (vm) {
             vm.sliders = {}
-            const rules = this.module.rules
+            const rules = this.module.rules || {}
             const tasks = rules.tasks || []
             const lines = record && record.lines || []
             tasks.forEach(function (t, idx) {

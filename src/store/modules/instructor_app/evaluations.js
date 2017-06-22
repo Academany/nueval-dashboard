@@ -133,7 +133,7 @@ export default {
           resolve(response)
         })
         .catch((error) => {
-          commit(API_FAILURE, error);
+          commit(API_FAILURE, error, { root: true });
           commit(HAS_FAILURE)
 
           reject(error)

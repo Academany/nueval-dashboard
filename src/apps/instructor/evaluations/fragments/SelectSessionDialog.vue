@@ -35,7 +35,7 @@ export default {
     },
     mounted() {
         if (this.globalSessions && this.globalSessions.length) {
-            this.$set(form, 'session', this.globalSessions[0])
+            this.$set(this.form, 'session', this.globalSessions[0])
         }
     },
     data() {

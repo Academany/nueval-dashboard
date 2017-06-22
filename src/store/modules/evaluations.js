@@ -336,7 +336,7 @@ export default {
         return students.map((student) => {
           const student_pairing = pairings.find((p => p.studentId && p.studentId === student.id && p.instructorId))
           if (student_pairing && student_pairing.instructorId) {
-            const evaluator = evaluators.find(p => p.id === student_pairing.instructorId)
+            const evaluator = student_pairing.instructor // evaluators.find(p => p.id === student_pairing.instructorId)
             if (evaluator) {
               student.evaluator = evaluator
               student.evaluatorId = evaluator.id
@@ -346,6 +346,18 @@ export default {
         })
       }
     },
+    // evaluationLocalInstructor(evaluation, student) {
+    //   return (evaluation) => {
+    //     // debugger
+    //     const students = evaluation.students || []
+    //     const pairings = evaluation.pairings || []
+    //     const student_pairing = pairings.find((p => p.studentId && p.studentId === student.id && p.instructorId))
+    //     if (student_pairing && student_pairing.instructorId) {
+    //       return student_pairing.instructor
+    //     }
+    //     return null
+    //   }
+    // },
     evaluators(evaluation) {
       return (evaluation) => {
         const pairings = evaluation.pairings || []

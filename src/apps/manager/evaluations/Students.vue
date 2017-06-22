@@ -1,7 +1,7 @@
 <template>
   <div class="form clearfix">
     <h3>Students</h3>
-    <p v-if="item.kind === 'local'">Local evaluation covers all students in the course</p>
+    <p v-if="item.kind === 'local'">The following students were marked complete by their instructor</p>
     <p v-else>Assign students to this evaluation round</p>
   
     <el-form ref="myForm" :rules="rules" :model="form" v-if="item.kind === 'global'" label-position="left" label-width="150px">
@@ -13,15 +13,22 @@
       <br/>
     </div>
   
-    <el-table :data="students" v-if="item.kind === 'global'" border style="width: 100%">
+    <el-table :data="students" border style="width: 100%">
       <el-table-column prop="student_id" sortable label="ID" :width="80">
       </el-table-column>
-      <el-table-column prop="username" sortable label="Username" :width="130">
+      <el-table-column prop="username" sortable label="Username" :width="180">
       </el-table-column>
       <el-table-column prop="email" sortable label="Email" :width="230">
   
       </el-table-column>
-      <el-table-column prop="evaluator.username" sortable label="Evaluator" :width="130">
+      <el-table-column label="Instructor" sortable :width="130" v-if="item.kind === 'local'">
+        <template scope="scope">
+          <span v-if="scope.row.evaluator">
+            {{scope.row.evaluator.username}}
+          </span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="evaluator.username" v-if="item.kind === 'global'" sortable label="Evaluator" :width="130">
         <template scope="scope">
           <span v-if="scope.row.evaluator">
             {{scope.row.evaluator.username}}
@@ -35,7 +42,7 @@
           <!--</span>-->
         </template>
       </el-table-column>
-      <el-table-column label="" fit>
+      <el-table-column label="" fit v-if="item.kind === 'global'">
         <template scope="scope">
           <el-button v-if="!scope.row.evaluator && evaluator_option[scope.row.id]" @click="handleAssignEvaluator(scope.row)" type="primary" size="mini">
             Assign
@@ -87,7 +94,7 @@ export default {
     students() {
       if (!this.item) return []
       let students = []
-      if (this.item.kind && this.item.kind === 'global') {
+      if (this.item.kind /* && this.item.kind === 'global' */) {
         students = this.evaluationStudents(this.item) || []
       }
       // if (this.item.kind && this.item.kind === 'local') {
@@ -99,6 +106,7 @@ export default {
 
     ...mapGetters({
       evaluationStudents: 'evaluationStudents',
+      localInstructor: 'evaluationLocalInstructor',
       allStudents: 'admin/students/students'
     })
   },

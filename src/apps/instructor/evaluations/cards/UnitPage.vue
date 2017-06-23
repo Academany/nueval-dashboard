@@ -16,11 +16,13 @@
             <h4>Learning outcomes</h4>
             <UnitOutcomes :readonly="readonly" :module="module" :record="record" @updateProgress="handleUpdateProgress" @save="handleSaveProgress" />
     
-            <h4>Have you?</h4>
-            <StudentCheckList :readonly="readonly" :module="module" :record="record" @save="handleUpdateCheckList" />
+            <div v-if="!global">
+                <h4>Have you?</h4>
+                <StudentCheckList :readonly="readonly" :module="module" :record="record" @save="handleUpdateCheckList" />
+            </div>
     
             <h4>Feedback</h4>
-            <FeedbackList :messages="messages" />
+            <FeedbackList ref="FeedbackForm" :messages="messages" />
     
             <FeedbackForm @newFeedback="handleNewFeedback" />
     
@@ -47,13 +49,14 @@ import UnitStatus from '../cards/UnitStatus.vue'
 import RecentChanges from '../fragments/RecentChanges.vue'
 
 import { mapActions, mapGetters } from 'vuex'
-
+import VueScrollTo from 'vue-scrollto'
 
 export default {
     props: [
         'module',
         'record',
-        'readonly'
+        'readonly',
+        'global'
     ],
     components: {
         UnitFAQ,
@@ -82,7 +85,8 @@ export default {
         handleShowFeedback() {
             // const tabs = this.$refs.tabs
             // this.selectedTab = 'feedback'
-            this.$scrollTo('#feedback')
+            const el = this.$refs.FeedbackForm.$el
+            el.scrollIntoView(true)
         },
         triggerUpdate() {
             this.$emit('refresh', { module: this.module, record: this.record })

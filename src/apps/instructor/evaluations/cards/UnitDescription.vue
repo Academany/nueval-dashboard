@@ -25,16 +25,17 @@
     
                 <UnitOutcomes :readonly="readonly" :module="module" :record="record" @updateProgress="handleUpdateProgress" @save="handleSaveProgress" />
             </el-tab-pane>
-            <el-tab-pane label="Have you...?" name="checklist">
+    
+            <el-tab-pane v-if="!global" label="Have you...?" name="checklist">
                 <StudentCheckList :readonly="readonly" :module="module" :record="record" @save="handleUpdateCheckList" />
             </el-tab-pane>
             <el-tab-pane label="Feedback" name="feedback">
     
                 <!--<FeedbackItem />
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <FeedbackItem :isRight="true" />
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <FeedbackItem />-->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <FeedbackItem :isRight="true" />
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <FeedbackItem />-->
                 <FeedbackList :messages="messages" />
                 <FeedbackForm @newFeedback="handleNewFeedback" />
     
@@ -67,7 +68,8 @@ export default {
     props: [
         'module',
         'record',
-        'readonly'
+        'readonly',
+        'global'
     ],
     components: {
         UnitFAQ,

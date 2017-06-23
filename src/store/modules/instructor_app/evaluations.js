@@ -1,5 +1,5 @@
 import {
-    API_FAILURE,
+  API_FAILURE,
 } from '../failure'
 import api from '../api'
 
@@ -19,8 +19,8 @@ export default {
   namespaced: true,
   actions: {
     loadEvaluations({
-            commit,
-        }, courseId) {
+      commit,
+    }, courseId) {
       return new Promise((resolve, reject) => {
         commit(LOAD_EVALUATIONS)
         const params = {
@@ -38,28 +38,28 @@ export default {
           },
         }
         api.get('/api/evaluations?filter=' + encodeURIComponent(JSON.stringify(params)))
-                    .then((success) => {
-                      commit(SET_EVALUATIONS, success)
-                      resolve(success)
-                    })
-                    .catch((error) => {
-                      commit(API_FAILURE, error, {
-                        root: true,
-                      })
-                      commit(HAS_FAILURE)
-                      reject(error)
-                    })
+          .then((success) => {
+            commit(SET_EVALUATIONS, success)
+            resolve(success)
+          })
+          .catch((error) => {
+            commit(API_FAILURE, error, {
+              root: true,
+            })
+            commit(HAS_FAILURE)
+            reject(error)
+          })
       })
     },
     selectEvaluation({
-            commit,
-        }, evaluation) {
+      commit,
+    }, evaluation) {
       commit(SELECT_EVALUATION, evaluation)
     },
     selectStudent({
-            commit,
-            dispatch,
-        }, student) {
+      commit,
+      dispatch,
+    }, student) {
       const studentId = student && student.id || null
       if (studentId) {
         commit(SELECT_STUDENT, student)
@@ -67,13 +67,13 @@ export default {
       }
     },
     prepareLocalEvaluation({
-            commit,
-            state,
-            dispatch,
-        }, {
-            student_id,
-            instructor_id,
-        }) {
+      commit,
+      state,
+      dispatch,
+    }, {
+      student_id,
+      instructor_id,
+    }) {
       return new Promise((resolve, reject) => {
         commit(PREPARE_EVALUATION, student_id)
         const localEval = state.evaluations.find(e => e.kind === 'local')
@@ -93,56 +93,92 @@ export default {
         }
       })
     },
-    loadProgress({
-            commit,
-            dispatch,
-        }, studentId) {
-      commit(LOAD_PROGRESS, studentId)
-      return new Promise((resolve, reject) => {
-        api.get('/api/students/' + studentId + '/progress') // ?filter=' + encodeURIComponent(JSON.stringify(params)))
-                    .then((data) => {
-                      if (data && data.length > 0) {
-                        commit(SET_PROGRESS, data)
-                        resolve(data)
-                      } else {
-                        commit(NEEDS_SETUP)
-                        resolve()
-                      }
-                    })
-                    .catch((error) => {
-                      commit(API_FAILURE, error, {
-                        root: true,
-                      })
-                      commit(HAS_FAILURE)
-
-                      reject(error)
-                    })
-                // load evaluation sheets and evaluation records
-                // limit the editing to local sheet for local evaluation
-                // selected sheet for global evaluation
-      })
+    prepareGlobalEvaluation({
+      commit,
+      state,
+      dispatch,
     },
-    bookStudent({
-      commit, state, dispatch,
-    }, { session, student }) {
+     { evaluationId, instructorId, studentId }
+    ) {
       return new Promise((resolve, reject) => {
-        api.put("/api/evaluations/" + session.id + "/students/rel/" + student.id)
-        .then((response) => {
-          commit(BOOK_STUDENT, { session, student })
-          dispatch('loadProgress', student.id)
+        commit(PREPARE_EVALUATION, studentId)
+        api.post('/api/evaluations/' + evaluationId + '/prepare/' + studentId, {
+          evaluationId,
+          studentId,
+          instructorId,
+        }).then((response) => {
           resolve(response)
-        })
-        .catch((error) => {
-          commit(API_FAILURE, error, { root: true });
-          commit(HAS_FAILURE)
-
+          dispatch('loadProgress', student_id)
+        }).catch((error) => {
           reject(error)
         })
       })
     },
+    loadProgress({
+      commit,
+      dispatch,
+    }, studentId) {
+      commit(LOAD_PROGRESS, studentId)
+      return new Promise((resolve, reject) => {
+        api.get('/api/students/' + studentId + '/progress') // ?filter=' + encodeURIComponent(JSON.stringify(params)))
+          .then((data) => {
+            if (data && data.length > 0) {
+              commit(SET_PROGRESS, data)
+              resolve(data)
+            } else {
+              commit(NEEDS_SETUP)
+              resolve()
+            }
+          })
+          .catch((error) => {
+            commit(API_FAILURE, error, {
+              root: true,
+            })
+            commit(HAS_FAILURE)
+
+            reject(error)
+          })
+        // load evaluation sheets and evaluation records
+        // limit the editing to local sheet for local evaluation
+        // selected sheet for global evaluation
+      })
+    },
+    bookStudent({
+      commit,
+      state,
+      dispatch,
+    }, {
+      session,
+      student,
+    }) {
+      return new Promise((resolve, reject) => {
+        api.put("/api/evaluations/" + session.id + "/students/rel/" + student.id)
+          .then((response) => {
+            commit(BOOK_STUDENT, {
+              session,
+              student,
+            })
+            dispatch('loadProgress', student.id)
+            resolve(response)
+          })
+          .catch((error) => {
+            commit(API_FAILURE, error, {
+              root: true,
+            });
+            commit(HAS_FAILURE)
+
+            reject(error)
+          })
+      })
+    },
     syncProgress({
-      commit, dispatch, state,
-    }, { module, record }) {
+      commit,
+      dispatch,
+      state,
+    }, {
+      module,
+      record,
+    }) {
       // state.overallProgress
       // go and find the module and record to be updated
 
@@ -185,7 +221,10 @@ export default {
       state.needsSetup = true
       state.loading = false
     },
-    [BOOK_STUDENT](state, { session, student }) {},
+    [BOOK_STUDENT](state, {
+      session,
+      student,
+    }) {},
     [HAS_FAILURE](state) {
       state.loading = false
       state.failure = true
@@ -221,6 +260,27 @@ export default {
         }
       })
       return isIn
+    },
+    studentsQueue(state) {
+      return (instructor) => {
+        const evaluations = state.evaluations || []
+        let queue = {}
+        evaluations.forEach((session) => {
+          const pairings = session.pairings || []
+          queue[session.name] = []
+            // const evaluators = evaluation.evaluators || []
+          const students = session.students || []
+          pairings.forEach((p) => {
+            if (p.instructorId === instructor.id) {
+              const student = students.find(s => (s.id === p.studentId))
+              if (student) {
+                queue[session.name].push(student)
+              }
+            }
+          })
+        })
+        return queue
+      }
     },
   },
   state: {

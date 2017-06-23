@@ -25,7 +25,7 @@
         <template scope="scope">
           <small>{{ scope.row.candidates && scope.row.candidates.length }} candidates
             <br>
-            <div v-for="c in scope.row.candidates" :key="c">
+            <div v-if="scope.row.candidates" v-for="c in scope.row.candidates" :key="c">
               - {{ `[${c.student_id}] ${c.first_name} ${c.last_name}` }}
             </div>
           </small>

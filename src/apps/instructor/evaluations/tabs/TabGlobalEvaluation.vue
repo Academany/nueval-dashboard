@@ -6,7 +6,7 @@
         <el-col :span="16">
             <div v-if="selectedModule">
                 <div v-if="showPage">
-                    <UnitPage :global="false" :readonly="isReadonly" :module="selectedModule" :record="selectedRecord" @refresh="handleModuleUpdated" />
+                    <UnitPage :global="true" :readonly="isReadonly" :module="selectedModule" :record="selectedRecord" @refresh="handleModuleUpdated" />
                 </div>
                 <div v-else>
                     <UnitDescription :readonly="isReadonly" :module="selectedModule" :record="selectedRecord" @refresh="handleModuleUpdated" />
@@ -15,7 +15,18 @@
         </el-col>
     </el-row>
     <div v-else>
-        <p>Evaluation has not yet started, please visit back soon.</p>
+        <div class="tabs">
+            <el-card :span="10" style="width:50%">
+                <div slot="header">
+                    <h2 style="margin:0">Evaluation setup</h2>
+                </div>
+                <p>Let's start this global evaluation!</p>
+                <p>Click the button below to setup the evaluation sheet.</p>
+                <div style="text-align:right">
+                    <el-button size="large" type="success" @click="handleSetup">Setup evaluation sheet &raquo;</el-button>
+                </div>
+            </el-card>
+        </div>
     </div>
 </template>
 
@@ -50,7 +61,7 @@ export default {
         }),
         isReadonly() {
             if (this.session && this.session.completed) return true;
-            if (this.session && this.session.evaluation && this.session.evaluation.kind === 'global') return true;
+            // if (this.session && this.session.evaluation && this.session.evaluation.kind === 'global') return true;
             return false;
         }
     },
@@ -58,6 +69,9 @@ export default {
         this.selectModule({})
     },
     methods: {
+        handleSetup() {
+            this.$emit('prepareStudent', this.session)
+        },
         ...mapActions({
             selectModule: 'instructor_app/records/selectModule'
         }),

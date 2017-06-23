@@ -9,7 +9,7 @@
             </el-col>
             <el-col :span="6">
                 <p>
-                    <el-button size="large" type="success" :disabled="record && record.completed" @click="handleButton1">
+                    <el-button size="large" type="success" :disabled="!canMarkComplete" @click="handleButton1">
                         <fa-icon class="fa-fix" name="check" /> Mark unit complete</el-button>
                 </p>
                 <p>
@@ -44,6 +44,14 @@ export default {
             })
         }
     },
+    computed: {
+        canMarkComplete() {
+            if (this.unitProgress && this.unitProgress > 90) {
+                return true
+            }
+            return false
+        }
+    },
     mounted() {
         this.updateProgress()
     },
@@ -66,7 +74,8 @@ export default {
             else return 'Ready'
         },
         handleButton1() {
-            this.$emit('markComplete')
+            if (this.unitProgress && this.unitProgress >= 90)
+                this.$emit('markComplete')
         },
         handleButton2() {
             this.$emit('showFeedback')

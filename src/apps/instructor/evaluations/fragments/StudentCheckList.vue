@@ -108,6 +108,7 @@ export default {
 }
 
 .button-container {
+    text-align: right;
     padding-top: 30px;
 }
 </style>

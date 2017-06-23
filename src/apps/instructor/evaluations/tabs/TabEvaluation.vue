@@ -54,6 +54,9 @@ export default {
             return false;
         }
     },
+    mounted() {
+        this.selectModule({})
+    },
     methods: {
         ...mapActions({
             selectModule: 'instructor_app/records/selectModule'

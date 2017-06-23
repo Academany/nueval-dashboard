@@ -97,29 +97,30 @@ export default {
         },
         handleSave() {
             const vm = this
-            this.$confirm('Do you really want to save learning outcomes and update student progress?', 'Confirm', {
-                confirmButtonText: 'OK',
-                cancelButtonText: 'Cancel',
-                type: 'info'
-            }).then(() => {
-                const rules = vm.module.rules || {}
-                const tasks = rules.tasks || []
-                let outcomes = []
-                tasks.forEach(function (t, idx) {
-                    t.outcomes.forEach(function (outcome, outcome_idx) {
-                        const key = t.name + ':' + outcome
-                        const value = vm.sliders[key]
-                        outcomes.push({
-                            task: t.name,
-                            outcome: outcome,
-                            progress: value
-                        })
+            const rules = vm.module.rules || {}
+            const tasks = rules.tasks || []
+            let outcomes = []
+            tasks.forEach(function (t, idx) {
+                t.outcomes.forEach(function (outcome, outcome_idx) {
+                    const key = t.name + ':' + outcome
+                    const value = vm.sliders[key]
+                    outcomes.push({
+                        task: t.name,
+                        outcome: outcome,
+                        progress: value
                     })
                 })
-                vm.$emit('save', { totalProgress: vm.totalProgress, outcomes: outcomes })
-            }).catch(() => {
+            })
+            vm.$emit('save', { totalProgress: vm.totalProgress, outcomes: outcomes })
+            // this.$confirm('Do you really want to save learning outcomes and update student progress?', 'Confirm', {
+            //     confirmButtonText: 'OK',
+            //     cancelButtonText: 'Cancel',
+            //     type: 'info'
+            // }).then(() => {
 
-            });
+            // }).catch(() => {
+
+            // });
         },
         updateSliders(module, record) {
             // debugger

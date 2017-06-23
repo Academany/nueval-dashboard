@@ -1,8 +1,10 @@
 <template>
-    <div class="tasks">
+    <div class="tasks task-description">
         <div v-for="(task,idx) in tasks" :key="task.name">
             <h4> Task: {{task.name}} </h4>
-            <vue-markdown>{{task.description}}</vue-markdown>
+            <div>
+                <vue-markdown>{{task.description}}</vue-markdown>
+            </div>
         </div>
     </div>
 </template>
@@ -30,4 +32,12 @@ export default {
 
 <style scoped>
 .tasks {}
+
+.task-description {
+    padding-left: 12px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    margin-left: 20px;
+    background-color: #fafaf7;
+}
 </style>

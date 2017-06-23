@@ -1,4 +1,6 @@
 export const MARK_COMPLETE = "MARK_COMPLETE"
+export const MARK_NOT_COMPLETE = "MARK_NOT_COMPLETE"
+
 export const LEAVE_FEEDBACK = "LEAVE_FEEDBACK"
 export const CREATE_FEEDBACK = "CREATE_FEEDBACK"
 export const UPDATE_PROGRESS = "UPDATE_PROGRESS"
@@ -26,6 +28,17 @@ export default {
       dispatch("persistRecord").then((success) => {
         commit(RECORD_PERSISTED, success)
         dispatch('loadRecord')
+      }).catch((error) => {
+        commit(API_FAILURE, error, { root: true })
+      })
+    },
+    markNotComplete({ commit, state, getters, dispatch }) {
+      commit(MARK_NOT_COMPLETE, { progress: getters.recordProgress })
+      dispatch("persistRecord").then((success) => {
+        commit(RECORD_PERSISTED, success)
+        dispatch('loadRecord')
+      }).catch((error) => {
+        commit(API_FAILURE, error, { root: true })
       })
     },
     persistRecord({ commit, state, dispatch }) {
@@ -90,6 +103,8 @@ export default {
         // dispatch('loadRecord')
         commit(RECORD_PERSISTED, success)
         dispatch('loadRecord')
+      }).catch((error) => {
+        commit(API_FAILURE, error, { root: true })
       })
     },
     updateChecklist({ commit, state, dispatch }, checklist) {
@@ -100,6 +115,8 @@ export default {
         // dispatch('loadRecord')
         commit(RECORD_PERSISTED, success)
         dispatch('loadRecord')
+      }).catch((error) => {
+        commit(API_FAILURE, error, { root: true })
       })
     },
     loadRecord({ commit, state, dispatch }) {
@@ -127,6 +144,16 @@ export default {
     record: state => state.record,
     logs: state => state.record && state.record.logs || [],
     messages: state => state.record && state.record.messages || [],
+    recordProgress: (state) => {
+      if (!state.record) return 0
+      const lines = state.record.lines || []
+      const progress = lines.reduce(function (acc, val) {
+        acc += val.progress
+        return acc
+      }, 0)
+      const computed = Math.round(progress / lines.length)
+      return computed
+    },
   },
   mutations: {
     [SELECT_MODULE](state, { module, record }) {
@@ -135,6 +162,13 @@ export default {
     },
     [MARK_COMPLETE](state) {
       state.record = { ...state.record, completed: true, progress: 100 }
+    },
+    [MARK_NOT_COMPLETE](state, { progress }) {
+      state.record = {
+        ...state.record,
+        completed: false,
+        progress: progress,
+      }
     },
     [UPDATE_TOTAL](state, total) {
       let rec = { ...state.record } || {}

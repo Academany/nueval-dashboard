@@ -1,9 +1,12 @@
 <template>
     <div class="card">
-        <h3 slot="header">Student's checklist {{completed}}/{{total}}
     
-        </h3>
-        <div v-for="(task,idx) in tasks" :key="idx">
+        <div style="width: 200px; float: right">
+            <h4>
+                Student's checklist {{completed}}/{{total}}
+            </h4>
+        </div>
+        <div v-for="(task,idx) in tasks" :key="idx" class="padded-left">
             <h4>Task: {{task.name}}</h4>
             <p>Have you...</p>
             <el-checkbox-group v-model="checklist">
@@ -41,33 +44,32 @@ export default {
         // },
         handleSaveButton() {
             const vm = this
-            this.$confirm('Do you really want to save student checkboxes?', 'Confirm', {
-                confirmButtonText: 'OK',
-                cancelButtonText: 'Cancel',
-                type: 'info'
-            }).then(() => {
-                // TODO SISTEMARE CHECKLIST DEVE ESSERE Una lista di oggetti!!!
+            // this.$confirm('Do you really want to save student checkboxes?', 'Confirm', {
+            //     confirmButtonText: 'OK',
+            //     cancelButtonText: 'Cancel',
+            //     type: 'info'
+            // }).then(() => {
 
-                console.log(this.checklist)
-                const toSave = this.checklist.map((e) => {
-                    if (typeof e === 'string') {
-                        const splitted = e.split(':')
-                        return { label: e, checked: true }
-                    }
-                })
+            // console.log(this.checklist)
+            const toSave = this.checklist.map((e) => {
+                if (typeof e === 'string') {
+                    const splitted = e.split(':')
+                    return { label: e, checked: true }
+                }
+            })
 
-                console.log(this.checklist)
-                vm.$emit('save', toSave)
-                // this.$message({
-                //     type: 'success',
-                //     message: 'Save completed'
-                // });
-            }).catch(() => {
-                // this.$message({
-                //     type: 'danger',
-                //     message: 'Error saving, please retry'
-                // });
-            });
+            // console.log(this.checklist)
+            vm.$emit('save', toSave)
+            // this.$message({
+            //     type: 'success',
+            //     message: 'Save completed'
+            // });
+            // }).catch(() => {
+            //     // this.$message({
+            //     //     type: 'danger',
+            //     //     message: 'Error saving, please retry'
+            //     // });
+            // });
         }
     },
     mounted() {
@@ -82,7 +84,7 @@ export default {
     },
     computed: {
         completed() {
-            return this.checklist && this.checklist.length
+            return this.checklist && this.checklist.length || 0
         },
         total() {
             let count = 0
@@ -110,5 +112,13 @@ export default {
 .button-container {
     text-align: right;
     padding-top: 30px;
+}
+
+.padded-left {
+    margin-left: 20px;
+}
+
+.flush-right {
+    text-align: right;
 }
 </style>

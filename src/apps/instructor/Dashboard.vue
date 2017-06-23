@@ -48,8 +48,10 @@ export default {
       this.changeCourse(newCourse);
     },
     handleMenuSelect(item) {
-      this.$router.push(item)
-      this.changeApp(item)
+      this.$nextTick(() => {
+        this.$router.push(item)
+        this.changeApp(item)
+      })
     },
     ...mapActions({
       // 'bootApp': 'instructor_app/bootApp',

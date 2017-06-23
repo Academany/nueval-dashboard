@@ -9,11 +9,15 @@ export const SET_EVALUATIONS = "SET_EVALUATIONS"
 export const LOAD_PROGRESS = "LOAD_PROGRESS"
 export const SET_PROGRESS = "SET_PROGRESS"
 export const SELECT_STUDENT = "SELECT_STUDENT"
+export const CLEAR_STUDENT = "CLEAR_STUDENT"
 export const PREPARE_EVALUATION = "PREPARE_EVALUATION"
 export const NEEDS_SETUP = "NEEDS_SETUP"
 export const UPDATE_PROGRESS = "UPDATE_PROGRESS"
 export const BOOK_STUDENT = "BOOK_STUDENT"
 export const HAS_FAILURE = "HAS_FAILURE"
+export const GRADUATE_STUDENT = "GRADUATE_STUDENT"
+export const RECYCLE_STUDENT = "RECYCLE_STUDENT"
+
 
 export default {
   namespaced: true,
@@ -64,6 +68,8 @@ export default {
       if (studentId) {
         commit(SELECT_STUDENT, student)
         dispatch('loadProgress', studentId)
+      } else {
+        commit(CLEAR_STUDENT)
       }
     },
     prepareLocalEvaluation({
@@ -184,6 +190,71 @@ export default {
 
       dispatch('loadProgress', state.currentStudent.id)
     },
+    graduateStudent({ commit, dispatch, state }) {
+      return new Promise((resolve, reject) => {
+        // graduate current student
+        const student = state.currentStudent
+        const session = state.currentEvaluation
+        if (!student || !session)
+          return reject("Missing parameters")
+        api.put("/api/evaluations/" + session.id + "/students/" + student.id,
+        { graduated: true }
+        )
+          .then((response) => {
+            commit(GRADUATE_STUDENT, {
+              session,
+              student,
+            })
+            dispatch('loadProgress', student.id)
+            resolve(response)
+          })
+          .catch((error) => {
+            commit(API_FAILURE, error, {
+              root: true,
+            });
+            commit(HAS_FAILURE)
+
+            reject(error)
+          })
+      })
+    },
+    requestFeedback({ commit, dispatch, state }) {
+      // request feedback from instructor and student
+
+    },
+    nextCycle({ commit, dispatch, state }) {
+      // send student to next cycle
+      return new Promise((resolve, reject) => {
+        // graduate current student
+        const student = state.currentStudent
+        const session = state.currentEvaluation
+        if (!student || !session)
+          return reject("Missing parameters")
+        api.put("/api/evaluations/" + session.id + "/students/" + student.id,
+        { continuing: true, graduated: false }
+        )
+          .then((response) => {
+            commit(RECYCLE_STUDENT, {
+              session,
+              student,
+            })
+            dispatch('loadProgress', student.id)
+            resolve(response)
+          })
+          .catch((error) => {
+            commit(API_FAILURE, error, {
+              root: true,
+            });
+            commit(HAS_FAILURE)
+
+            reject(error)
+          })
+      })
+    },
+    cancelStudent({ commit, state }) {
+      // mark student as dropped out
+
+    },
   },
   mutations: {
     [LOAD_EVALUATIONS](state, local) {
@@ -200,6 +271,9 @@ export default {
     [SELECT_STUDENT](state, student) {
       state.currentStudent = student
       state.canGoGlobal = false
+    },
+    [CLEAR_STUDENT](state) {
+      state.currentStudent = null
     },
     [LOAD_PROGRESS](state, studentId) {
       state.loading = true
@@ -225,6 +299,14 @@ export default {
       session,
       student,
     }) {},
+    [GRADUATE_STUDENT](state, {session,student}) {
+      if (state.currentStudent)
+        state.currentStudent.graduated = true
+    },
+    [RECYCLE_STUDENT](state, {session,student}){
+      if (state.currentStudent)
+        state.currentStudent.continuing = true
+    },
     [HAS_FAILURE](state) {
       state.loading = false
       state.failure = true
@@ -255,6 +337,32 @@ export default {
       const sessions = state && state.overallProgress || []
       sessions.some((ev) => {
         if (ev.evaluation.kind === 'global') {
+          isIn = true;
+          return true
+        }
+      })
+      return isIn
+    },
+    isGraduated: (state) => {
+      if (state.currentStudent && state.currentStudent.graduated === true) {
+        return true
+      }
+      return false
+    },
+    isRecycled: (state) => {
+      if (state.currentStudent && state.currentStudent.continuing === true) {
+        return true
+      }
+      return false
+    },
+    canGraduate: (state) => {
+      if (state.currentStudent && state.currentStudent.graduated === true) {
+        return false
+      }
+      let isIn = false
+      const sessions = state && state.overallProgress || []
+      sessions.some((ev) => {
+        if (ev.evaluation.kind === 'global' && ev.completed == true) {
           isIn = true;
           return true
         }

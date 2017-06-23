@@ -23,7 +23,7 @@
         </div>
     
         <div class="button-container">
-            <el-button type="success" size="large" :disabled="readonly" @click="handleSave">Save</el-button>
+            <el-button type="success" size="large" :v-if="!readonly" @click="handleSave">Save</el-button>
         </div>
     </div>
 </template>
@@ -99,19 +99,20 @@ export default {
             const vm = this
             const rules = vm.module.rules || {}
             const tasks = rules.tasks || []
-            let outcomes = []
+            let outcomesResult = []
             tasks.forEach(function (t, idx) {
-                t.outcomes.forEach(function (outcome, outcome_idx) {
+                const outcomes = t.outcomes || []
+                outcomes.forEach(function (outcome, outcome_idx) {
                     const key = t.name + ':' + outcome
                     const value = vm.sliders[key]
-                    outcomes.push({
+                    outcomesResult.push({
                         task: t.name,
                         outcome: outcome,
                         progress: value
                     })
                 })
             })
-            vm.$emit('save', { totalProgress: vm.totalProgress, outcomes: outcomes })
+            vm.$emit('save', { totalProgress: vm.totalProgress, outcomes: outcomesResult })
             // this.$confirm('Do you really want to save learning outcomes and update student progress?', 'Confirm', {
             //     confirmButtonText: 'OK',
             //     cancelButtonText: 'Cancel',

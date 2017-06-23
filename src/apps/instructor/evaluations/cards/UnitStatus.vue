@@ -8,7 +8,7 @@
                 </div>
             </el-col>
             <el-col :span="6">
-                <p>
+                <p v-if="!readonly">
                     <el-button size="large" type="success" v-if="record && !record.completed" :disabled="readonly || !canMarkComplete" @click="handleButton1">
                         <fa-icon class="fa-fix" name="thumbs-o-up" /> Mark unit complete</el-button>
     

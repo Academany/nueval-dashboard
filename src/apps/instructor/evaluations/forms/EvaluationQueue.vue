@@ -22,6 +22,7 @@
                 <el-table-column>
                     <template scope="scope">
                         {{scope.row.student_id }} - {{scope.row.first_name}} {{scope.row.last_name}}
+                        <fa-icon class="fa-fix" name="star" v-if="scope.row.graduated" />
                     </template>
                 </el-table-column>
             </el-table>
@@ -63,13 +64,17 @@ export default {
     },
     watch: {
         evaluations: function (val) {
-            this.selectFirst(val)
+            this.$nextTick(() => {
+                this.selectFirst(val)
+            })
         }
     },
     mounted() {
-        if (this.evaluations) {
-            this.selectFirst(this.evaluations)
-        }
+        this.$nextTick(() => {
+            if (this.evaluations) {
+                this.selectFirst(this.evaluations)
+            }
+        })
     },
     data() {
         return {
@@ -80,6 +85,7 @@ export default {
             filters: [
                 { 'name': 'Assigned', 'value': 'assigned' },
                 { 'name': 'In Progress', 'value': 'progress' },
+                { 'name': 'Next cycle', 'value': 'nextCycle' },
                 { 'name': 'Completed', 'value': 'completed' }
             ]
         }
@@ -89,18 +95,19 @@ export default {
         students: function () {
             if (this.instructor && this.currentEvaluation) {
                 const queue = this.studentsQueue(this.instructor) || {}
-                console.log(queue)
+                // console.log(queue)
                 const filter = this.filter
                 let results = queue[this.currentEvaluation.name] || []
                 if (filter === 'assigned') {
-
+                }
+                if (filter === 'nextCycle') {
+                    results = results.filter((s) => { return s.continuing === true })
                 }
                 if (filter === 'progress') {
-
+                    results = results.filter((s) => { return !(!!s.graduated && !!s.continuing) })
                 }
                 if (filter === 'completed') {
-
-
+                    results = results.filter((s) => { return s.graduated === true })
                 }
                 return results
             }
@@ -116,6 +123,9 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped>
+.fa-fix {
+    margin-bottom: -4px;
+    color: #ffcc00;
+}
 </style>

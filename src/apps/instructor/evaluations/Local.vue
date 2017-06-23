@@ -164,8 +164,12 @@ export default {
         })
     },
     mounted() {
-        if (this.currentCourse)
-            this.loadEvaluations(this.currentCourse.id)
+        if (this.currentCourse) {
+            this.$nextTick(() => {
+                this.loadEvaluations(this.currentCourse.id)
+                this.selectStudent(null)
+            })
+        }
     },
     computed: {
         tableData() {

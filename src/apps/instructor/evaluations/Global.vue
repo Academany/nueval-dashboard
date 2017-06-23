@@ -1,11 +1,11 @@
 <template>
-    <div class="sheet" v-loading="loading">
+    <div class="sheet">
         <el-row class="fullheight">
             <el-col :span="4" class="topPad leftPad rightPad tealbg fullheight selector">
                 <!--<SelectStudent :labs="labs" :lab="lab" :students="tableData" @select="handleSelectStudent" />-->
                 <EvaluationQueue :students="[]" @select="handleSelectStudent" />
             </el-col>
-            <el-col :span="20" ref="scrollable" class="fullheight vscroll detail">
+            <el-col :span="20" ref="scrollable" class="fullheight vscroll detail" v-loading="loading">
                 <TableHeadGlobal v-if="currentStudent" :student="currentStudent" @action="handleAction" />
                 <el-tabs v-if="currentStudent" v-model="activeName" class="tabs" @tabClick="handleClick">
                     <el-tab-pane label=" Overall progress " name="general">
@@ -67,39 +67,53 @@ export default {
         },
         handleAction(actionName) {
             if (actionName === 'requestGraduation') {
+                const vm = this
+                this.$confirm('Do you really want to graduate this student?', 'Confirm', {
+                    confirmButtonText: 'OK',
+                    cancelButtonText: 'Cancel',
+                    type: 'danger'
+                }).then(() => {
 
-
+                    vm.$confirm('Did she/he ever use glue? Does she/he know how to mute? Do you really really want to graduate this student?', 'Confirm', {
+                        confirmButtonText: 'Long life to the new guru!',
+                        cancelButtonText: 'Let me think about it',
+                        type: 'danger'
+                    }).then(() => {
+                        this.requestGraduation()
+                    })
+                })
             } else if (actionName === 'requestFeedback') {
-
+                const vm = this
+                vm.$confirm('Do you want to send a notification to the student and his instructors?', 'Confirm', {
+                    confirmButtonText: 'OK',
+                    cancelButtonText: 'Cancel',
+                    type: 'danger'
+                }).then(() => {
+                    this.requestFeedback().then((success) => {
+                        this.$notify({ title: "Success", message: "Feedback requested" })
+                    })
+                })
             } else if (actionName === 'nextCycle') {
-
+                const vm = this
+                vm.$confirm('Do you want to finish evaluation and send this student to next cycle?', 'Confirm', {
+                    confirmButtonText: 'OK',
+                    cancelButtonText: 'Cancel',
+                    type: 'danger'
+                }).then(() => {
+                    this.nextCycle().then((success) => {
+                        this.$notify({ title: "Success", message: "Operation completed" })
+                    })
+                })
             }
-            // if (actionName === 'requestEval') {
-            //     // this.$confirm('Do you really want to request global evaluation for this student?', 'Confirm', {
-            //     //     confirmButtonText: 'OK',
-            //     //     cancelButtonText: 'Cancel',
-            //     //     type: 'info'
-            //     // }).then(() => {
-            //     //     // 
-            //     //     // this.requestEval({session, student})
-            //     //     // .then((success)=> console.log(success))
-
-            //     // })
-            //     this.dialogVisible = true
-
-            // } else if (actionName === 'cancelStudent') {
-            //     this.$notify({ title: "Error", message: "Not implemented yet" })
-
-            // } else if (actionName === 'nextCycle') {
-            //     this.$notify({ title: "Error", message: "Not implemented yet" })
-
-            // }
         },
-        requestEval() {
-            // this.bookStudent({
-            // session: 
-            // student: 
-            // })
+        requestGraduation() {
+            this.graduateStudent().then((success) => {
+                this.$notify({ title: "Congratulations!", message: "The student successfully graduated" })
+            }).catch((error) => {
+                console.log(error)
+                this.$notify({ title: "Error", message: "Something wrong happened, please reload and try again" })
+            })
+
         },
         handleDetails(session) {
             // alert('Details!')
@@ -169,6 +183,9 @@ export default {
             //     })
         },
         ...mapActions({
+            'requestFeedback': 'instructor_app/evaluations/requestFeedback',
+            'graduateStudent': 'instructor_app/evaluations/graduateStudent',
+            'nextCycle': 'instructor_app/evaluations/nextCycle',
             'bookStudent': 'instructor_app/evaluations/bookStudent',
             'selectStudent': 'instructor_app/evaluations/selectStudent',
             'loadEvaluations': 'instructor_app/evaluations/loadEvaluations',
@@ -178,8 +195,11 @@ export default {
         })
     },
     mounted() {
-        if (this.currentCourse)
+        if (this.currentCourse) {
             this.loadEvaluations(this.currentCourse.id)
+            this.selectStudent(null)
+        }
+
     },
     computed: {
         tableData() {

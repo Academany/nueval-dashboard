@@ -1,8 +1,7 @@
 <template>
     <div class="tasks">
-        <div v-for="(task,idx) in tasks()" :key="idx">
-            <h4>
-                Task: {{task.name}} </h4>
+        <div v-for="(task,idx) in tasks" :key="task.name">
+            <h4> Task: {{task.name}} </h4>
             <vue-markdown>{{task.description}}</vue-markdown>
         </div>
     </div>
@@ -15,9 +14,12 @@ export default {
     components: {
         VueMarkdown
     },
-    methods: {
+    computed: {
         tasks() {
-            return this.module && this.module.rules && this.module.rules.tasks || []
+            if (this.module && this.module.rules) {
+                return this.module.rules.tasks
+            }
+            return []
         }
     },
     props: [

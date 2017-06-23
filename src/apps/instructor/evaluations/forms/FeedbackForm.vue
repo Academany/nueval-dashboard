@@ -1,6 +1,6 @@
 <template>
     <div style="padding: 12px">
-        <el-form ref="feedbackForm" :model="form" :rules="rules" class="feedback">
+        <el-form ref="feedbackForm" id="feedback" :model="form" :rules="rules" class="feedback">
     
             <el-form-item label="Leave feedback" prop="subject">
                 <el-input type="text" placeholder="Subject" v-model="form.subject"></el-input>

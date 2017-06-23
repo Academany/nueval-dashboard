@@ -1,15 +1,23 @@
 <template>
     <div>
-        <h4>Unit progress</h4>
-        <el-progress class="smallProgress" :percentage="totalProgress || 0" :status="colorOf(totalProgress)"></el-progress>
     
-        <div v-for="(task,task_idx) in tasks" :key="task_idx">
-            <h4>
-                Task: {{task.name}} </h4>
-            <div v-for="(outcome,idx) in task.outcomes" :key="idx">
-                <p class="label">{{outcome}}</p>
-                <div class="slider-pad">
-                    <el-slider v-model="sliders[task.name + ':'+outcome]" :step="25" show-stops @change="handleSlider"></el-slider>
+        <div class="progress-indicators">
+            <div class="unit-progress">
+                Unit progress
+                <el-progress class="smallProgress" :percentage="totalProgress || 0" :status="colorOf(totalProgress)"></el-progress>
+    
+            </div>
+            <div v-for="(task,task_idx) in tasks" :key="task_idx">
+                <h4>
+                    Task: {{task.name}} </h4>
+                <div v-for="(outcome,idx) in task.outcomes" :key="idx">
+                    <p class="label">{{outcome}}</p>
+                    <div class="slider-pad">
+                        <el-slider v-model="sliders[task.name + ':'+outcome]" :step="25" show-stops @change="handleSlider"></el-slider>
+                    </div>
+                </div>
+                <div v-if="!task.outcomes || task.outcomes.length == 0">
+                    <small>No outcome defined</small>
                 </div>
             </div>
         </div>
@@ -157,7 +165,19 @@ export default {
     max-width: 400px;
 }
 
+.progress-indicators {
+    margin-left: 20px;
+}
+
 .button-container {
+    text-align: right;
     padding-top: 30px;
+}
+
+.unit-progress {
+    width: 430px;
+    border: 1px solid #dedede;
+    padding: 12px;
+    border-radius: 4px;
 }
 </style>

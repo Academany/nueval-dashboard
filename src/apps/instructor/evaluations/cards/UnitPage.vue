@@ -6,45 +6,31 @@
                 <el-tag v-if="module">Ver. {{module.rules && module.rules.version}}</el-tag>
             </div>
         </div>
-        <el-tabs @tab-click="handleClick" ref="tabs" v-model="selectedTab">
-            <el-tab-pane label="Status" name="status">
+        <div class="card-body">
+            <h4>Overall progress</h4>
+            <UnitStatus :readonly="readonly" :module="module" :record="record" @markComplete="handleMarkComplete" @showFeedback="handleShowFeedback" />
     
-                <UnitStatus :readonly="readonly" :module="module" :record="record" @markComplete="handleMarkComplete" @showFeedback="handleShowFeedback" />
-                <br>
-                <h4>Recent changes</h4>
-                <RecentChanges :record="record" />
+            <h4>Unit description</h4>
+            <UnitTasks :module="module" />
     
-            </el-tab-pane>
+            <h4>Learning outcomes</h4>
+            <UnitOutcomes :readonly="readonly" :module="module" :record="record" @updateProgress="handleUpdateProgress" @save="handleSaveProgress" />
     
-            <el-tab-pane label="Description" name="description">
+            <h4>Have you?</h4>
+            <StudentCheckList :readonly="readonly" :module="module" :record="record" @save="handleUpdateCheckList" />
     
-                <UnitTasks :module="module" />
+            <h4>Feedback</h4>
+            <FeedbackList :messages="messages" />
     
-            </el-tab-pane>
-            <el-tab-pane label="Learning outcomes" name="outcomes">
+            <FeedbackForm @newFeedback="handleNewFeedback" />
     
-                <UnitOutcomes :readonly="readonly" :module="module" :record="record" @updateProgress="handleUpdateProgress" @save="handleSaveProgress" />
-            </el-tab-pane>
-            <el-tab-pane label="Have you...?" name="checklist">
-                <StudentCheckList :readonly="readonly" :module="module" :record="record" @save="handleUpdateCheckList" />
-            </el-tab-pane>
-            <el-tab-pane label="Feedback" name="feedback">
+            <h4>FAQ</h4>
+            <UnitFAQ :module="module" />
     
-                <!--<FeedbackItem />
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <FeedbackItem :isRight="true" />
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <FeedbackItem />-->
-                <FeedbackList :messages="messages" />
-                <FeedbackForm @newFeedback="handleNewFeedback" />
+            <h4>Recent Changes</h4>
+            <RecentChanges :record="record" />
     
-            </el-tab-pane>
-            <el-tab-pane label="FAQ" name="faq">
-    
-                <UnitFAQ :module="module" />
-    
-            </el-tab-pane>
-        </el-tabs>
+        </div>
     
     </el-card>
 </template>
@@ -95,7 +81,8 @@ export default {
         },
         handleShowFeedback() {
             // const tabs = this.$refs.tabs
-            this.selectedTab = 'feedback'
+            // this.selectedTab = 'feedback'
+            this.$scrollTo('#feedback')
         },
         triggerUpdate() {
             this.$emit('refresh', { module: this.module, record: this.record })
@@ -222,5 +209,12 @@ export default {
 
 .pull-right {
     float: right
+}
+
+h4 {
+    border-bottom: 1px solid #dedede;
+    font-size: 1.2em;
+    color: #666;
+    text-transform: uppercase;
 }
 </style>

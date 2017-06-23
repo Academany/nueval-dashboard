@@ -1,16 +1,18 @@
 <template>
-    <el-collapse v-model="activeNames" @change="handleChange">
-        <el-collapse-item title="Recent changes" name="1">
-            <el-table :data="logItems" border striped>
-                <el-table-column label="Date" :width="200">
-                    <template scope="scope">
-                        <small>{{ scope.row.timestamp | moment }}</small>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="description" label="Action" fit></el-table-column>
-            </el-table>
-        </el-collapse-item>
-    </el-collapse>
+    <!--<el-collapse v-model="activeNames" @change="handleChange">-->
+    <!--<el-collapse-item title="Recent changes" name="1">-->
+    <div>
+        <el-table :data="logItems" border striped>
+            <el-table-column label="Date" :width="200">
+                <template scope="scope">
+                    <small>{{ scope.row.timestamp | moment }}</small>
+                </template>
+            </el-table-column>
+            <el-table-column prop="description" label="Action" fit></el-table-column>
+        </el-table>
+    </div>
+    <!--</el-collapse-item>-->
+    <!--</el-collapse>-->
 </template>
 
 <script>

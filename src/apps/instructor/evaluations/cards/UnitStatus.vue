@@ -1,25 +1,24 @@
 <template>
-    <el-row>
-        <el-col :span="6">
-            <div class="text-center">
-                <el-progress type="circle" :percentage="unitProgress" :status="record && record.completed ? 'success' : ''"></el-progress>
-                <br> {{progressLabel(unitProgress)}}
-            </div>
-        </el-col>
-        <el-col :span="6">
-            <p>
-                <el-button size="large" type="success" :disabled="record && record.completed" @click="handleButton1">
-                    <fa-icon class="fa-fix" name="check" /> Mark unit complete</el-button>
-            </p>
-            <p>
-                <el-button size="large" type="primary" @click="handleButton2">
-                    <fa-icon class="fa-fix" name="envelope" /> Leave Feedback</el-button>
-            </p>
-        </el-col>
-        <el-col :span="18" :offset="6">
-            <RecentChanges :record="record" />
-        </el-col>
-    </el-row>
+    <div>
+        <el-row>
+            <el-col :span="6">
+                <div class="text-center">
+                    <el-progress type="circle" :percentage="unitProgress" :status="record && record.completed ? 'success' : ''"></el-progress>
+                    <br> {{progressLabel(unitProgress)}}
+                </div>
+            </el-col>
+            <el-col :span="6">
+                <p>
+                    <el-button size="large" type="success" :disabled="record && record.completed" @click="handleButton1">
+                        <fa-icon class="fa-fix" name="check" /> Mark unit complete</el-button>
+                </p>
+                <p>
+                    <el-button size="large" type="primary" @click="handleButton2">
+                        <fa-icon class="fa-fix" name="envelope" /> Leave Feedback</el-button>
+                </p>
+            </el-col>
+        </el-row>
+    </div>
 </template>
 
 <script>

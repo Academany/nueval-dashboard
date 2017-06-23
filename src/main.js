@@ -18,6 +18,8 @@ import routes from './routes'
 import VueResource from 'vue-resource'
 import Vapi from 'vuex-rest-api'
 import VueMoment from 'vue-moment'
+import vueScrollto from 'vue-scrollto'
+
 // uncomment to add vue webix widgets
 // Vue.use(WebixUI)
 Vue.use(VueResource);
@@ -25,6 +27,7 @@ Vue.use(ElementUI, { locale })
 Vue.use(Vuex)
 Vue.use(VueRouter)
 Vue.use(VueMoment)
+Vue.use(vueScrollto)
 
 // globally (in your main .js file)
 Vue.component('fa-icon', Icon)

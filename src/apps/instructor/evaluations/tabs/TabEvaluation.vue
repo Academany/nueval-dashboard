@@ -5,7 +5,12 @@
         </el-col>
         <el-col :span="16">
             <div v-if="selectedModule">
-                <UnitDescription :readonly="isReadonly" :module="selectedModule" :record="selectedRecord" @refresh="handleModuleUpdated" />
+                <div v-if="showPage">
+                    <UnitPage :readonly="isReadonly" :module="selectedModule" :record="selectedRecord" @refresh="handleModuleUpdated" />
+                </div>
+                <div v-else>
+                    <UnitDescription :readonly="isReadonly" :module="selectedModule" :record="selectedRecord" @refresh="handleModuleUpdated" />
+                </div>
             </div>
         </el-col>
     </el-row>
@@ -17,6 +22,7 @@
 <script>
 
 import UnitDescription from '../cards/UnitDescription.vue'
+import UnitPage from '../cards/UnitPage.vue'
 import UnitStatus from '../cards/UnitStatus.vue'
 import SelectModule from '../forms/SelectModule.vue'
 import { mapGetters, mapActions } from 'vuex'
@@ -26,7 +32,13 @@ export default {
         'modules',
         'session'
     ],
+    data() {
+        return {
+            showPage: true
+        }
+    },
     components: {
+        UnitPage,
         UnitDescription,
         UnitStatus,
         SelectModule

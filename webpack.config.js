@@ -4,6 +4,10 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const url = require('url')
 const publicPath = ''
 
+const SERVER_URL="http://localhost:3000"
+//const SERVER_URL="http://nueval.fabacademy.org"
+
+
 module.exports = (options = {}) => ({
   entry: {
     vendor: './src/vendor',
@@ -59,7 +63,7 @@ module.exports = (options = {}) => ({
     port: 8010,
     proxy: {
       '/api/': {
-        target: 'http://nueval.fabacademy.org/',
+        target: SERVER_URL, 
         changeOrigin: true,
         onProxyReq: function onProxyReq(proxyReq, req, res) {
             // add custom header to request
@@ -73,11 +77,11 @@ module.exports = (options = {}) => ({
         // }
       },
       '/roles/': {
-        target: 'http://nueval.fabacademy.org/',
+        target: SERVER_URL,
         changeOrigin: true,
       },
       '/auth/': {
-	target: 'http://nueval.fabacademy.org/',
+	target: SERVER_URL,
         changeOrigin: true
       }
     },

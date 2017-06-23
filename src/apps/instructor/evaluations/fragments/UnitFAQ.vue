@@ -1,6 +1,6 @@
 <template>
-    <div class="faq">
-        <vue-markdown v-if="body">{{body}}</vue-markdown>
+    <div class="faq" v-if="module">
+        <vue-markdown :source="body"></vue-markdown>
     </div>
 </template>
 
@@ -17,7 +17,9 @@ export default {
     computed: {
         body() {
             const module = this.module || {}
-            if (module && module.rules && module.rules.faq) {
+            // console.log('updating ' + module.name)
+            if (module && module.rules) {
+                // console.log("module.rules " + module.rules.faq)
                 return module.rules.faq
             } else {
                 return 'Not available yet'

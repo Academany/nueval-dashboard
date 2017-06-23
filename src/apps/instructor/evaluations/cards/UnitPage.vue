@@ -8,7 +8,7 @@
         </div>
         <div class="card-body">
             <h4>Overall progress</h4>
-            <UnitStatus :readonly="readonly" :module="module" :record="record" @markComplete="handleMarkComplete" @showFeedback="handleShowFeedback" />
+            <UnitStatus :readonly="readonly" :module="module" :record="record" @markNotComplete="handleMarkNotComplete" @markComplete="handleMarkComplete" @showFeedback="handleShowFeedback" />
     
             <h4>Unit description</h4>
             <UnitTasks :module="module" />
@@ -120,6 +120,16 @@ export default {
                     vm.logError(error)
                 })
         },
+        handleMarkNotComplete(checklist) {
+            var vm = this;
+            vm.markNotComplete(checklist)
+                .then((success) => {
+                    vm.logOk("Unit is not complete")
+                    vm.triggerUpdate()
+                }).catch((error) => {
+                    vm.logError(error)
+                })
+        },
         handleNewFeedback(feedback) {
             var vm = this;
             vm.leaveFeedback(feedback)
@@ -143,6 +153,7 @@ export default {
             })
         },
         ...mapActions({
+            markNotComplete: 'instructor_app/records/markNotComplete',
             updateProgress: 'instructor_app/records/updateProgress',
             updateChecklist: 'instructor_app/records/updateChecklist',
             markComplete: 'instructor_app/records/markComplete',

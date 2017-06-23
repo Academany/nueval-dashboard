@@ -18,7 +18,7 @@
                         </div>
                     </el-card>
                 </div>
-                <el-tabs v-if="!needsSetup" v-model="activeName" class="tabs" @tabClick="handleClick">
+                <el-tabs v-if="currentStudent && !needsSetup" v-model="activeName" class="tabs" @tabClick="handleClick">
                     <el-tab-pane label=" Overall progress " name="general">
                         <TabGeneral :evaluations="overallProgress " @showDetails="handleDetails" />
                     </el-tab-pane>
@@ -117,7 +117,7 @@ export default {
 
         },
         handleSelectSession(val) {
-            this.dialogVisible = true;
+            this.dialogVisible = false;
             this.bookStudent(
                 {
                     session: val.session,

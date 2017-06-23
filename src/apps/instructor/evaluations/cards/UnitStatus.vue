@@ -9,8 +9,11 @@
             </el-col>
             <el-col :span="6">
                 <p>
-                    <el-button size="large" type="success" :disabled="!canMarkComplete" @click="handleButton1">
-                        <fa-icon class="fa-fix" name="check" /> Mark unit complete</el-button>
+                    <el-button size="large" type="success" v-if="record && !record.completed" :disabled="readonly || !canMarkComplete" @click="handleButton1">
+                        <fa-icon class="fa-fix" name="thumbs-o-up" /> Mark unit complete</el-button>
+    
+                    <el-button size="large" type="danger" v-if="record && record.completed" :disabled="readonly===true" @click="handleButton3">
+                        <fa-icon class="fa-fix" name="thumbs-o-down" /> Not complete</el-button>
                 </p>
                 <p>
                     <el-button size="large" type="primary" @click="handleButton2">
@@ -46,7 +49,7 @@ export default {
     },
     computed: {
         canMarkComplete() {
-            if (this.unitProgress && this.unitProgress > 90) {
+            if (this.unitProgress && this.unitProgress >= 90) {
                 return true
             }
             return false
@@ -79,6 +82,9 @@ export default {
         },
         handleButton2() {
             this.$emit('showFeedback')
+        },
+        handleButton3() {
+            this.$emit('markNotComplete')
         },
         handleChange(val) {
 

@@ -9,7 +9,7 @@
         <el-tabs @tab-click="handleClick" ref="tabs" v-model="selectedTab">
             <el-tab-pane label="Status" name="status">
     
-                <UnitStatus :readonly="readonly" :module="module" :record="record" @markComplete="handleMarkComplete" @showFeedback="handleShowFeedback" />
+                <UnitStatus :readonly="readonly" :module="module" :record="record" @markComplete="handleMarkComplete" @markNotComplete="handleMarkNotComplete" @showFeedback="handleShowFeedback" />
                 <br>
                 <h4>Recent changes</h4>
                 <RecentChanges :record="record" />
@@ -31,10 +31,10 @@
             <el-tab-pane label="Feedback" name="feedback">
     
                 <!--<FeedbackItem />
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <FeedbackItem :isRight="true" />
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <FeedbackItem />-->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <FeedbackItem :isRight="true" />
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <FeedbackItem />-->
                 <FeedbackList :messages="messages" />
                 <FeedbackForm @newFeedback="handleNewFeedback" />
     
@@ -133,6 +133,16 @@ export default {
                     vm.logError(error)
                 })
         },
+        handleMarkNotComplete(checklist) {
+            var vm = this;
+            vm.markNotComplete(checklist)
+                .then((success) => {
+                    vm.logOk("Unit marked complete")
+                    vm.triggerUpdate()
+                }).catch((error) => {
+                    vm.logError(error)
+                })
+        },
         handleNewFeedback(feedback) {
             var vm = this;
             vm.leaveFeedback(feedback)
@@ -156,6 +166,7 @@ export default {
             })
         },
         ...mapActions({
+            markNotComplete: 'instructor_app/records/markNotComplete',
             updateProgress: 'instructor_app/records/updateProgress',
             updateChecklist: 'instructor_app/records/updateChecklist',
             markComplete: 'instructor_app/records/markComplete',

@@ -7,39 +7,27 @@
                 <el-tag type="primary">{{ evaluation.instructor.username || ''}}</el-tag>
             </small>
         </div>
-        <el-row v-if="records && records.length > 0">
-            <el-col :span="10" class="centered">
-                <el-progress type="circle" :percentage="statusPercentage" :status="statusType"></el-progress>
-                <br>
-                <el-tag>{{statusLabel}}</el-tag>
-            </el-col>
-            <el-col :span="14">
-                <p>
-                    <b>Units completed:</b>
-                    <small> {{completedUnitsCount}} / {{ records.length }}</small>
-                </p>
-                <p>
-                    <el-button type="info" size="medium" @click="handleDetails">View details &raquo;</el-button>
+        <div class="centered" v-if="records && records.length > 0">
+            <el-progress type="circle" :percentage="statusPercentage" :status="statusType"></el-progress>
+            <br>
+            <el-tag>{{statusLabel}}</el-tag>
+            <p>
+                <b>Units completed:</b>
+                <small> {{completedUnitsCount}} / {{ records.length }}</small>
+            </p>
+            <p>
+                <el-button type="info" size="medium" @click="handleDetails">View details &raquo;</el-button>
     
-                </p>
-                <p>
-                </p>
-            </el-col>
-        </el-row>
-        <el-row v-if="!records || records.length === 0">
-            <el-col :span="10" class="centered">
-                <el-progress type="circle" :percentage="0"></el-progress>
-                <el-tag>Pending</el-tag>
-            </el-col>
-            <el-col :span="14">
-                <p>Check back soon for evaluation details</p>
-            </el-col>
-        </el-row>
-        <p style="text-align: center; padding-top: 12px;">
+            </p>
+        </div>
+        <div class="centered" v-if="!records || records.length === 0">
     
-        </p>
-        </el-col>
-        </el-row>
+            <el-progress type="circle" :percentage="0"></el-progress>
+            <el-tag>Pending</el-tag>
+    
+            <p>Check back soon for evaluation details</p>
+        </div>
+    
     </el-card>
 </template>
 <script>

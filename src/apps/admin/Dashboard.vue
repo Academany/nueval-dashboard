@@ -41,8 +41,10 @@ export default {
 
     },
     handleMenuSelect(item) {
-      this.$router.push(item)
-      this.$store.dispatch("changeApp", item)
+      this.$nextTick(() => {
+        this.$router.push(item)
+        this.$store.dispatch("changeApp", item)
+      })
     }
   },
   computed: {

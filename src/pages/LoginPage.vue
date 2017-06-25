@@ -14,78 +14,79 @@
   </el-form>
 </template>
 <script>
-  export default {
-    data() {
-      return {
-        logining: false,
-        ruleForm2: {
-          account: 'admin',
-          checkPass: '123456',
-          remember: false
-        },
-        rules2: {
-          account: [
-            { required: true, message: 'Account name is required', trigger: 'blur' },
-            //{ validator: validaePass }
-          ],
-          checkPass: [
-            { required: true, message: 'Password is not valid', trigger: 'blur' },
-            //{ validator: validaePass2 }
-          ]
-        }
-      };
-    },
-    methods: {
-      handleReset2() {
-        this.$refs.ruleForm2.resetFields();
+export default {
+  data() {
+    return {
+      logining: false,
+      ruleForm2: {
+        account: 'admin',
+        checkPass: '123456',
+        remember: false
       },
-      handleSubmit2(ev) {
-        var _this = this;
-        this.$refs.ruleForm2.validate((valid) => {
-          if (valid) {
-            //_this.$router.replace('/table');
-            this.logining = true;
-            //NProgress.start();
-            var loginParams = { username: this.ruleForm2.account, password: this.ruleForm2.checkPass };
-
-            this.$store.dispatch("login", {
-                    email: this.email,
-                    password: this.password
-                  }).then(() => {
-                    this.$router.push("/")
-                  });
-
-          } else {
-            console.log('error submit!!');
-            return false;
-          }
-        });
+      rules2: {
+        account: [
+          { required: true, message: 'Account name is required', trigger: 'blur' },
+          //{ validator: validaePass }
+        ],
+        checkPass: [
+          { required: true, message: 'Password is not valid', trigger: 'blur' },
+          //{ validator: validaePass2 }
+        ]
       }
+    };
+  },
+  methods: {
+    handleReset2() {
+      this.$refs.ruleForm2.resetFields();
+    },
+    handleSubmit2(ev) {
+      var _this = this;
+      this.$refs.ruleForm2.validate((valid) => {
+        if (valid) {
+          //_this.$router.replace('/table');
+          this.logining = true;
+          //NProgress.start();
+          var loginParams = { username: this.ruleForm2.account, password: this.ruleForm2.checkPass };
+
+          this.$store.dispatch("login", {
+            email: this.email,
+            password: this.password
+          }).then(() => {
+            this.$router.push("/")
+          });
+
+        } else {
+          console.log('error submit!!');
+          return false;
+        }
+      });
     }
   }
+}
 </script>
 
 <style lang="css" scoped>
-  .login-container {
-    /*box-shadow: 0 0px 8px 0 rgba(0, 0, 0, 0.06), 0 1px 0px 0 rgba(0, 0, 0, 0.02);*/
-    -webkit-border-radius: 5px;
-    border-radius: 5px;
-    -moz-border-radius: 5px;
-    background-clip: padding-box;
-    margin: 180px auto;
-    width: 350px;
-    padding: 35px 35px 15px 35px;
-    background: #fff;
-    border: 1px solid #eaeaea;
-    box-shadow: 0 0 25px #cac6c6;
+.login-container {
+  /*box-shadow: 0 0px 8px 0 rgba(0, 0, 0, 0.06), 0 1px 0px 0 rgba(0, 0, 0, 0.02);*/
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  background-clip: padding-box;
+  margin: 180px auto;
+  width: 350px;
+  padding: 35px 35px 15px 35px;
+  background: #fff;
+  border: 1px solid #eaeaea;
+  box-shadow: 0 0 25px #cac6c6;
+}
 
-  }
-    .login-container .title {
-    margin: 0px auto 40px auto;
-    text-align: center;
-    color: #505458;
-  }
-    .login-container .remember {
-    margin: 0px 0px 35px 0px;
-  }
+.login-container .title {
+  margin: 0px auto 40px auto;
+  text-align: center;
+  color: #505458;
+}
+
+.login-container .remember {
+  margin: 0px 0px 35px 0px;
+}
 </style>

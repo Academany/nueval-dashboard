@@ -17,14 +17,11 @@
             </p>
             <p>
                 <el-button type="info" size="medium" @click="handleDetails">View details &raquo;</el-button>
-    
             </p>
         </div>
         <div class="centered" v-if="!records || records.length === 0">
-    
             <el-progress type="circle" :percentage="0"></el-progress>
             <el-tag>Pending</el-tag>
-    
             <p>Check back soon for evaluation details</p>
         </div>
     

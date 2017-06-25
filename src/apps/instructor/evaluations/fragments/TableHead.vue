@@ -3,7 +3,10 @@
         <el-tag>{{student && student.student_id}}</el-tag>
         {{ student && student.first_name}} {{ student && student.last_name}}
         <el-tag type="primary">
-            <span v-if="isInGlobal">Under Global evaluation</span>
+            <span v-if="dropped">Dropped out</span>
+            <span v-if="isGraduated">Graduated!</span>
+            <span v-else-if="nextCycle">Next Cycle</span>
+            <span v-else-if="isInGlobal">Under Global evaluation</span>
             <span v-else-if="canGoGlobal && !isInGlobal">Ready for local evaluation</span>
             <span v-else="!canGoGlobal && !isInGlobal">Under local evaluation</span>
         </el-tag>
@@ -25,8 +28,11 @@ export default {
 
     computed: {
         ...mapGetters({
+            dropped: 'instructor_app/evaluations/isDropped',
+            nextCycle: 'instructor_app/evaluations/isRecycled',
             canGoGlobal: 'instructor_app/evaluations/canGoGlobal',
             isInGlobal: 'instructor_app/evaluations/isInGlobal',
+            isGraduated: 'instructor_app/evaluations/isGraduated',
         })
     },
     methods: {

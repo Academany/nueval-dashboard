@@ -2,29 +2,36 @@
     <div class="fullwidth graybg padded fixed tableHead">
         <el-tag>{{student && student.student_id}}</el-tag>
         {{ student && student.first_name}} {{ student && student.last_name}}
-        <el-tag v-if="isGraduated" type="success">Graduated!</el-tag>
-        <el-tag v-if="isRecycled" type="danger">Next cycle</el-tag>
-        <el-tag v-if="isInGlobal && !isGraduated && !isRecycled" type="primary">
-            <span>Under Global evaluation</span>
+        <el-tag type="primary">
+            <span v-if="isDropped">Dropped out</span>
+            <span v-if="isGraduated">Graduated!</span>
+            <span v-else-if="isRecycled">Next Cycle</span>
+            <span v-else-if="isInGlobal">Under Global evaluation</span>
+            <span v-else-if="canGoGlobal && !isInGlobal">Ready for local evaluation</span>
+            <span v-else="!canGoGlobal && !isInGlobal">Under local evaluation</span>
         </el-tag>
         <el-button-group class="fixed-right">
             <el-button type="success" size="small" :disabled="!canGraduate || isGraduated" class="toolbar-btn" @click="handleRequestGraduation">
                 <fa-icon name="graduation-cap" class="fa-fix"></fa-icon> Graduate</el-button>
             <el-button type="warning" size="small" :disabled="isGraduated || isRecycled" class="toolbar-btn" @click="handleNextCycle">
                 <fa-icon name="recycle" class="fa-fix"></fa-icon> Next cycle</el-button>
-            <el-button type="info" size="small" class="toolbar-btn" @click="handleRequestFeedback">
-                <fa-icon name="question" class="fa-fix"></fa-icon> Request feedback</el-button>
         </el-button-group>
     </div>
 </template>
 
 <script>
+/**
+   <!--<el-button type="info" size="small" class="toolbar-btn" @click="handleRequestFeedback">
+                <fa-icon name="question" class="fa-fix"></fa-icon> Request feedback</el-button>-->
+
+**/
 import { mapGetters } from 'vuex'
 export default {
     props: ['student'],
 
     computed: {
         ...mapGetters({
+            isDropped: 'instructor_app/evaluations/isDropped',
             isRecycled: 'instructor_app/evaluations/isRecycled',
             isGraduated: 'instructor_app/evaluations/isGraduated',
             canGraduate: 'instructor_app/evaluations/canGraduate',

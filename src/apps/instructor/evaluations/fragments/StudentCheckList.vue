@@ -17,7 +17,7 @@
         </div>
     
         <div class="button-container">
-            <el-button type="success" size="large" :v-if="!readonly" @click="handleSaveButton">Save</el-button>
+            <el-button type="success" size="large" v-if="!readonly" @click="handleSaveButton">Save</el-button>
         </div>
     
     </div>

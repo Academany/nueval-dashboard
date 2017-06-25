@@ -17,6 +17,8 @@ export const BOOK_STUDENT = "BOOK_STUDENT"
 export const HAS_FAILURE = "HAS_FAILURE"
 export const GRADUATE_STUDENT = "GRADUATE_STUDENT"
 export const RECYCLE_STUDENT = "RECYCLE_STUDENT"
+export const DROP_STUDENT = "DROP_STUDENT"
+export const LOCAL_COMPLETE = "LOCAL_COMPLETE"
 
 
 export default {
@@ -198,7 +200,7 @@ export default {
         if (!student || !session)
           return reject("Missing parameters")
         api.put("/api/evaluations/" + session.id + "/students/" + student.id,
-        { graduated: true }
+        { graduated: true, dropped: false, next_cycle: false }
         )
           .then((response) => {
             commit(GRADUATE_STUDENT, {
@@ -219,8 +221,39 @@ export default {
       })
     },
     requestFeedback({ commit, dispatch, state }) {
-      // request feedback from instructor and student
+      console.log('requestFeedback not implemented!')
+     return new Promise((resolve,reject)=>{
+       resolve()
+     })
+    },
+    localComplete({ commit, dispatch, state }) {
+      // send student to next cycle
+      return new Promise((resolve, reject) => {
+        // graduate current student
+        const student = state.currentStudent
+        const session = state.currentEvaluation
+        if (!student || !session)
+          return reject("Missing parameters")
+        api.put("/api/evaluations/" + session.id + "/students/" + student.id,
+        { local_complete: false }
+        )
+          .then((response) => {
+            commit(LOCAL_COMPLETE, {
+              session,
+              student,
+            })
+            dispatch('loadProgress', student.id)
+            resolve(response)
+          })
+          .catch((error) => {
+            commit(API_FAILURE, error, {
+              root: true,
+            });
+            commit(HAS_FAILURE)
 
+            reject(error)
+          })
+      })
     },
     nextCycle({ commit, dispatch, state }) {
       // send student to next cycle
@@ -231,7 +264,7 @@ export default {
         if (!student || !session)
           return reject("Missing parameters")
         api.put("/api/evaluations/" + session.id + "/students/" + student.id,
-        { continuing: true, graduated: false }
+        { next_cycle: true, graduated: false, dropped: false }
         )
           .then((response) => {
             commit(RECYCLE_STUDENT, {
@@ -251,9 +284,35 @@ export default {
           })
       })
     },
-    cancelStudent({ commit, state }) {
+    cancelStudent({ commit, dispatch, state }) {
       // mark student as dropped out
+      // send student to next cycle
+      return new Promise((resolve, reject) => {
+        // graduate current student
+        const student = state.currentStudent
+        const session = state.currentEvaluation
+        if (!student || !session)
+          return reject("Missing parameters")
+        api.put("/api/evaluations/" + session.id + "/students/" + student.id,
+        { next_cycle: false, graduated: false, dropped: true }
+        )
+          .then((response) => {
+            commit(DROP_STUDENT, {
+              session,
+              student,
+            })
+            dispatch('loadProgress', student.id)
+            resolve(response)
+          })
+          .catch((error) => {
+            commit(API_FAILURE, error, {
+              root: true,
+            });
+            commit(HAS_FAILURE)
 
+            reject(error)
+          })
+      })
     },
   },
   mutations: {
@@ -305,7 +364,15 @@ export default {
     },
     [RECYCLE_STUDENT](state, {session,student}){
       if (state.currentStudent)
-        state.currentStudent.continuing = true
+        state.currentStudent.next_cycle = true
+    },
+    [DROP_STUDENT](state, {session,student}){
+      if (state.currentStudent)
+        state.currentStudent.dropped = true
+    },
+    [LOCAL_COMPLETE](state, {session,student}){
+      if (state.currentStudent)
+        state.currentStudent.local_complete = true
     },
     [HAS_FAILURE](state) {
       state.loading = false
@@ -350,13 +417,23 @@ export default {
       return false
     },
     isRecycled: (state) => {
-      if (state.currentStudent && state.currentStudent.continuing === true) {
+      if (state.currentStudent && state.currentStudent.next_cycle === true) {
+        return true
+      }
+      return false
+    },
+    isDropped: (state) => {
+      if (state.currentStudent && state.currentStudent.dropped === true) {
         return true
       }
       return false
     },
     canGraduate: (state) => {
-      if (state.currentStudent && state.currentStudent.graduated === true) {
+      if (state.currentStudent && ( 
+        state.currentStudent.graduated === true ||
+        state.currentStudent.next_cycle === true ||
+        state.currentStudent.dropped === true
+        )) {
         return false
       }
       let isIn = false

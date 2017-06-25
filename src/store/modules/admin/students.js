@@ -4,6 +4,11 @@ export const SET_STUDENTS = "SET_STUDENTS"
 export const CREATE_STUDENT = "CREATE_STUDENT"
 export const UPDATE_STUDENT = "UPDATE_STUDENT"
 export const DELETE_STUDENT = "DELETE_STUDENT"
+export const LOAD_PROGRESS = "LOAD_PROGRESS"
+export const HAS_FAILURE = "HAS_FAILURE"
+export const SELECT_STUDENT = "SELECT_STUDENT"
+export const SET_PROGRESS = "SET_PROGRESS"
+
 import { API_FAILURE } from '../failure'
 import api from '../api'
 
@@ -12,6 +17,8 @@ export default {
   state: {
     students: [],
     loading: false,
+    student: undefined,
+    progress: undefined,
   },
   actions: {
     loadStudents({
@@ -105,6 +112,32 @@ export default {
         })
       });
     },
+    loadProgress({
+      commit,
+      dispatch,
+    }, student) {
+      commit(SELECT_STUDENT, student)
+      commit(LOAD_PROGRESS, student.id)
+      return new Promise((resolve, reject) => {
+        api.get('/api/students/' + student.id + '/progress') // ?filter=' + encodeURIComponent(JSON.stringify(params)))
+          .then((data) => {
+            if (data) {
+              commit(SET_PROGRESS, data)
+              resolve(data)
+            }
+          })
+          .catch((error) => {
+            commit(API_FAILURE, error, {
+              root: true,
+            })
+            commit(HAS_FAILURE)
+            reject(error)
+          })
+        // load evaluation sheets and evaluation records
+        // limit the editing to local sheet for local evaluation
+        // selected sheet for global evaluation
+      })
+    },
   },
   mutations: {
     [LOAD_STUDENTS](state) {
@@ -140,8 +173,25 @@ export default {
       });
       state.students = newc;
     },
+    [LOAD_PROGRESS](state, student) {
+      state.loading = true
+    },
+    [SET_PROGRESS](state, progress) {
+      state.progress = progress
+      state.loading = false
+    },
+    [SELECT_STUDENT](state, student) {
+      state.student = student
+      state.progress = undefined
+    },
+    [HAS_FAILURE](state) {
+      state.loading = false
+    },
   },
   getters: {
     students: state => state.students,
+    student: state => state.student,
+    progress: state => state.progress,
+    loading: state => state.loading,
   },
 }

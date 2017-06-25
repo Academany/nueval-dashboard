@@ -22,7 +22,9 @@
                 <el-table-column>
                     <template scope="scope">
                         {{scope.row.student_id }} - {{scope.row.first_name}} {{scope.row.last_name}}
-                        <fa-icon class="fa-fix" name="star" v-if="scope.row.graduated" />
+                        <fa-icon class="fa-fix fa-success" name="star" v-if="scope.row.graduated" />
+                        <fa-icon class="fa-fix" name="recycle" v-if="scope.row.next_cycle" />
+                        <fa-icon class="fa-fix" name="exit" v-if="scope.row.dropped" />
                     </template>
                 </el-table-column>
             </el-table>
@@ -86,6 +88,7 @@ export default {
                 { 'name': 'Assigned', 'value': 'assigned' },
                 { 'name': 'In Progress', 'value': 'progress' },
                 { 'name': 'Next cycle', 'value': 'nextCycle' },
+                { 'name': 'Graduated', 'value': 'graduated' },
                 { 'name': 'Completed', 'value': 'completed' }
             ]
         }
@@ -100,14 +103,17 @@ export default {
                 let results = queue[this.currentEvaluation.name] || []
                 if (filter === 'assigned') {
                 }
-                if (filter === 'nextCycle') {
-                    results = results.filter((s) => { return s.continuing === true })
-                }
                 if (filter === 'progress') {
-                    results = results.filter((s) => { return !(!!s.graduated && !!s.continuing) })
+                    results = results.filter((s) => { return s.graduated === false && s.next_cycle === false && s.dropped === false })
+                }
+                if (filter === 'nextCycle') {
+                    results = results.filter((s) => { return s.next_cycle === true })
+                }
+                if (filter === 'graduated') {
+                    results = results.filter((s) => { return s.graduated === true })
                 }
                 if (filter === 'completed') {
-                    results = results.filter((s) => { return s.graduated === true })
+                    results = results.filter((s) => { return s.graduated === true || s.next_cycle === true })
                 }
                 return results
             }
@@ -126,6 +132,9 @@ export default {
 <style scoped>
 .fa-fix {
     margin-bottom: -4px;
+}
+
+.fa-success {
     color: #ffcc00;
 }
 </style>

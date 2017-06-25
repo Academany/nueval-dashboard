@@ -23,7 +23,7 @@
         </div>
     
         <div class="button-container">
-            <el-button type="success" size="large" :v-if="!readonly" @click="handleSave">Save</el-button>
+            <el-button type="success" size="large" v-if="!readonly" @click="handleSave">Save</el-button>
         </div>
     </div>
 </template>

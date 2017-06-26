@@ -255,14 +255,18 @@ export default {
           })
       })
     },
-    nextCycle({ commit, dispatch, state }) {
+    nextCycle({ commit, dispatch, state }, sessionParam) {
       // send student to next cycle
       return new Promise((resolve, reject) => {
         // graduate current student
+        debugger
         const student = state.currentStudent
-        const session = state.currentEvaluation
-        if (!student || !session)
+        const session = state.currentEvaluation || sessionParam || null
+        if (!student || !session){
+          debugger
           return reject("Missing parameters")
+
+        }
         api.put("/api/evaluations/" + session.id + "/students/" + student.id,
         { next_cycle: true, graduated: false, dropped: false }
         )
@@ -284,15 +288,19 @@ export default {
           })
       })
     },
-    cancelStudent({ commit, dispatch, state }) {
+    cancelStudent({ commit, dispatch, state }, sessionParam) {
       // mark student as dropped out
       // send student to next cycle
       return new Promise((resolve, reject) => {
         // graduate current student
+        debugger
         const student = state.currentStudent
-        const session = state.currentEvaluation
-        if (!student || !session)
+        const session = state.currentEvaluation || sessionParam || null
+        if (!student || !session){
+          debugger
           return reject("Missing parameters")
+        }
+
         api.put("/api/evaluations/" + session.id + "/students/" + student.id,
         { next_cycle: false, graduated: false, dropped: true }
         )
@@ -301,6 +309,7 @@ export default {
               session,
               student,
             })
+
             dispatch('loadProgress', student.id)
             resolve(response)
           })
@@ -387,6 +396,17 @@ export default {
     needsSetup: state => state.needsSetup,
     overallProgress: state => state.overallProgress,
     loading: state => state.loading,
+    localSession: state => {
+     let localEvaluation = undefined
+     if (state.overallProgress) {
+       localEvaluation = state.evaluations.find((ev) => {
+          if (ev.kind === 'local')
+             return true
+         return false
+       })
+     }
+     return localEvaluation
+    },
     canGoGlobal: (state) => {
       let canGoGlobal = false
       const sessions = state && state.overallProgress || []

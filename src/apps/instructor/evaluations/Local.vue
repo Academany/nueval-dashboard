@@ -88,8 +88,13 @@ export default {
                     cancelButtonText: 'Cancel',
                     type: 'danger'
                 }).then(() => {
-                    this.cancelStudent().then((success) => {
-                        this.$notify({ title: "Success", message: "Operation completed" })
+                    const localSession = vm.localSession
+
+                    vm.cancelStudent(localSession).then((success) => {
+                        vm.$notify({ title: "Success", message: "Operation completed" })
+                    }).catch((error) => {
+                        vm.$notify({ title: "Error", message: "Some error occurred" })
+                        console.log(error)
                     })
                 })
 
@@ -103,8 +108,13 @@ export default {
                     cancelButtonText: 'Cancel',
                     type: 'danger'
                 }).then(() => {
-                    this.nextCycle().then((success) => {
-                        this.$notify({ title: "Success", message: "Operation completed" })
+                    const localSession = vm.localSession
+
+                    vm.nextCycle(localSession).then((success) => {
+                        vm.$notify({ title: "Success", message: "Operation completed" })
+                    }).catch((error) => {
+                        vm.$notify({ title: "Error", message: "Some error occurred" })
+                        console.log(error)
                     })
                 })
 
@@ -216,6 +226,7 @@ export default {
             'loading': 'instructor_app/evaluations/loading',
             'instructor': 'instructor_app/instructor',
             'labs': 'instructor_app/labs',
+            'localSession': 'instructor_app/evaluations/localSession',
             'evaluations': 'instructor_app/evaluations/evaluations',
             'needsSetup': 'instructor_app/evaluations/needsSetup',
             'labStudents': 'instructor_app/labStudents',

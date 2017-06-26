@@ -4,18 +4,18 @@
         {{ student && student.first_name}} {{ student && student.last_name}}
         <el-tag type="primary">
             <span v-if="dropped">Dropped out</span>
-            <span v-if="isGraduated">Graduated!</span>
+            <span v-else-if="isGraduated">Graduated!</span>
             <span v-else-if="nextCycle">Next Cycle</span>
             <span v-else-if="isInGlobal">Under Global evaluation</span>
             <span v-else-if="canGoGlobal && !isInGlobal">Ready for local evaluation</span>
             <span v-else="!canGoGlobal && !isInGlobal">Under local evaluation</span>
         </el-tag>
         <el-button-group class="fixed-right">
-            <el-button type="success" size="small" :disabled="!canGoGlobal || isInGlobal" @click="handleRequestEval">
+            <el-button type="success" size="small" :disabled="!canGoGlobal || dropped || nextCycle || isInGlobal" @click="handleRequestEval">
                 <fa-icon name="send" class="fa-fix"></fa-icon> Request Global Evaluation</el-button>
-            <el-button type="danger" size="small" :disabled="true && isInGlobal" @click="handleCancelStudent">
+            <el-button type="danger" size="small" :disabled="nextCycle || dropped || isInGlobal" @click="handleCancelStudent">
                 <fa-icon name="sign-out" class="fa-fix"></fa-icon> Dropped out</el-button>
-            <el-button type="warning" size="small" :disabled="true && isInGlobal" @click="handleNextCycle">
+            <el-button type="warning" size="small" :disabled="nextCycle || dropped || isInGlobal" @click="handleNextCycle">
                 <fa-icon name="recycle" class="fa-fix"></fa-icon> Next cycle</el-button>
         </el-button-group>
     </div>

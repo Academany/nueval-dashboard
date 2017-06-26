@@ -399,13 +399,16 @@ export default {
     localSession: state => {
      let localEvaluation = undefined
      if (state.overallProgress) {
-       localEvaluation = state.evaluations.find((ev) => {
-          if (ev.kind === 'local')
+       localEvaluation = state.overallProgress.find((ev) => {
+          if (ev.evaluation.kind === 'local')
              return true
          return false
        })
      }
-     return localEvaluation
+     if(localEvaluation) {
+       return localEvaluation.evaluation
+     }
+     return null
     },
     canGoGlobal: (state) => {
       let canGoGlobal = false

@@ -82,6 +82,12 @@ export default {
                 this.dialogVisible = true
 
             } else if (actionName === 'cancelStudent') {
+                if (this.needsSetup) {
+                    this.$notify({ title: "Error", message: "Please setup the local evaluation first" })
+                    return;
+                }
+
+
                 const vm = this
                 vm.$confirm('Do you want to finish evaluation and set this student as dropped out?', 'Confirm', {
                     confirmButtonText: 'OK',
@@ -101,7 +107,10 @@ export default {
                 // this.$notify({ title: "Error", message: "Not implemented yet" })
 
             } else if (actionName === 'nextCycle') {
-
+                if (this.needsSetup) {
+                    this.$notify({ title: "Error", message: "Please setup the local evaluation first" })
+                    return;
+                }
                 const vm = this
                 vm.$confirm('Do you want to finish evaluation and send this student to next cycle?', 'Confirm', {
                     confirmButtonText: 'OK',
@@ -109,7 +118,6 @@ export default {
                     type: 'danger'
                 }).then(() => {
                     const localSession = vm.localSession
-
                     vm.nextCycle(localSession).then((success) => {
                         vm.$notify({ title: "Success", message: "Operation completed" })
                     }).catch((error) => {

@@ -82,10 +82,33 @@ export default {
                 this.dialogVisible = true
 
             } else if (actionName === 'cancelStudent') {
-                this.$notify({ title: "Error", message: "Not implemented yet" })
+                const vm = this
+                vm.$confirm('Do you want to finish evaluation and set this student as dropped out?', 'Confirm', {
+                    confirmButtonText: 'OK',
+                    cancelButtonText: 'Cancel',
+                    type: 'danger'
+                }).then(() => {
+                    this.cancelStudent().then((success) => {
+                        this.$notify({ title: "Success", message: "Operation completed" })
+                    })
+                })
+
+                // this.$notify({ title: "Error", message: "Not implemented yet" })
 
             } else if (actionName === 'nextCycle') {
-                this.$notify({ title: "Error", message: "Not implemented yet" })
+
+                const vm = this
+                vm.$confirm('Do you want to finish evaluation and send this student to next cycle?', 'Confirm', {
+                    confirmButtonText: 'OK',
+                    cancelButtonText: 'Cancel',
+                    type: 'danger'
+                }).then(() => {
+                    this.nextCycle().then((success) => {
+                        this.$notify({ title: "Success", message: "Operation completed" })
+                    })
+                })
+
+                // this.$notify({ title: "Error", message: "Not implemented yet" })
 
             }
         },
@@ -156,6 +179,8 @@ export default {
             })
         },
         ...mapActions({
+            'cancelStudent': 'instructor_app/evaluations/cancelStudent',
+            'nextCycle': 'instructor_app/evaluations/nextCycle',
             'bookStudent': 'instructor_app/evaluations/bookStudent',
             'selectStudent': 'instructor_app/evaluations/selectStudent',
             'loadEvaluations': 'instructor_app/evaluations/loadEvaluations',

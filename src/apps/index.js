@@ -70,9 +70,6 @@ let apps = [{
                 children: [{
                     path: 'home',
                     component: lazy('./student/Home.vue')
-                },{
-                    path: 'progress',
-                    component: lazy('./student/StudentProgress.vue')
                 }, {
                     path: 'final',
                     component: lazy('./student/Final.vue')

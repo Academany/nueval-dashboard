@@ -91,7 +91,10 @@ export default {
             }
         }).catch((error) => {
             console.log('Something bad happened');
-            vm.$router.push('/')
+            console.log(error)
+            vm.$nextTick(function () {
+                vm.$router.push('/')
+            })
         });
     }
 }

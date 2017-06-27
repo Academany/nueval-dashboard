@@ -31,10 +31,11 @@ export default {
         handleModuleChange(val) {
             // alert(JSON.stringify(val));
             const vm = this
-            this.$nextTick(function () {
-                const record = vm.recordFor(val)
-                vm.$emit('select-module', { module: val, record: record })
-            })
+            if (val)
+                this.$nextTick(function () {
+                    const record = vm.recordFor(val)
+                    vm.$emit('select-module', { module: val, record: record })
+                })
         },
         recordFor(module) {
             // console.log('Record for looking into ' + this.records.length)

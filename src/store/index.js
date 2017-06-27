@@ -17,6 +17,7 @@ import admin from './modules/admin'
 import modules from './modules/modules'
 import apps from './modules/apps'
 import instructor_app from './modules/instructor_app'
+import student_app from './modules/student_app'
 
 export default new Vuex.Store({
   strict: false,
@@ -38,6 +39,7 @@ export default new Vuex.Store({
     users,
     notifications,
     admin,
-    instructor_app
-  }
+    instructor_app,
+    student_app,
+  },
 })

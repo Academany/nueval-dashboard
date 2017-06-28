@@ -16,7 +16,7 @@
             <h4>Learning outcomes</h4>
             <UnitOutcomes :readonly="readonly" :module="module" :record="record" @updateProgress="handleUpdateProgress" @save="handleSaveProgress" />
     
-            <div v-if="!global">
+            <div v-if="global != true">
                 <h4>Have you?</h4>
                 <StudentCheckList :readonly="readonly" :module="module" :record="record" @save="handleUpdateCheckList" />
             </div>

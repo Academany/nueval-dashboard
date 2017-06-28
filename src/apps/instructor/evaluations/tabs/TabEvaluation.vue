@@ -6,7 +6,7 @@
         <el-col :span="16">
             <div v-if="selectedModule">
                 <div v-if="showPage">
-                    <UnitPage :global="false" :readonly="isReadonly" :module="selectedModule" :record="selectedRecord" @refresh="handleModuleUpdated" />
+                    <UnitPage :global="global" :readonly="isReadonly" :module="selectedModule" :record="selectedRecord" @refresh="handleModuleUpdated" />
                 </div>
                 <div v-else>
                     <UnitDescription :readonly="isReadonly" :module="selectedModule" :record="selectedRecord" @refresh="handleModuleUpdated" />
@@ -30,7 +30,9 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
     props: [
         'modules',
-        'session'
+        'session',
+        'global',
+        'readonly'
     ],
     data() {
         return {

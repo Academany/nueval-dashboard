@@ -23,7 +23,7 @@
                         <TabGeneral :evaluations="overallProgress " @showDetails="handleDetails" />
                     </el-tab-pane>
                     <el-tab-pane v-for="session in overallProgress " :key="session.id " :name="session.id" :label="`${session.evaluation.name} ${session.evaluation.date} ${session.completed ? '- ok' : ''}` ">
-                        <TabEvaluation :session="session " :modules="currentCourse.modules" @updateModule="handleUpdateModule" />
+                        <TabEvaluation :global="session && session.evaluation && session.evaluation.kind==='global'" :session="session " :modules="currentCourse.modules" @updateModule="handleUpdateModule" />
                     </el-tab-pane>
                 </el-tabs>
             </el-col>

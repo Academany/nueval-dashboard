@@ -16,10 +16,20 @@
     </div>
   
     <el-table :data="evaluators(this.item)" border stripe v-if="item.kind === 'global'" style="width: 100%">
-      <el-table-column prop="username" sortable label="Username" :width="120">
+      <el-table-column prop="username" sortable label="Username" :width="180">
       </el-table-column>
   
-      <el-table-column prop="email" label="Email" :width="300">
+      <el-table-column prop="email" label="Email" :width="230">
+      </el-table-column>
+      <el-table-column>
+        <template scope="scope">
+          <small>{{ scope.row.labs && scope.row.labs.length }} labs
+            <br>
+            <div v-if="scope.row.labs" v-for="c in scope.row.labs" :key="c">
+              - {{ c.name }}
+            </div>
+          </small>
+        </template>
       </el-table-column>
       <el-table-column prop="candidates" label="Assigned">
         <template scope="scope">

@@ -28,8 +28,8 @@ export default {
         url: '/api/courses/' + courseId + '/evaluations?filter=' + encodeURIComponent(
           JSON.stringify({
             include: [
-              'evaluators',
-              'students',
+              {'evaluators' : ['labs']},
+              {'students' : ['lab']},
               { 'pairings': ['student', 'instructor'] },
               'course',
             ],

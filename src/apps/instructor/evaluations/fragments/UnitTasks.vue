@@ -3,7 +3,7 @@
         <div v-for="(task,idx) in tasks" :key="task.name">
             <h4> Task: {{task.name}} </h4>
             <div>
-                <vue-markdown>{{task.description}}</vue-markdown>
+                <vue-markdown :source="task.description"></vue-markdown>
             </div>
         </div>
     </div>

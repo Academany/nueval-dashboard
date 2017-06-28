@@ -148,7 +148,12 @@ export default {
     module: state => state.module,
     record: state => state.record,
     logs: state => state.record && state.record.logs || [],
-    messages: state => state.record && state.record.messages || [],
+    messages: function (state) {
+      if (state.record && state.record.messages) {
+        return state.record.messages
+      }
+      return []
+    },
     recordProgress: (state) => {
       if (!state.record) return 0
       const lines = state.record.lines || []

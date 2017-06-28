@@ -15,7 +15,7 @@
                 </el-input>
     
                 <div v-if="preview" class="preview">
-                    <vue-markdown>{{form.body}}</vue-markdown>
+                    <vue-markdown :source="form.body"></vue-markdown>
                 </div>
     
             </el-form-item>

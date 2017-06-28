@@ -23,7 +23,7 @@
                         <td></td>
                         <td>
                             <div class="feedback-item-body">
-                                <vue-markdown>{{message.body}}</vue-markdown>
+                                <vue-markdown :source="message.body"></vue-markdown>
                             </div>
                         </td>
                     </tr>

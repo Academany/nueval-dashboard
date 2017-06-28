@@ -22,7 +22,7 @@
             </div>
     
             <h4>Feedback</h4>
-            <FeedbackList ref="FeedbackForm" :messages="messages" />
+            <FeedbackList ref="FeedbackForm" :messages="getMessages()" />
     
             <FeedbackForm @newFeedback="handleNewFeedback" />
     
@@ -79,6 +79,13 @@ export default {
         })
     },
     methods: {
+        getMessages() {
+            // console.log('getMessages')
+            if (this.record && this.record.messages) {
+                return this.record.messages
+            }
+            return []
+        },
         handleClick(tab, event) {
 
         },

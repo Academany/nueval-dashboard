@@ -6,7 +6,7 @@
         <el-col :span="16">
             <div v-if="selectedModule">
                 <div v-if="showPage">
-                    <UnitPage :global="global" :readonly="isReadonly" :module="selectedModule" :record="selectedRecord" @refresh="handleModuleUpdated" />
+                    <UnitPage v-loading="!selectedRecord" :global="global" :readonly="isReadonly" :module="selectedModule" :record="selectedRecord" @refresh="handleModuleUpdated" />
                 </div>
                 <div v-else>
                     <UnitDescription :readonly="isReadonly" :module="selectedModule" :record="selectedRecord" @refresh="handleModuleUpdated" />

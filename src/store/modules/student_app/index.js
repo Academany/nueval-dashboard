@@ -316,7 +316,10 @@ export default {
     [PERSIST_RECORD](state, response) {
       if (response.body) {
         state.record = response.body
+      } else {
+        state.record = undefined
       }
+      console.assert(state.record, 'ERROR record is undefined')
     },
     [RECORD_PERSISTED](state) {},
     [CREATE_FEEDBACK](state, feedback) {

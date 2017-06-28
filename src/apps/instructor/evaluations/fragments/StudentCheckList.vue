@@ -33,6 +33,15 @@ export default {
         return { checklist: [] }
     },
     methods: {
+        validItems() {
+            let validItems = []
+            this.tasks.forEach((task) => {
+                if (task && task.checklist) {
+                    validItems.push(task.name)
+                }
+            })
+            return validItems
+        },
         // checkboxValue(task, item_idx) {
         //     if (this.record && this.record.checklist) {
         //         this.record.checklist.find((i) => {
@@ -42,6 +51,18 @@ export default {
         //         })
         //     }
         // },
+        buildChecklist() {
+            if (this.checklist)
+                return this.checklist.map((e) => {
+                    if (typeof e === 'string') {
+                        const splitted = e.split(':')
+                        if (this.validItems().indexOf(splitted[0]) != -1)
+                            return { label: e, checked: true }
+                        return null
+                    }
+                }).filter(e => e != null)
+            return []
+        },
         handleSaveButton() {
             const vm = this
             // this.$confirm('Do you really want to save student checkboxes?', 'Confirm', {
@@ -51,12 +72,11 @@ export default {
             // }).then(() => {
 
             // console.log(this.checklist)
-            const toSave = this.checklist.map((e) => {
-                if (typeof e === 'string') {
-                    const splitted = e.split(':')
-                    return { label: e, checked: true }
-                }
-            })
+
+
+
+
+            const toSave = this.buildChecklist()
 
             // console.log(this.checklist)
             vm.$emit('save', toSave)
@@ -75,16 +95,22 @@ export default {
     mounted() {
         if (this.record && this.record.checklist)
             this.checklist = this.record.checklist.filter((l) => l && l.label).map((l) => l.label)
+        else
+            this.checklist = []
     },
     watch: {
         record(val) {
             if (val && val.checklist)
                 this.checklist = val.checklist.filter((l) => l && l.label).map((l) => l.label)
+            else
+                this.checklist = []
         }
     },
     computed: {
         completed() {
-            return this.checklist && this.checklist.length || 0
+            const startIng = this.checklist && this.checklist.length || 0
+
+            return startIng
         },
         total() {
             let count = 0

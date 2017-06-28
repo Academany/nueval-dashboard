@@ -52,7 +52,10 @@ export default {
             completed: record.completed || false,
           }
         ).then(success => resolve(success))
-        .catch(error => reject(error))
+        .catch((error) => {
+          console.log("Error persting record")
+          reject(error)
+        })
       })
     },
     leaveFeedback({ commit, state, dispatch }, message) {
@@ -120,10 +123,11 @@ export default {
       })
     },
     loadRecord({ commit, state, dispatch }) {
-      commit(LOAD_RECORD)
       return new Promise((resolve, reject) => {
         if (state && state.record && state.record.id) {
-          api.get('/api/records/' + state.record.id + '/?filter=' + encodeURIComponent(JSON.stringify({
+          const recordId = state.record.id
+          commit(LOAD_RECORD)
+          api.get('/api/records/' + recordId + '/?filter=' + encodeURIComponent(JSON.stringify({
             include: ['messages', 'logs'],
           })))
           .then((success) => {
@@ -131,6 +135,7 @@ export default {
             resolve(success)
           })
           .catch((error) => {
+            commit(API_FAILURE, error, { root: true })
             reject(error)
           })
         } else {

@@ -32,12 +32,14 @@ export default {
         const params = {
           include: [
             'evaluators',
-            'students',
+            {
+              'students': ['lab','presented','booked','noshow']
+            },
             {
               'pairings': ['student', 'instructor'],
+              
             },
-            'course',
-
+            'course'
           ],
           where: {
             courseId,

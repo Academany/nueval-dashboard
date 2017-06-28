@@ -22,6 +22,10 @@
                     <el-tab-pane label=" Overall progress " name="general">
                         <TabGeneral :evaluations="overallProgress " @showDetails="handleDetails" />
                     </el-tab-pane>
+                    <el-tab-pane label="Website & Final Project" name="finalproject">
+                        <TabFinalProject :student="currentStudent">
+                        </TabFinalProject>
+                    </el-tab-pane>
                     <el-tab-pane v-for="session in overallProgress " :key="session.id " :name="session.id" :label="`${session.evaluation.name} ${session.evaluation.date} ${session.completed ? '- ok' : ''}` ">
                         <TabEvaluation :global="session && session.evaluation && session.evaluation.kind==='global'" :session="session " :modules="currentCourse.modules" @updateModule="handleUpdateModule" />
                     </el-tab-pane>
@@ -48,6 +52,7 @@ import { mapGetters, mapActions } from 'vuex'
 import SelectStudent from './forms/SelectStudent.vue'
 import TableHead from './fragments/TableHead.vue'
 import TabEvaluation from './tabs/TabEvaluation.vue'
+import TabFinalProject from './tabs/TabFinalProject.vue'
 import TabGeneral from './tabs/TabGeneral.vue'
 import SelectSessionDialog from './fragments/SelectSessionDialog.vue'
 export default {
@@ -64,7 +69,8 @@ export default {
         TableHead,
         TabEvaluation,
         TabGeneral,
-        SelectSessionDialog
+        SelectSessionDialog,
+        TabFinalProject
     },
     methods: {
         handleAction(actionName) {

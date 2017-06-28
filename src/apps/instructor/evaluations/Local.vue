@@ -1,7 +1,7 @@
 <template>
     <div class="sheet" v-loading="loading">
         <el-row class="fullheight">
-            <el-col :span="4" class="topPad leftPad rightPad tealbg fullheight selector">
+            <el-col :span="4" class="topPad leftPad rightPad tealbg fullheight selector scrollv">
                 <SelectStudent :labs="labs" :lab="lab" :students="tableData" @select="handleSelectStudent" />
             </el-col>
             <el-col :span="20" class="fullheight vscroll detail">
@@ -331,5 +331,9 @@ export default {
 
 .tealbg {
     background-color: #ddd;
+}
+
+.scrollv {
+    overflow-y: scroll;
 }
 </style>

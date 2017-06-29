@@ -95,11 +95,21 @@ export default {
       var tab = filtered.length > 0 ? filtered[0] : null
       return tab;
     },
-    ...mapGetters(['currentCourse', 'courses'])
+    ...mapGetters({
+      'currentCourse': 'currentCourse',
+      'courses': 'courses',
+      'installedApps': 'apps/installedApps'
+    })
   },
   mounted() {
     // this.$store.dispatch("changeCourse",'fabacademy2017')
-    this.changeApp('/apps/manager')
+    const installed = this.installedApps || []
+    if (installed.indexOf('manager') != -1)
+      this.changeApp('/apps/manager')
+    else
+      this.$nextTick(function () {
+        this.$router.push('/')
+      })
   },
   data() {
     return {

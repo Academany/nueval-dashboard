@@ -53,10 +53,19 @@ export default {
       var filtered = this.apps.filter((el) => el.target.startsWith(path))
       var tab = filtered.length > 0 ? filtered[0] : null
       return tab;
-    }
+    },
+    ...mapGetters({
+      installedApps: 'apps/installedApps'
+    })
   },
   mounted() {
-
+    const installed = this.installedApps || []
+    if (installed.indexOf('manager') != -1)
+      this.changeApp('/apps/admin/users')
+    else
+      this.$nextTick(function () {
+        this.$router.push('/')
+      })
   },
   data() {
     return {

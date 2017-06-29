@@ -45,7 +45,8 @@ export default {
     },
     computed: {
         ...mapGetters({
-            userRoles: 'apps/userRoles'
+            userRoles: 'apps/userRoles',
+            installedApps: 'apps/installedApps'
         }),
         filteredRoles() {
             const roles = this.userRoles || [];
@@ -80,6 +81,10 @@ export default {
     mounted() {
         const vm = this;
         this.loadInstalledApps().then((success) => {
+            const apps = this.installedApps || []
+            if (this.installedApps.indexOf('instructor') != -1)
+                vm.$router.push('/')
+
             if (vm.filteredRoles.length == 1) {
                 vm.selectedRole = vm.filteredRoles[0];
                 vm.$nextTick(function () {

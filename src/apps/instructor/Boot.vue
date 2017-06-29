@@ -81,9 +81,6 @@ export default {
     mounted() {
         const vm = this;
         this.loadInstalledApps().then((success) => {
-            const apps = this.installedApps || []
-            if (this.installedApps.indexOf('instructor') != -1)
-                vm.$router.push('/')
 
             if (vm.filteredRoles.length == 1) {
                 vm.selectedRole = vm.filteredRoles[0];

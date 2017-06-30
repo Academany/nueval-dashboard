@@ -28,9 +28,9 @@ export default {
         url: '/api/courses/' + courseId + '/evaluations?filter=' + encodeURIComponent(
           JSON.stringify({
             include: [
-              {'evaluators' : ['labs']},
-              {'students' : ['lab']},
-              { 'pairings': ['student', 'instructor'] },
+              { 'evaluators': ['labs'] },
+              { 'students': ['lab'] },
+              { 'pairings': [{ 'student': ['lab'] }, 'instructor'] },
               'course',
             ],
           })
@@ -330,20 +330,43 @@ export default {
     evaluationStudents(evaluation) {
       return (evaluation) => {
         // debugger
+        const pairingCount = 0
         const students = evaluation.students || []
         const pairings = evaluation.pairings || []
         const evaluators = evaluation.evaluators || []
-        return students.map((student) => {
-          const student_pairing = pairings.find((p => p.studentId && p.studentId === student.id && p.instructorId))
-          if (student_pairing && student_pairing.instructorId) {
-            const evaluator = student_pairing.instructor // evaluators.find(p => p.id === student_pairing.instructorId)
-            if (evaluator) {
-              student.evaluator = evaluator
-              student.evaluatorId = evaluator.id
-            }
+        const found = pairings.map((pairing) => {
+          const student = pairing.student
+          const evaluator = pairing.instructor
+          if (evaluator) {
+            student.evaluator = evaluator
           }
+          student.evaluationId = evaluation.id
+          return student
+
+          // const student_pairing = pairings.find(function(p){
+          //   if (p.studentId === student.id && p.evaluationId === evaluation.id)
+          //     return true
+          //   return false
+          // })
+          // if (student_pairing && student_pairing.instructorId) {
+          //   const evaluator = student_pairing.instructor // evaluators.find(p => p.id === student_pairing.instructorId)
+          //   if (evaluator) {
+          //     student.evaluator = evaluator
+          //     student.evaluatorId = evaluator.id
+          //   }
+          // }
           return student
         })
+        // debugger
+        // let good = []
+        // const goodStudents = found.filter((s)=>{
+        //   if (good.indexOf(s.id)!=-1) return false
+        //   good.push(s.id)
+        //   return true
+        // })
+        // console.log('Evaluation has ' + goodStudents.length)
+        // return goodStudents
+        return found
       }
     },
     // evaluationLocalInstructor(evaluation, student) {

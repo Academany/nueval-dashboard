@@ -50,7 +50,7 @@ export default {
       tableColumns: [
         { id: 1, label: 'Name', prop: 'name', width: 250 },
         { id: 2, label: 'Date', prop: 'date' },
-        { id: 3, label: 'Students', prop: 'students.length' },
+        { id: 3, label: 'Students', prop: 'pairings.length' },
         { id: 4, label: 'Kind', prop: 'kind' }
       ],
       selectedRow: null,

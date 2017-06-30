@@ -10,6 +10,7 @@
     </el-form>
   
     <div>
+      Total count: {{students ? students.length : 0}}
       <br/>
     </div>
   
@@ -17,6 +18,17 @@
       <el-table-column prop="student_id" sortable label="ID" :width="80">
       </el-table-column>
       <el-table-column prop="username" sortable label="Username" :width="180">
+      </el-table-column>
+      <el-table-column label="" :width="40">
+        <template scope="scope">
+          <span v-if="scope.row.graduated">
+            <fa-icon name="star" class="fa-fix"></fa-icon>
+          </span>
+          <span v-if="scope.row.next_cycle">
+            <fa-icon name="recycle" class="fa-fix"></fa-icon>
+          </span>
+          <span v-if="scope.row.dropped">D</span>
+        </template>
       </el-table-column>
       <el-table-column prop="email" sortable label="Email" :width="230">
   
@@ -98,15 +110,15 @@ export default {
     },
     students() {
       if (!this.item) return []
-      let students = []
-      if (this.item.kind /* && this.item.kind === 'global' */) {
-        students = this.evaluationStudents(this.item) || []
+      let list = []
+      if (this.item.kind && this.item.kind === 'global') {
+        list = this.evaluationStudents(this.item) || []
       }
       // if (this.item.kind && this.item.kind === 'local') {
       //   students = this.allStudents || []
       // }
       // console.log('unknown session kind')
-      return students
+      return list
     },
 
     ...mapGetters({
@@ -206,5 +218,8 @@ export default {
 }
 </script>
 <style scoped>
-
+.fa-fix {
+  margin-bottom: -4px;
+  margin-left: -4px;
+}
 </style>

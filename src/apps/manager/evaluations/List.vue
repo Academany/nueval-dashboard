@@ -5,6 +5,8 @@
       <BasicDetail :item="selectedRow" slot="tab-content-0" @cancelEdit="handleCancel" />
       <StudentsList ref="studentsList" :item="selectedRow" @submit="handleAddStudent" @assign="handleAssignEvaluator" @remove="handleResetEvaluator" slot="tab-content-1" />
       <Evaluators :item="selectedRow" @submit="handleAddEvaluator" slot="tab-content-2" />
+      <Graduated :item="selectedRow" slot="tab-content-3" />
+      <NextCycle :item="selectedRow" slot="tab-content-4" />
     </MDDetailView>
   </MDView>
 </template>
@@ -19,6 +21,8 @@ import lodash from 'lodash'
 import BasicDetail from './Detail.vue'
 import StudentsList from './Students.vue'
 import Evaluators from './Evaluators.vue'
+import Graduated from './Graduated.vue'
+import NextCycle from './NextCycle.vue'
 import { mapActions, mapGetters } from 'vuex'
 let startId = 0
 //
@@ -42,7 +46,9 @@ export default {
     BasicDetail,
     StudentsList,
     Evaluators,
-    MDNotImplemented
+    MDNotImplemented,
+    Graduated,
+    NextCycle
   },
   data() {
     return {
@@ -72,6 +78,18 @@ export default {
           id: 'evaluators',
           label: 'Evaluators',
           name: 'evaluators',
+          hide: true
+        },
+        {
+          id: 'graduates',
+          label: 'Graduates',
+          name: 'graduates',
+          hide: true
+        },
+        {
+          id: 'nextcycle',
+          label: 'Next Cycle',
+          name: 'nextcycle',
           hide: true
         }
       ]

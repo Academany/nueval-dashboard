@@ -22,6 +22,9 @@
       <el-table-column label="" :width="40">
         <template scope="scope">
           <span v-if="scope.row.graduated">
+            <fa-icon name="graduation-cap" class="fa-fix"></fa-icon>
+          </span>
+          <span v-if="scope.row.featured">
             <fa-icon name="star" class="fa-fix"></fa-icon>
           </span>
           <span v-if="scope.row.next_cycle">

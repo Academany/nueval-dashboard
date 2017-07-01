@@ -1,5 +1,15 @@
 <template>
     <div class="fullwidth graybg padded fixed tableHead">
+        <el-button v-if="student && student.lab" type="primary" size="mini">
+    
+            <span>
+                <fa-icon name="flask" class="fa-fix"></fa-icon>
+                <small>
+                    {{student.lab.name}}
+                </small>
+            </span>
+    
+        </el-button>
         <el-tag>{{student && student.student_id}}</el-tag>
         {{ student && student.first_name}} {{ student && student.last_name}}
         <el-tag type="primary">

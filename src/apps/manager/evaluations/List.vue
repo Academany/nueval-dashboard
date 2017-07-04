@@ -7,6 +7,7 @@
       <Evaluators :item="selectedRow" @submit="handleAddEvaluator" slot="tab-content-2" />
       <Graduated :item="selectedRow" slot="tab-content-3" />
       <NextCycle :item="selectedRow" slot="tab-content-4" />
+      <Waiting :item="selectedRow" slot="tab-content-5" />
     </MDDetailView>
   </MDView>
 </template>
@@ -23,6 +24,7 @@ import StudentsList from './Students.vue'
 import Evaluators from './Evaluators.vue'
 import Graduated from './Graduated.vue'
 import NextCycle from './NextCycle.vue'
+import Waiting from './Waiting.vue'
 import { mapActions, mapGetters } from 'vuex'
 let startId = 0
 //
@@ -48,7 +50,8 @@ export default {
     Evaluators,
     MDNotImplemented,
     Graduated,
-    NextCycle
+    NextCycle,
+    Waiting
   },
   data() {
     return {
@@ -90,6 +93,12 @@ export default {
           id: 'nextcycle',
           label: 'Next Cycle',
           name: 'nextcycle',
+          hide: true
+        },
+        {
+          id: 'waiting',
+          label: 'Pending feedback',
+          name: 'waiting',
           hide: true
         }
       ]

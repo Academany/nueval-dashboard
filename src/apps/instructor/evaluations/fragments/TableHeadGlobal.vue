@@ -20,7 +20,12 @@
             <span v-else-if="canGoGlobal && !isInGlobal">Ready for local evaluation</span>
             <span v-else="!canGoGlobal && !isInGlobal">Under local evaluation</span>
         </el-tag>
+        <el-tag type="danger" v-if="waitingFeedback">
+            <span>Waiting for feedback</span>
+        </el-tag>
         <el-button-group class="fixed-right">
+            <el-button type="primary" size="small" :disabled="isGraduated || isRecycled || waitingFeedback" class="toolbar-btn" @click="handleRequestFeedback">
+                <fa-icon name="exclamation-triangle" class="fa-fix"></fa-icon> Waiting for feedback</el-button>
             <el-button type="success" size="small" :disabled="!canGraduate || isGraduated" class="toolbar-btn" @click="handleRequestGraduation">
                 <fa-icon name="graduation-cap" class="fa-fix"></fa-icon> Graduate</el-button>
             <el-button type="warning" size="small" :disabled="isGraduated || isRecycled" class="toolbar-btn" @click="handleNextCycle">
@@ -47,6 +52,7 @@ export default {
             canGraduate: 'instructor_app/evaluations/canGraduate',
             canGoGlobal: 'instructor_app/evaluations/canGoGlobal',
             isInGlobal: 'instructor_app/evaluations/isInGlobal',
+            waitingFeedback: 'instructor_app/evaluations/waitingFeedback'
         })
     },
     methods: {

@@ -19,6 +19,7 @@ export const GRADUATE_STUDENT = "GRADUATE_STUDENT"
 export const RECYCLE_STUDENT = "RECYCLE_STUDENT"
 export const DROP_STUDENT = "DROP_STUDENT"
 export const LOCAL_COMPLETE = "LOCAL_COMPLETE"
+export const WAITING_FEEDBACK = "WAITING_FEEDBACK"
 
 
 export default {
@@ -202,7 +203,7 @@ export default {
         if (!student || !session)
           return reject("Missing parameters")
         api.put("/api/evaluations/" + session.id + "/students/" + student.id,
-        { graduated: true, dropped: false, next_cycle: false }
+        { graduated: true, dropped: false, next_cycle: false, waiting_feedback: false }
         )
           .then((response) => {
             commit(GRADUATE_STUDENT, {
@@ -223,10 +224,32 @@ export default {
       })
     },
     requestFeedback({ commit, dispatch, state }) {
-      console.log('requestFeedback not implemented!')
-     return new Promise((resolve,reject)=>{
-       resolve()
-     })
+      return new Promise((resolve, reject) => {
+        // graduate current student
+        const student = state.currentStudent
+        const session = state.currentEvaluation
+        if (!student || !session)
+          return reject("Missing parameters")
+        api.put("/api/evaluations/" + session.id + "/students/" + student.id,
+        { graduated: false, dropped: false, next_cycle: false, waiting_feedback: true }
+        )
+          .then((response) => {
+            commit(WAITING_FEEDBACK, {
+              session,
+              student,
+            })
+            dispatch('loadProgress', student.id)
+            resolve(response)
+          })
+          .catch((error) => {
+            commit(API_FAILURE, error, {
+              root: true,
+            });
+            commit(HAS_FAILURE)
+
+            reject(error)
+          })
+      })
     },
     localComplete({ commit, dispatch, state }) {
       // send student to next cycle
@@ -270,7 +293,7 @@ export default {
 
         }
         api.put("/api/evaluations/" + session.id + "/students/" + student.id,
-        { next_cycle: true, graduated: false, dropped: false }
+        { next_cycle: true, graduated: false, dropped: false, waiting_feedback: false }
         )
           .then((response) => {
             commit(RECYCLE_STUDENT, {
@@ -304,7 +327,7 @@ export default {
         }
 
         api.put("/api/evaluations/" + session.id + "/students/" + student.id,
-        { next_cycle: false, graduated: false, dropped: true }
+        { next_cycle: false, graduated: false, dropped: true, waiting_feedback: false }
         )
           .then((response) => {
             commit(DROP_STUDENT, {
@@ -372,6 +395,10 @@ export default {
     [GRADUATE_STUDENT](state, {session,student}) {
       if (state.currentStudent)
         state.currentStudent.graduated = true
+    },
+    [WAITING_FEEDBACK](state, {session,student}) {
+      if (state.currentStudent)
+        state.currentStudent.waiting_feedback = true
     },
     [RECYCLE_STUDENT](state, {session,student}){
       if (state.currentStudent)
@@ -453,6 +480,12 @@ export default {
       }
       return false
     },
+    waitingFeedback: (state) => {
+      if (state.currentStudent && state.currentStudent.waiting_feedback === true) {
+        return true
+      }
+      return false
+    },
     canGraduate: (state) => {
       if (state.currentStudent && ( 
         state.currentStudent.graduated === true ||
@@ -502,7 +535,7 @@ export default {
     loading: false,
     local: true,
     needsSetup: false,
-    canGraduate: false,
-    failure: true,
+    // canGraduate: false,
+    failure: true
   },
 }

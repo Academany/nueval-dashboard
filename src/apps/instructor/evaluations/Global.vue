@@ -91,13 +91,13 @@ export default {
                 })
             } else if (actionName === 'requestFeedback') {
                 const vm = this
-                vm.$confirm('Do you want to send a notification to the student and his instructors?', 'Confirm', {
+                vm.$confirm('Do you want to flag that you are waiting for feedback by the student?', 'Confirm', {
                     confirmButtonText: 'OK',
                     cancelButtonText: 'Cancel',
                     type: 'danger'
                 }).then(() => {
                     this.requestFeedback().then((success) => {
-                        this.$notify({ title: "Success", message: "Feedback requested" })
+                        this.$notify({ title: "Success", message: "Waiting for Feedback flag set" })
                     })
                 })
             } else if (actionName === 'nextCycle') {

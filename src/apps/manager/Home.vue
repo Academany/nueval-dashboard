@@ -20,6 +20,14 @@
       </tr>
       <tr>
         <td>
+          <strong>Waiting feedback:</strong>
+        </td>
+        <td>
+          <span>{{waiting}}</span>
+        </td>
+      </tr>
+      <tr>
+        <td>
           <strong>Next Cycle:</strong>
         </td>
         <td>
@@ -69,6 +77,11 @@ export default {
       const allStudents = this.students || []
       const graduated = this.students.filter((s) => s.graduated === true)
       return graduated.length
+    },
+    waiting() {
+      const allStudents = this.students || []
+      const waiting = this.students.filter((s) => s.waiting_feedback === true)
+      return waiting.length
     }
   },
   methods: {

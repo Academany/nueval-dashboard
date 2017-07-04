@@ -61,7 +61,7 @@ export default {
             if (this.item.kind && this.item.kind === 'global') {
                 list = this.evaluationStudents(this.item) || []
             }
-            list = list.filter((s) => s.graduated === 'next_cycle')
+            list = list.filter((s) => s.next_cycle === true)
             // if (this.item.kind && this.item.kind === 'local') {
             //   students = this.allStudents || []
             // }

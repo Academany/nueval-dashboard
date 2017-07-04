@@ -51,7 +51,7 @@ export default {
       commit(SET_INSTRUCTORS, instructors);
     },
     createInstructor({
-            commit,
+            commit, dispatch,
         }, instructor) {
       return new Promise((resolve, reject) => {
                  // Do something here... lets say, a http call using vue-resource
@@ -94,7 +94,7 @@ export default {
       });
     },
     deleteInstructor({
-          commit,
+          commit, dispatch,
         }, instructor) {
       return new Promise((resolve, reject) => {
                 // Do something here... lets say, a http call using vue-resource

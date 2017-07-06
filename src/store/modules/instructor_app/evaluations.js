@@ -131,7 +131,7 @@ export default {
     }, studentId) {
       commit(LOAD_PROGRESS, studentId)
       return new Promise((resolve, reject) => {
-        api.get('/api/students/' + studentId + '/progress') // ?filter=' + encodeURIComponent(JSON.stringify(params)))
+        api.get('/api/students/' + studentId + '/progress?cache='+(Math.random()*1000000)) // ?filter=' + encodeURIComponent(JSON.stringify(params)))
           .then((data) => {
             if (data && data.length > 0) {
               commit(SET_PROGRESS, data)

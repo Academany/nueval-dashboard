@@ -1,16 +1,16 @@
 <template>
-<div  v-if="!isLoggedIn">
-  <el-col :span="12" :offset="6">
-  <el-card>
-    <div slot="header">Logging in...</div>
-    <p>You will be redirected to your page</p> 
-  </el-card>
-  </el-row>
-  </el-col>
-</div>
-<div v-else>
-  <slot></slot>
-</div>
+  <div v-if="!isLoggedIn">
+    <el-col :span="12" :offset="6">
+      <el-card>
+        <div slot="header">Logging in...</div>
+        <p>You will be redirected to your page</p>
+      </el-card>
+      </el-row>
+    </el-col>
+  </div>
+  <div v-else>
+    <slot></slot>
+  </div>
 </template>
 <script>
 import {
@@ -32,12 +32,12 @@ export default {
     }
   },
   mounted() {
-  
+
     var accessToken = this.$route.query.accessToken || localStorage.getItem('token');
     if (accessToken) {
       console.log('We have access token')
       this.checkAccessToken(accessToken).then((response) => {
-        console.log(response);
+        // console.log(response);
         if (response.body.error) {
           console.log('Error loading auth');
           this.logout();
@@ -50,12 +50,12 @@ export default {
         }).then((success) => {
           this.$router.push('/')
         }).catch((failure) => {
-          this.notify("Error", "Login failed: " +failure)
+          this.notify("Error", "Login failed: " + failure)
           this.$router.push('/login');
         })
 
-      }).catch((error)=>{
-        this.logout().then(()=>{
+      }).catch((error) => {
+        this.logout().then(() => {
           this.$router.push('/login')
         });
       });
@@ -71,8 +71,8 @@ export default {
 
   },
   methods: {
-    checkAccessToken(token){
-      console.log('Checking ' + token)
+    checkAccessToken(token) {
+      // console.log('Checking ' + token)
       return this.$http.get(config.api_url + '/auth/me?access_token=' + token)
     },
     notify(title, msg) {
@@ -85,7 +85,7 @@ export default {
         }, msg)
       });
     },
-    ...mapActions(['login','logout'])
+    ...mapActions(['login', 'logout'])
   }
 }
 </script>

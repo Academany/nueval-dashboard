@@ -36,7 +36,7 @@ export default {
       }
       api.get(opts.url)
                 .then(function (response) {
-                  console.log(response);
+                  // console.log(response);
                   commit('SET_INSTRUCTORS', response);
                 })
                 .catch(function (error) {
@@ -46,8 +46,8 @@ export default {
     setInstructors({
             commit,
         }, instructors) {
-      console.log('Got');
-      console.log(courses);
+      // console.log('Got');
+      // console.log(courses);
       commit(SET_INSTRUCTORS, instructors);
     },
     createInstructor({

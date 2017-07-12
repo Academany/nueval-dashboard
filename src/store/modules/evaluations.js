@@ -29,8 +29,13 @@ export default {
           JSON.stringify({
             include: [
               { 'evaluators': ['labs'] },
-              { 'students': ['lab'] },
-              { 'pairings': [{ 'student': ['lab'] }, 'instructor'] },
+              { 'students': ['lab', { 'sheets': ['evaluation', 'records'] }] },
+              { 'pairings': [
+                { 'student': [
+                  'lab', 
+                  ]},
+                'instructor'
+              ]},
               'course',
             ],
           })
@@ -355,7 +360,7 @@ export default {
           //     student.evaluatorId = evaluator.id
           //   }
           // }
-          return student
+          // return student
         })
         // debugger
         // let good = []

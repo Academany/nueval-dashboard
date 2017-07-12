@@ -30,12 +30,18 @@ export default {
                     course_id +
                     '/students?filter=' +
                     encodeURIComponent(JSON.stringify({
-                      "include": ["lab", "course", "user"],
+                      "include": [
+                        "lab",
+                        "course",
+                        "user",
+                        "evaluations",
+                        { "sheets": ['records', 'evaluation'] },
+                      ],
                     })),
       }
       api.get(opts.url)
                 .then(function (response) {
-                  console.log(response);
+                  // console.log(response);
                   commit('SET_STUDENTS', response);
                 })
                 .catch(function (error) {
@@ -45,8 +51,8 @@ export default {
     setStudents({
             commit,
         }, students) {
-      console.log('Got');
-      console.log(courses);
+      // console.log('Got');
+      // console.log(courses);
       commit(SET_STUDENTS, students);
     },
     createStudent({

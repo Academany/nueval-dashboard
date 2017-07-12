@@ -56,7 +56,7 @@ export default {
         // Do something here... lets say, a http call using vue-resource
         api.post("/api/courses/" + item.courseId + "/evaluations", item).then((response) => {
           // http success, call the mutator and change something in state
-          console.log(response);
+          // console.log(response);
           commit(CREATE_EVALUATION, response.body)
           // Let the calling function know that http is done. You may send some data back
           // push('/apps/manager/courses')

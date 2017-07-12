@@ -2,16 +2,15 @@
   <div>
     <CheckLogin>
       <!--<template scope="scope">-->
-        <el-row >
-
-        <el-col :lg="{ span: 18, offset: 3}"
-               >
-            <h3 v-if="userProfile.username" style="margin-left: 24px">Hi {{userProfile.username}}!</h3>
-            <div v-if="isLoading">Loading apps...</div>
-            
+      <el-row>
+  
+        <el-col :lg="{ span: 18, offset: 3}">
+          <h3 v-if="userProfile.username" style="margin-left: 24px">Hi {{userProfile.username}}!</h3>
+          <div v-if="isLoading">Loading apps...</div>
+  
         </el-col>
-        </el-row>
-        <AppsGrid :apps="apps" v-if="apps && apps.length > 0"/>
+      </el-row>
+      <AppsGrid :apps="apps" v-if="apps && apps.length > 0" />
       <!--</template>-->
     </CheckLogin>
   </div>
@@ -44,13 +43,13 @@ export default {
     }),
     apps() {
       if (!this.isLoggedIn || this.isLoading) return [];
-      console.log('reading apps')
+      // console.log('reading apps')
       var ids = this.installedApps;
       let filtered = availableApps.filter((a) => {
         return (ids.indexOf(a.id) != -1);
       });
-      console.log("returning");
-      console.log(filtered);
+      // console.log("returning");
+      // console.log(filtered);
       return filtered;
     },
   },

@@ -61,7 +61,10 @@
         <el-checkbox v-model="form.dropped">
         </el-checkbox>
       </el-form-item>
-  
+      <el-form-item label="Featured" prop="featured">
+        <el-checkbox v-model="form.featured">
+        </el-checkbox>
+      </el-form-item>
       <div style="margin-top:22px">
         <br>
       </div>
@@ -147,6 +150,7 @@ export default {
         continuing: vm.form.continuing,
         dropped: vm.form.dropped,
         next_cycle: vm.form.next_cycle,
+        featured: vm.form.featured,
         id: vm.form.id
       }).then(function (success) {
         vm.notify('Success', 'Student saved');

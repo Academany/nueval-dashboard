@@ -1,6 +1,6 @@
 <template>
   <MDView>
-    <MLTable slot="master" ref="masterTable" :value="evaluations" :selectedRow="selectedRow" :tableColumns="tableColumns" @select="handleSelect" @edit="handleEdit" @delete="handleDelete" />
+    <MLTable v-loading="evaluations.length == 0" slot="master" ref="masterTable" :value="evaluations" :selectedRow="selectedRow" :tableColumns="tableColumns" @select="handleSelect" @edit="handleEdit" @delete="handleDelete" />
     <MDDetailView :entity="entity" :selectedRow="selectedRow" v-model="tabs" @newItem="handleNew" @delete="handleDelete" slot="detail">
       <BasicDetail :item="selectedRow" slot="tab-content-0" @cancelEdit="handleCancel" />
       <StudentsList ref="studentsList" :item="selectedRow" @submit="handleAddStudent" @assign="handleAssignEvaluator" @remove="handleResetEvaluator" slot="tab-content-1" />
@@ -8,6 +8,9 @@
       <Graduated :item="selectedRow" slot="tab-content-3" />
       <NextCycle :item="selectedRow" slot="tab-content-4" />
       <Waiting :item="selectedRow" slot="tab-content-5" />
+      <Pending :item="selectedRow" slot="tab-content-6" />
+      <NotStarted :item="selectedRow" slot="tab-content-7" />
+  
     </MDDetailView>
   </MDView>
 </template>
@@ -25,6 +28,9 @@ import Evaluators from './Evaluators.vue'
 import Graduated from './Graduated.vue'
 import NextCycle from './NextCycle.vue'
 import Waiting from './Waiting.vue'
+import Pending from './Pending.vue'
+import NotStarted from './NotStarted.vue'
+
 import { mapActions, mapGetters } from 'vuex'
 let startId = 0
 //
@@ -51,7 +57,9 @@ export default {
     MDNotImplemented,
     Graduated,
     NextCycle,
-    Waiting
+    Waiting,
+    Pending,
+    NotStarted
   },
   data() {
     return {
@@ -97,8 +105,20 @@ export default {
         },
         {
           id: 'waiting',
-          label: 'Pending feedback',
+          label: 'Waiting feedback',
           name: 'waiting',
+          hide: true
+        },
+        {
+          id: 'pending',
+          label: 'Pending',
+          name: 'pending',
+          hide: true
+        },
+        {
+          id: 'notstarted',
+          label: 'Not started',
+          name: 'notstarted',
           hide: true
         }
       ]

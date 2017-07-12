@@ -9,9 +9,11 @@
       <el-button type="primary" @click="submitForm('myForm')">Add Student</el-button>
     </el-form>
   
-    <div>
+    <div style="float: right; margin-top: -48px;padding-bottom: 24px; text-align: right">
       Total count: {{students ? students.length : 0}}
-      <br/>
+      <br>
+      <small> G: graduated, F: featured, N: next_cycle,
+        <br>D: dropped, W: waiting_feedback</small>
     </div>
   
     <el-table :data="students" border style="width: 100%">
@@ -19,18 +21,19 @@
       </el-table-column>
       <el-table-column prop="username" sortable label="Username" :width="180">
       </el-table-column>
-      <el-table-column label="" :width="40">
+      <el-table-column label="" :width="70" sortable>
         <template scope="scope">
           <span v-if="scope.row.graduated">
-            <fa-icon name="graduation-cap" class="fa-fix"></fa-icon>
+            G
           </span>
           <span v-if="scope.row.featured">
-            <fa-icon name="star" class="fa-fix"></fa-icon>
+            F
           </span>
           <span v-if="scope.row.next_cycle">
-            <fa-icon name="recycle" class="fa-fix"></fa-icon>
+            N
           </span>
           <span v-if="scope.row.dropped">D</span>
+          <span v-if="scope.row.waiting_feedback">W</span>
         </template>
       </el-table-column>
       <el-table-column prop="email" sortable label="Email" :width="230">

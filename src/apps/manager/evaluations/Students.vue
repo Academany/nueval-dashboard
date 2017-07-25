@@ -117,9 +117,9 @@ export default {
     students() {
       if (!this.item) return []
       let list = []
-      if (this.item.kind && this.item.kind === 'global') {
-        list = this.evaluationStudents(this.item) || []
-      }
+      // if (this.item.kind && this.item.kind === 'global') {
+      list = this.evaluationStudents(this.item) || []
+      // }
       // if (this.item.kind && this.item.kind === 'local') {
       //   students = this.allStudents || []
       // }

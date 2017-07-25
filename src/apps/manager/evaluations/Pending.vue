@@ -58,10 +58,10 @@ export default {
     students() {
       if (!this.item) return []
       let list = []
-      if (this.item.kind && this.item.kind === 'global') {
-        list = this.evaluationStudents(this.item) || []
-      }
-      list = list.filter((s) => s.graduated === false && s.next_cycle === false && s.waiting_feedback === false)
+      // if (this.item.kind && this.item.kind === 'global') {
+      list = this.evaluationStudents(this.item) || []
+      // }
+      list = list.filter((s) => s.graduated === false && s.next_cycle === false && s.waiting_feedback === false && s.dropped === false)
       // if (this.item.kind && this.item.kind === 'local') {
       //   students = this.allStudents || []
       // }

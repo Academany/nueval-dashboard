@@ -58,13 +58,20 @@ export default {
         students() {
             if (!this.item) return []
             let list = []
-            if (this.item.kind && this.item.kind === 'global') {
-                list = this.evaluationStudents(this.item) || []
-            }
-            list = list.filter((s) => s.next_cycle === true)
-            // if (this.item.kind && this.item.kind === 'local') {
-            //   students = this.allStudents || []
+            // if (this.item.kind &&  this.item.kind === 'global') {
+            list = this.evaluationStudents(this.item) || []
             // }
+            list = list.filter((s) => s.next_cycle === true)
+            if (this.item.kind && this.item.kind === 'local') {
+                function hasGlobalEval(student) {
+                    const sheets = student.sheets || []
+                    const res = sheets.filter((e) => e.evaluation.kind === 'global').length > 0
+                    // if (res) console.log('has global eval')
+                    return res
+                }
+
+                list = list.filter((s) => !hasGlobalEval(s))
+            }
             // console.log('unknown session kind')
             return list
         },

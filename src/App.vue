@@ -1,19 +1,16 @@
 <template>
   <div id="app">
-    
     <TopBar/>
-
-     <router-view></router-view>
-
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
 import TopBar from "./components/TopBar.vue"
-import {mapGetters,mapActions} from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
-  data () {
+  data() {
     return {
       title: 'Academany Portal'
     }
@@ -22,20 +19,24 @@ export default {
     TopBar
   },
   computed: mapGetters(['isLoggedIn']),
-  created(){
+  created() {
     // localStorage.removeItem('nag1');
   },
-  mounted(){
+  mounted() {
 
   }
 }
 </script>
 
 <style>
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
   font-weight: bold;
   font-family: 'Ubuntu Condensed', 'Helvetica', 'Arial', sans-serif;
 }
+
 body {
   font-family: 'Advent Pro', 'Open Sans', 'Helvetica', 'Arial', sans-serif;
   padding: 0;

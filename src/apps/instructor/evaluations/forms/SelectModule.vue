@@ -7,7 +7,7 @@
         </el-table-column>
         <el-table-column prop="progress" :width="120">
             <template scope="scope">
-                <el-progress :percentage="progressFor(scope.row)" type="line" :status="isCompleted(scope.row) ? 'success' : ''" style="width: 100px "></el-progress>
+                <el-progress :percentage="progressFor(scope.row)" type="line" :status="rowStatus(scope.row)" style="width: 100px"></el-progress>
             </template>
         </el-table-column>
     </el-table>
@@ -31,7 +31,7 @@ export default {
         handleModuleChange(val) {
             // alert(JSON.stringify(val));
             const vm = this
-            this.$nextTick(function () {
+            this.$nextTick(function() {
                 const record = vm.recordFor(val)
                 vm.$emit('select-module', { module: val, record: record })
             })
@@ -46,6 +46,12 @@ export default {
         }
     },
     computed: {
+        rowStatus() {
+            const vm = this;
+            return function(scope_row) {
+                return vm.isCompleted(scope_row) ? 'success' : ''
+            }
+        },
         progressFor() {
             return (module) => {
                 const record = this.recordFor(module)

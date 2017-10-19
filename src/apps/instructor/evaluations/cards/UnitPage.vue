@@ -2,38 +2,38 @@
     <el-card>
         <div slot="header">{{module.name}}
             <div class="pull-right">
-    
+
                 <el-tag v-if="module">Ver. {{module.rules && module.rules.version}}</el-tag>
             </div>
         </div>
         <div class="card-body">
             <h4>Overall progress</h4>
             <UnitStatus :readonly="readonly" :module="module" :record="record" @markNotComplete="handleMarkNotComplete" @markComplete="handleMarkComplete" @showFeedback="handleShowFeedback" />
-    
+
             <h4>Unit description</h4>
             <UnitTasks :module="module" />
-    
+
             <h4>Learning outcomes</h4>
             <UnitOutcomes :readonly="readonly" :module="module" :record="record" @updateProgress="handleUpdateProgress" @save="handleSaveProgress" />
-    
+
             <div v-if="global != true">
                 <h4>Have you?</h4>
                 <StudentCheckList :readonly="readonly" :module="module" :record="record" @save="handleUpdateCheckList" />
             </div>
-    
+
             <h4>Feedback</h4>
             <FeedbackList ref="FeedbackForm" :messages="getMessages()" />
-    
+
             <FeedbackForm @newFeedback="handleNewFeedback" />
-    
+
             <h4>FAQ</h4>
             <UnitFAQ :module="module" />
-    
+
             <h4>Recent Changes</h4>
             <RecentChanges :record="record" />
-    
+
         </div>
-    
+
     </el-card>
 </template>
 
@@ -106,7 +106,10 @@ export default {
             vm.updateProgress(progress)
                 .then((success) => {
                     vm.logOk("Progress recorded successfully")
+                    // vm.$nextTick(function() {
                     vm.triggerUpdate()
+
+                    // })
                 }).catch((error) => {
                     vm.logError(error)
                 })
@@ -116,7 +119,10 @@ export default {
             vm.updateChecklist(checklist)
                 .then((success) => {
                     vm.logOk("Checklist recorded successfully")
+                    // vm.$nextTick(function() {
                     vm.triggerUpdate()
+
+                    // })
                 }).catch((error) => {
                     vm.logError(error)
                 })
@@ -126,7 +132,10 @@ export default {
             vm.markComplete(checklist)
                 .then((success) => {
                     vm.logOk("Unit marked complete")
+                    // vm.$nextTick(function() {
                     vm.triggerUpdate()
+
+                    // })
                 }).catch((error) => {
                     vm.logError(error)
                 })
@@ -136,7 +145,9 @@ export default {
             vm.markNotComplete(checklist)
                 .then((success) => {
                     vm.logOk("Unit is not complete")
+                    // vm.$nextTick(function() {
                     vm.triggerUpdate()
+                    // })
                 }).catch((error) => {
                     vm.logError(error)
                 })
@@ -146,7 +157,9 @@ export default {
             vm.leaveFeedback(feedback)
                 .then((success) => {
                     vm.logOk("Feedback recorded successfully")
+                    // vm.$nextTick(function() {
                     vm.triggerUpdate()
+                    // })
                 }).catch((error) => {
                     vm.logError(error)
                 })

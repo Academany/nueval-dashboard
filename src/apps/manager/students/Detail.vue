@@ -33,6 +33,10 @@
           <el-input type="text" v-model="form.last_name" placeholder="Last name">
           </el-input>
         </el-form-item>
+        <el-form-item label="Year of enrollment" prop="year">
+          <el-input type="number" v-model="form.year" placeholder="2017">
+          </el-input>
+        </el-form-item>
       </div>
 
       <div label="Lab">
@@ -140,6 +144,7 @@ export default {
       scholarship: 0,
       paid: 0,
       global_eval_fees: 0,
+      year: "2017"
     }, this.item)
     this.currency = this.item.currency || 'euro'
     // this.loadUsers();
@@ -193,7 +198,8 @@ export default {
         paid: vm.form.paid,
         global_eval_fees: vm.form.global_eval_fees,
         currency: vm.form.currency,
-        notes: vm.form.notes
+        notes: vm.form.notes,
+        year: vm.form.year
       }).then(function(success) {
         vm.notify('Success', 'Student created');
         vm.resetForm();
@@ -219,7 +225,8 @@ export default {
         paid: vm.form.paid,
         global_eval_fees: vm.form.global_eval_fees,
         currency: vm.currency,
-        notes: vm.form.notes
+        notes: vm.form.notes,
+        year: vm.form.year
       }).then(function(success) {
         vm.notify('Success', 'Student saved');
         // vm.resetForm();

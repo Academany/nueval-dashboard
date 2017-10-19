@@ -38,7 +38,7 @@
       prop="permission"
       label="Permissions"
       :min-width="100">
-      <template scope="scope">
+      <template slot-scope="scope">
       Read, Write
       </template>
     </el-table-column>
@@ -46,7 +46,7 @@
       label=""
       :min-width="80"
       >
-      <template scope="scope">
+      <template slot-scope="scope">
       <el-button size="small"><fa-icon name="gear"></fa-icon></el-button>
       <el-button size="small"><fa-icon name="trash"></fa-icon></el-button>
     </template>

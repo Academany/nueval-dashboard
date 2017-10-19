@@ -22,7 +22,7 @@
       <el-table-column prop="email" label="Email" :width="230">
       </el-table-column>
       <el-table-column>
-        <template scope="scope">
+        <template slot-scope="scope">
           <small>{{ scope.row.labs && scope.row.labs.length }} labs
             <br>
             <div v-if="scope.row.labs" v-for="c in scope.row.labs" :key="c">
@@ -32,7 +32,7 @@
         </template>
       </el-table-column>
       <el-table-column prop="candidates" label="Assigned">
-        <template scope="scope">
+        <template slot-scope="scope">
           <small>{{ scope.row.candidates && scope.row.candidates.length }} candidates
             <br>
             <div v-if="scope.row.candidates" v-for="c in scope.row.candidates" :key="c">
@@ -42,7 +42,7 @@
         </template>
       </el-table-column>
       <el-table-column label="" fit>
-        <template scope="scope">
+        <template slot-scope="scope">
           <el-button @click="handleRemove(scope.row)" size="mini" type="danger">
             <fa-icon name="trash"></fa-icon>
           </el-button>

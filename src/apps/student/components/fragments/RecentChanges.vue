@@ -4,7 +4,7 @@
     <div>
         <el-table :data="logItems" border striped>
             <el-table-column label="Date" :width="200">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <small>{{ scope.row.timestamp | moment }}</small>
                 </template>
             </el-table-column>

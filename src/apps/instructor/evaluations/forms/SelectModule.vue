@@ -1,12 +1,12 @@
 <template>
     <el-table border :show-header="false" highlight-current-row ref="modulesTable" @current-change="handleModuleChange" :data="data" style="width: 100%">
         <el-table-column prop="name" :min-width="100">
-            <template scope="scope">
+            <template slot-scope="scope">
                 {{scope.row.name | truncate(38)}}
             </template>
         </el-table-column>
         <el-table-column prop="progress" :width="120">
-            <template scope="scope">
+            <template slot-scope="scope">
                 <el-progress :percentage="progressFor(scope.row)" type="line" :status="rowStatus(scope.row)" style="width: 100px"></el-progress>
             </template>
         </el-table-column>

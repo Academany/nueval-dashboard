@@ -11,7 +11,7 @@
           :label="item.label"
           :name="item.name"
         >
-            <template scope="scope">
+            <template slot-scope="scope">
               <slot :name="'tab-content-'+index"></slot>
             </template>
         </el-tab-pane>

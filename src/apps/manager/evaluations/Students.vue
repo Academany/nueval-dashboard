@@ -22,7 +22,7 @@
       <el-table-column prop="username" sortable label="Username" :width="180">
       </el-table-column>
       <el-table-column label="" :width="70" sortable>
-        <template scope="scope">
+        <template slot-scope="scope">
           <span v-if="scope.row.graduated">
             G
           </span>
@@ -40,19 +40,19 @@
   
       </el-table-column>
       <el-table-column sortable label="Lab" :width="200">
-        <template scope="scope">
+        <template slot-scope="scope">
           {{ scope.row.lab ? scope.row.lab.name : '' | truncate(25) }}
         </template>
       </el-table-column>
       <el-table-column label="Instructor" sortable :width="130" v-if="item.kind === 'local'">
-        <template scope="scope">
+        <template slot-scope="scope">
           <span v-if="scope.row.evaluator">
             {{scope.row.evaluator.username}}
           </span>
         </template>
       </el-table-column>
       <el-table-column prop="evaluator.username" v-if="item.kind === 'global'" sortable label="Evaluator" :width="130">
-        <template scope="scope">
+        <template slot-scope="scope">
           <span v-if="scope.row.evaluator">
             {{scope.row.evaluator.username}}
           </span>
@@ -66,7 +66,7 @@
         </template>
       </el-table-column>
       <el-table-column label="" fit v-if="item.kind === 'global'">
-        <template scope="scope">
+        <template slot-scope="scope">
           <el-button v-if="!scope.row.evaluator && evaluator_option[scope.row.id]" @click="handleAssignEvaluator(scope.row)" type="primary" size="mini">
             Assign
           </el-button>

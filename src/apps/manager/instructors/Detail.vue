@@ -29,6 +29,19 @@
           <el-input type="text" v-model="form.last_name" placeholder="Last name">
           </el-input>
         </el-form-item>
+
+        <el-form-item label="Graduation year" prop="graduation_year">
+          <el-input type="text" v-model="form.graduation_year" placeholder="2017"></el-input>
+        </el-form-item>
+
+        <el-form-item label="Years teaching" prop="years_teaching">
+          <el-input type="text" v-model="form.years_teaching" placeholder="0"></el-input>
+        </el-form-item>
+
+        <el-form-item label="Comment" prop="comment">
+          <el-input type="textarea" :rows="8" placeholder="" v-model="form.comment">
+          </el-input>
+        </el-form-item>
       </div>
 
       <el-form-item>
@@ -95,7 +108,10 @@ export default {
         email: vm.form.email,
         courseId: vm.currentCourse.id,
         first_name: vm.form.first_name,
-        last_name: vm.form.last_name
+        last_name: vm.form.last_name,
+        years_teaching: vm.form.years_teaching,
+        graduation_year: vm.form.graduation_year,
+        comment: vm.form.comment
       }).then(function(success) {
         vm.notify('Success', 'Instructor created');
         vm.resetForm();
@@ -115,6 +131,9 @@ export default {
         first_name: vm.form.first_name,
         last_name: vm.form.last_name,
         courseId: vm.currentCourse.id,
+        years_teaching: vm.form.years_teaching,
+        graduation_year: vm.form.graduation_year,
+        comment: vm.form.comment,
         id: vm.form.id
       }).then(function(success) {
         vm.notify('Success', 'Instructor saved');

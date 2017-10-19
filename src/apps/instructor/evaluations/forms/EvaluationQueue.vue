@@ -20,7 +20,7 @@
         <el-form-item label="Students">
             <el-table border :show-header="false" highlight-current-row ref="studentsTable" @current-change="handleStudentChange" :data="students" style="width: 100%">
                 <el-table-column>
-                    <template scope="scope">
+                    <template slot-scope="scope">
                         {{scope.row.student_id }} - {{scope.row.first_name}} {{scope.row.last_name}}
                         <fa-icon class="fa-fix fa-success" name="star" v-if="scope.row.graduated" />
                         <fa-icon class="fa-fix" name="recycle" v-if="scope.row.next_cycle" />

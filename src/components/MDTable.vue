@@ -2,7 +2,7 @@
   <el-table ref="myTable" border :height="tableHeight" :data="items" style="width: 100%" highlight-current-row @current-change="handleCurrentChange" @sort-change="handleSortChange">
   
     <el-table-column v-for="col in columns.filter((c) => c.prop === 'date')" :prop="col.prop" :label="col.label" :key="col.id" fit :width="col.width" :sortable="true">
-      <template scope="scope">
+      <template slot-scope="scope">
         {{ scope.row.date | moment('YYYY-MM-DD') }}
       </template>
     </el-table-column>

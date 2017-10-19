@@ -15,19 +15,19 @@
       <el-table-column prop="email" sortable label="Email" :width="230">
       </el-table-column>
       <el-table-column sortable label="Lab" :width="200">
-        <template scope="scope">
+        <template slot-scope="scope">
           {{ scope.row.lab ? scope.row.lab.name : '' | truncate(25) }}
         </template>
       </el-table-column>
       <el-table-column label="Instructor" sortable :width="130" v-if="item.kind === 'local'">
-        <template scope="scope">
+        <template slot-scope="scope">
           <span v-if="scope.row.evaluator">
             {{scope.row.evaluator.username}}
           </span>
         </template>
       </el-table-column>
       <el-table-column prop="evaluator.username" v-if="item.kind === 'global'" sortable label="Evaluator" :width="130">
-        <template scope="scope">
+        <template slot-scope="scope">
           <span v-if="scope.row.evaluator">
             {{scope.row.evaluator.username}}
           </span>

@@ -28,7 +28,7 @@
   </el-table-column>
   <el-table-column
      label="Operations">
-     <template scope="scope">
+     <template slot-scope="scope">
        <el-button
          size="small"
          @click="handleEdit(scope.$index, scope.row)">Edit</el-button>

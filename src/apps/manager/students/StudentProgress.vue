@@ -6,11 +6,11 @@
       Student
       <span v-if="form.id">#{{form.id}}</span>
     </h3>
-  
+
     <h4>Progress</h4>
-  
+
     <small>Student evaluations found: {{ progress && progress.length || 0}}</small>
-  
+
     <table v-if="progress && progress.length > 0">
       <tr v-for="session in progress" :key="session.id">
         <td class="topcell">
@@ -41,9 +41,9 @@
       </tr>
     </table>
     <p v-else>Not evaluated yet</p>
-  
+
     <h4>Flags</h4>
-  
+
     <el-form ref="myForm" :rules="rules" :model="form" label-position="left" label-width="150px">
       <el-form-item label="Graduated" prop="graduated">
         <el-checkbox v-model="form.graduated">
@@ -68,13 +68,13 @@
       <div style="margin-top:22px">
         <br>
       </div>
-  
+
       <el-form-item>
         <el-button v-if="form.id" type="primary" @click="submitForm('myForm','update')">Save</el-button>
         <el-button @click="resetForm('myForm')">Cancel</el-button>
       </el-form-item>
     </el-form>
-  
+
   </div>
 </template>
 
@@ -102,7 +102,7 @@ export default {
 
   },
   watch: {
-    item: function (val) {
+    item: function(val) {
       if (val)
         this.loadProgress(val)
     }
@@ -152,11 +152,11 @@ export default {
         next_cycle: vm.form.next_cycle,
         featured: vm.form.featured,
         id: vm.form.id
-      }).then(function (success) {
+      }).then(function(success) {
         vm.notify('Success', 'Student saved');
         // vm.resetForm();
         //formW.resetFields();
-      }).catch(function (error) {
+      }).catch(function(error) {
         console.log(error);
         vm.notify('Error', 'Some error happened');
       });
@@ -187,7 +187,7 @@ export default {
       this.$emit('cancelEdit');
     },
     ...mapActions({
-      currentCourse: 'currentCourse',
+
       createStudent: 'admin/students/createStudent',
       updateStudent: 'admin/students/updateStudent',
       loadProgress: 'admin/students/loadProgress'

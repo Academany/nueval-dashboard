@@ -38,7 +38,7 @@ export default {
   margin-right: 5px;
   width: 3px;
   height: 90vh;
-  z-index: 99;
+  /* z-index: 99; */
 }
 
 .layout-v>.multipane-resizer :before {
@@ -58,6 +58,7 @@ export default {
 .detail {
   margin-left: 10px;
 }
+
 
 
 

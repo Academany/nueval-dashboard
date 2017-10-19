@@ -28,7 +28,7 @@
     <el-table-column
       label=""
       >
-      <template scope="scope">
+      <template slot-scope="scope">
         <el-button size="small"><fa-icon name="gear"></fa-icon></el-button>
         <el-button size="small" type="danger"><fa-icon name="trash"></fa-icon></el-button>
     </template>

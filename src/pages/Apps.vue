@@ -1,7 +1,7 @@
 <template>
   <div>
     <CheckLogin>
-      <!--<template scope="scope">-->
+      <!--<template slot-scope="scope">-->
       <el-row>
   
         <el-col :lg="{ span: 18, offset: 3}">

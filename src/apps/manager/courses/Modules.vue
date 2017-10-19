@@ -10,14 +10,14 @@
     </el-row>
     <el-table :data="modules" style="width: 100%" border>
       <el-table-column prop="date" label="Date" :width="180">
-        <template scope="scope">
+        <template slot-scope="scope">
           {{ scope.row.date | moment('YYYY-MM-DD') }}
         </template>
       </el-table-column>
       <el-table-column prop="name" label="Name">
       </el-table-column>
       <el-table-column label="" :width="60">
-        <template scope="scope">
+        <template slot-scope="scope">
           <el-dropdown :hide-on-click="true" trigger="click" size="mini" menu-align="start" @command="handleCommand">
             <el-button type="primary" size="mini">
               <fa-icon name="gear"></fa-icon>

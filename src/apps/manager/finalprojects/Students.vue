@@ -9,12 +9,12 @@
       <el-table-column prop="last_name" label="Last" :width="130">
       </el-table-column>
       <el-table-column prop="status" label="Status" :width="100" :filters="[{ text: 'Booked', value: 'booked' }, { text: 'Presented', value: 'presented' }, {text: 'No Show', value: 'no show'}]" :filter-method="filterTag" filter-placement="bottom-end">
-        <template scope="scope">
+        <template slot-scope="scope">
           <el-tag :type="statusIcon(scope.row.status)">{{ scope.row.status }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column fit>
-        <template scope="scope">
+        <template slot-scope="scope">
           <el-button @click="handleNoshow(scope.row)" :disabled="scope.row.status != 'booked'" size="mini" type="warning">No-show</el-button>
           <el-button @click="handlePresented(scope.row)" :disabled="scope.row.status != 'booked'" size="mini" type="success">Presented</el-button>
           <el-button @click="handleUnbook(scope.row)" :disabled="scope.row.status != 'booked'" size="mini" type="danger">Remove</el-button>

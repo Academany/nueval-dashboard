@@ -4,7 +4,7 @@
         <div class="block">
             <el-table :data="logRows" border style="width: 98%">
                 <el-table-column prop="createdAt" label="Date" :width="240">
-                    <template scope="scope">
+                    <template slot-scope="scope">
                         {{ scope.row.createdAt | moment("YYYY-MM-DD hh:mm Z")}}
                     </template>
                 </el-table-column>
@@ -13,7 +13,7 @@
                 <el-table-column prop="description" label="Action" :width="200"></el-table-column>
                 <!--<el-table-column prop="subject_type"></el-table-column>-->
                 <el-table-column prop="properties" label="Properties" fit>
-                    <template scope="scope">
+                    <template slot-scope="scope">
                         <pre>{{ JSON.stringify(scope.row.properties, tabs=4)}}</pre>
                     </template>
                 </el-table-column>

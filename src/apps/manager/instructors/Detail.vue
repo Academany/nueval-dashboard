@@ -1,40 +1,43 @@
 <template>
+  <div class="form clearfix">
+    <h3>
+      <span v-if="form.id">Edit</span>
+      <span v-if="!form.id">Fill the form to create a new</span>
+      Instructor
+      <span v-if="form.id">{{form.lab_id}}</span>
+    </h3>
+    <el-form ref="myForm" :rules="rules" :model="form" label-position="top" label-width="150px">
+      <el-form-item label="Username" prop="username">
+        <el-input type="text" v-model="form.username" placeholder="username from fablabs.io">
+        </el-input>
+        <small>Required for the user to be able to Login</small>
+      </el-form-item>
 
-<div class="form clearfix">
-  <h3><span v-if="form.id">Edit</span>
-    <span v-if="!form.id">Fill the form to create a new</span>
-     Instructor <span v-if="form.id">{{form.lab_id}}</span> </h3>
-  <el-form ref="myForm" :rules="rules" :model="form" label-position="top" label-width="150px" >
-    <el-form-item label="Username" prop="username">
-      <el-input type="text" v-model="form.username" placeholder="username from fablabs.io">
-      </el-input>
-      <small>Required for the user to be able to Login</small>
-    </el-form-item>
+      <div label="Personal information">
+        <div slot="header">
+          <h5>Personal information</h5>
+        </div>
+        <el-form-item label="Email" prop="email">
+          <el-input type="text" v-model="form.email" placeholder="email address">
+          </el-input>
+        </el-form-item>
+        <el-form-item label="First Name" prop="first_name">
+          <el-input type="text" v-model="form.first_name" placeholder="First name">
+          </el-input>
+        </el-form-item>
+        <el-form-item label="Last Name" prop="last_name">
+          <el-input type="text" v-model="form.last_name" placeholder="Last name">
+          </el-input>
+        </el-form-item>
+      </div>
 
-    <div label="Personal information">
-      <div slot="header"><h5>Personal information</h5></div>
-    <el-form-item label="Email" prop="email">
-      <el-input type="text" v-model="form.email" placeholder="email address">
-      </el-input>
-    </el-form-item>
-    <el-form-item label="First Name" prop="first_name">
-      <el-input type="text" v-model="form.first_name" placeholder="First name">
-      </el-input>
-    </el-form-item>
-    <el-form-item label="Last Name" prop="last_name">
-      <el-input type="text" v-model="form.last_name" placeholder="Last name">
-      </el-input>
-    </el-form-item>
-    </div>
-
-
-    <el-form-item>
-      <el-button v-if="!form.id" type="primary" @click="submitForm('myForm')">Create</el-button>
-      <el-button v-if="form.id" type="primary" @click="submitForm('myForm')">Save</el-button>
-      <el-button @click="resetForm('myForm')">Cancel</el-button>
-    </el-form-item>
-</el-form>
-</div>
+      <el-form-item>
+        <el-button v-if="!form.id" type="primary" @click="submitForm('myForm')">Create</el-button>
+        <el-button v-if="form.id" type="primary" @click="submitForm('myForm')">Save</el-button>
+        <el-button @click="resetForm('myForm')">Cancel</el-button>
+      </el-form-item>
+    </el-form>
+  </div>
 </template>
 
 
@@ -76,7 +79,7 @@ export default {
     }
   },
   computed: {
-    form: function () {
+    form: function() {
       return this.item || {}
     },
     ...mapGetters(['currentCourse'])
@@ -93,29 +96,31 @@ export default {
         courseId: vm.currentCourse.id,
         first_name: vm.form.first_name,
         last_name: vm.form.last_name
-      }).then(function (success) {
+      }).then(function(success) {
         vm.notify('Success', 'Instructor created');
         vm.resetForm();
         //formW.resetFields();
-      }).catch(function (error) {
+      }).catch(function(error) {
         vm.notify('Error', 'Some error happened');
       });
     },
     handleUpdate() {
       var vm = this;
+      if (!vm.currentCourse)
+        return vm.notify('Error', 'Select a course first');
 
       vm.updateInstructor({
         username: vm.form.username,
         email: vm.form.email,
         first_name: vm.form.first_name,
         last_name: vm.form.last_name,
-        courseId: vm.form.courseId,
+        courseId: vm.currentCourse.id,
         id: vm.form.id
-      }).then(function (success) {
+      }).then(function(success) {
         vm.notify('Success', 'Instructor saved');
         vm.resetForm();
         //formW.resetFields();
-      }).catch(function (error) {
+      }).catch(function(error) {
         console.log(error);
         vm.notify('Error', 'Some error happened');
       });

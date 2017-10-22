@@ -3,19 +3,19 @@
     <h3>Students</h3>
     <p v-if="item.kind === 'local'">The following students were marked complete by their instructor</p>
     <p v-else>Assign students to this evaluation round</p>
-  
+
     <el-form ref="myForm" :rules="rules" :model="form" v-if="item.kind === 'global'" label-position="left" label-width="150px">
       <el-autocomplete class="inline-input" v-model="student_option" :fetch-suggestions="querySearch" placeholder="Please Input" :trigger-on-focus="false" @select="handleSelect"></el-autocomplete>
       <el-button type="primary" @click="submitForm('myForm')">Add Student</el-button>
     </el-form>
-  
+
     <div style="float: right; margin-top: -48px;padding-bottom: 24px; text-align: right">
       Total count: {{students ? students.length : 0}}
       <br>
       <small> G: graduated, F: featured, N: next_cycle,
         <br>D: dropped, W: waiting_feedback</small>
     </div>
-  
+
     <el-table :data="students" border style="width: 100%">
       <el-table-column prop="student_id" sortable label="ID" :width="80">
       </el-table-column>
@@ -26,18 +26,19 @@
           <span v-if="scope.row.graduated">
             G
           </span>
-          <span v-if="scope.row.featured">
+          <span v-else-if="scope.row.featured">
             F
           </span>
-          <span v-if="scope.row.next_cycle">
+          <span v-else-if="scope.row.next_cycle">
             N
           </span>
-          <span v-if="scope.row.dropped">D</span>
-          <span v-if="scope.row.waiting_feedback">W</span>
+          <span v-else-if="scope.row.dropped">D</span>
+          <span v-else-if="scope.row.waiting_feedback">W</span>
+          <span v-else>*</span>
         </template>
       </el-table-column>
       <el-table-column prop="email" sortable label="Email" :width="230">
-  
+
       </el-table-column>
       <el-table-column sortable label="Lab" :width="200">
         <template slot-scope="scope">
@@ -61,7 +62,7 @@
           </span>
           <!--<span v-if="scope.row.evaluator">{{scope.row.evaluator.username}}</span>-->
           <!--<span v-else>-->
-  
+
           <!--</span>-->
         </template>
       </el-table-column>
@@ -76,7 +77,7 @@
         </template>
       </el-table-column>
     </el-table>
-  
+
   </div>
 </template>
 <script>

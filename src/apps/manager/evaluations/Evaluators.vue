@@ -3,29 +3,29 @@
     <h3>Evaluators</h3>
     <p v-if="item.kind === 'local'">Local evaluation is done by local instructors in the course</p>
     <p v-else>Define evaluators for this evaluation round</p>
-  
+
     <div v-if="item.kind === 'global'">
       <el-form ref="myForm" :rules="rules" :model="form" label-position="left" label-width="150px">
         <el-autocomplete class="inline-input" v-model="form.instructor" :fetch-suggestions="querySearch" placeholder="Username or email" :trigger-on-focus="false" @select="handleSelect"></el-autocomplete>
         <el-button type="primary" @click="submitForm('myForm')">Add Evaluator</el-button>
       </el-form>
     </div>
-  
+
     <div>
       <br/>
     </div>
-  
+
     <el-table :data="evaluators(this.item)" border stripe v-if="item.kind === 'global'" style="width: 100%">
       <el-table-column prop="username" sortable label="Username" :width="180">
       </el-table-column>
-  
+
       <el-table-column prop="email" label="Email" :width="230">
       </el-table-column>
       <el-table-column>
         <template slot-scope="scope">
           <small>{{ scope.row.labs && scope.row.labs.length }} labs
             <br>
-            <div v-if="scope.row.labs" v-for="c in scope.row.labs" :key="c">
+            <div v-if="scope.row.labs" v-for="c in scope.row.labs" :key="c.id">
               - {{ c.name }}
             </div>
           </small>
@@ -35,7 +35,7 @@
         <template slot-scope="scope">
           <small>{{ scope.row.candidates && scope.row.candidates.length }} candidates
             <br>
-            <div v-if="scope.row.candidates" v-for="c in scope.row.candidates" :key="c">
+            <div v-if="scope.row.candidates" v-for="c in scope.row.candidates" :key="c.id">
               - {{ `[${c.student_id}] ${c.first_name} ${c.last_name}` }}
             </div>
           </small>
@@ -49,7 +49,7 @@
         </template>
       </el-table-column>
     </el-table>
-  
+
   </div>
 </template>
 <script>

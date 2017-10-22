@@ -1,6 +1,7 @@
 <template>
   <div class="form clearfix">
     <h3>Evaluators</h3>
+
     <p v-if="item.kind === 'local'">Local evaluation is done by local instructors in the course</p>
     <p v-else>Define evaluators for this evaluation round</p>
 
@@ -10,10 +11,12 @@
         <el-button type="primary" @click="submitForm('myForm')">Add Evaluator</el-button>
       </el-form>
     </div>
-
-    <div>
+    <div style="float: right; margin-top: -24px">
+      <el-button class="export-btn" size="mini" @click="handleExport">
+        <fa-icon name="table" class="adjust"></fa-icon> Export to CSV</el-button>
       <br/>
     </div>
+    <div style="padding: 12px"></div>
 
     <el-table :data="evaluators(this.item)" border stripe v-if="item.kind === 'global'" style="width: 100%">
       <el-table-column prop="username" sortable label="Username" :width="180">
@@ -54,7 +57,12 @@
 </template>
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import CSVTable from '../../../mixins/CSVTable.vue'
+
 export default {
+  mixins: [
+    CSVTable
+  ],
   props: [
     'item'
   ],
@@ -92,6 +100,26 @@ export default {
     this.loadInstructors(this.currentCourse.id)
   },
   methods: {
+    tableHeaders() {
+      return ["Username", "Email", "Labs", "Assigned"]
+    },
+    tableRows() {
+      let data = []
+      const items = this.evaluators(this.item)
+
+      for (var i = 0; i < items.length; i++) {
+        const labs = (items[i].labs || []).map((lab) => lab.name)
+        const candidates = (items[i].candidates || [])
+          .map((student) => '[' + student.student_id + '] ' + student.first_name + ' ' + student.last_name)
+        data.push([
+          items[i].username,
+          items[i].email,
+          labs.join('\n'),
+          candidates.join('\n')
+        ])
+      }
+      return data
+    },
     ...mapActions({
       'loadInstructors': 'admin/instructors/loadInstructors'
     }),
@@ -135,5 +163,7 @@ export default {
 }
 </script>
 <style scoped>
-
+.adjust {
+  vertical-align: text-bottom
+}
 </style>

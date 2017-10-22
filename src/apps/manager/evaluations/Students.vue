@@ -10,7 +10,9 @@
     </el-form>
 
     <div style="float: right; margin-top: -48px;padding-bottom: 24px; text-align: right">
-      Total count: {{students ? students.length : 0}}
+      <el-button class="export-btn" size="mini" @click="handleExport">
+        <fa-icon name="table" class="adjust"></fa-icon> Export to CSV</el-button>
+      <br> Total count: {{students ? students.length : 0}}
       <br>
       <small> G: graduated, F: featured, N: next_cycle,
         <br>D: dropped, W: waiting_feedback</small>
@@ -23,18 +25,7 @@
       </el-table-column>
       <el-table-column label="" :width="70" sortable>
         <template slot-scope="scope">
-          <span v-if="scope.row.graduated">
-            G
-          </span>
-          <span v-else-if="scope.row.featured">
-            F
-          </span>
-          <span v-else-if="scope.row.next_cycle">
-            N
-          </span>
-          <span v-else-if="scope.row.dropped">D</span>
-          <span v-else-if="scope.row.waiting_feedback">W</span>
-          <span v-else>*</span>
+          {{ studentStatus(scope.row)[0] }}
         </template>
       </el-table-column>
       <el-table-column prop="email" sortable label="Email" :width="230">
@@ -48,14 +39,14 @@
       <el-table-column label="Instructor" sortable :width="130" v-if="item.kind === 'local'">
         <template slot-scope="scope">
           <span v-if="scope.row.evaluator">
-            {{scope.row.evaluator.username}}
+            {{scope.row.evaluator.first_name + ' ' + scope.row.evaluator.last_name}}
           </span>
         </template>
       </el-table-column>
       <el-table-column prop="evaluator.username" v-if="item.kind === 'global'" sortable label="Evaluator" :width="130">
         <template slot-scope="scope">
           <span v-if="scope.row.evaluator">
-            {{scope.row.evaluator.username}}
+            {{scope.row.evaluator.first_name + ' ' + scope.row.evaluator.last_name}}
           </span>
           <span v-else>
             <EvaluatorSelect :userObject="scope.row" :keys="evaluators" @keySelected="updateEvaluatorOption" />
@@ -84,7 +75,12 @@
 import { mapGetters, mapActions } from 'vuex'
 import Vue from 'vue'
 import EvaluatorSelect from '../../../components/EvaluatorSelect.vue'
+import CSVTable from '../../../mixins/CSVTable.vue'
+
 export default {
+  mixins: [
+    CSVTable
+  ],
   props: [
     'item'
   ],
@@ -135,6 +131,40 @@ export default {
     })
   },
   methods: {
+    tableHeaders() {
+      return ["ID", "Username", "Status", "Email", "Lab", this.item.kind === 'global' ? "Evaluator" : "Instructor"]
+    },
+    tableRows() {
+      let rows = []
+      const vm = this
+      for (var i = 0; i < this.students.length; i++) {
+        const student = this.students[i]
+        rows.push([
+          student.student_id,
+          student.username,
+          vm.studentStatus(student),
+          student.email,
+          student.lab && student.lab.name || '',
+          student.evaluator && (student.evaluator.first_name + ' ' + student.evaluator.last_name) || ''
+        ])
+      }
+      return rows
+    },
+    studentStatus(student) {
+      let status = ''
+      if (student.graduated) {
+        status = 'Graduated'
+      } else if (student.featured) {
+        status = 'Featured'
+      } else if (student.next_cycle) {
+        status = 'Next Cycle'
+      } else if (student.dropped) {
+        status = 'Dropped'
+      } else if (student.waiting_feedback) {
+        status = 'Waiting Feedback'
+      }
+      return status
+    },
     updateEvaluatorOption({ userObject, key }) {
       Vue.set(this.evaluator_option, userObject.id, key)
     },
@@ -228,5 +258,9 @@ export default {
 .fa-fix {
   margin-bottom: -4px;
   margin-left: -4px;
+}
+
+.adjust {
+  vertical-align: text-bottom
 }
 </style>

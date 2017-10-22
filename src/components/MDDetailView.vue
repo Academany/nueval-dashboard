@@ -1,32 +1,25 @@
 <template>
   <div>
-      <div class="tableTop" v-if="!readonly">
-        <el-button type="success" v-show="!selectedRow" @click="handleNew()"><fa-icon name="plus" class="adjust"></fa-icon> New {{entity}}</el-button>
-        <el-button type="danger" v-if="selectedRow && selectedRow.id" @click="handleDelete()"><fa-icon name="trash" class="adjust"></fa-icon> Delete</el-button>
-      </div>
-      <el-tabs ref="tabWidget" type="border-card" v-if="selectedRow" v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane
-          v-for="(item, index) in tabs"
-          :key="item.id"
-          :label="item.label"
-          :name="item.name"
-        >
-            <template slot-scope="scope">
-              <slot :name="'tab-content-'+index"></slot>
-            </template>
-        </el-tab-pane>
-      </el-tabs>
-      <el-dialog
-        title="Confirm"
-        :visible.sync="dialogVisible"
-        size="tiny"
-        :before-close="handleClose">
-        <span>Do you really want to delete this {{entity}}?</span>
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="dialogVisible = false">Cancel</el-button>
-          <el-button type="primary" @click="handleConfirmDelete">Confirm</el-button>
-        </span>
-      </el-dialog>
+    <div class="tableTop" v-if="!readonly">
+      <el-button type="success" size="mini" v-show="!selectedRow" @click="handleNew()">
+        <fa-icon name="plus" class="adjust"></fa-icon> New {{entity}}</el-button>
+      <el-button type="danger" size="mini" v-if="selectedRow && selectedRow.id" @click="handleDelete()">
+        <fa-icon name="trash" class="adjust"></fa-icon> Delete</el-button>
+    </div>
+    <el-tabs ref="tabWidget" type="border-card" v-if="selectedRow" v-model="activeName" @tab-click="handleClick">
+      <el-tab-pane v-for="(item, index) in tabs" :key="item.id" :label="item.label" :name="item.name">
+        <template slot-scope="scope">
+          <slot :name="'tab-content-'+index"></slot>
+        </template>
+      </el-tab-pane>
+    </el-tabs>
+    <el-dialog title="Confirm" :visible.sync="dialogVisible" size="tiny" :before-close="handleClose">
+      <span>Do you really want to delete this {{entity}}?</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="handleConfirmDelete">Confirm</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -51,7 +44,7 @@ export default {
   components: {
     MDNotImplemented
   },
-  data(){
+  data() {
     return {
       dialogVisible: false,
       activeName: 'basic',
@@ -59,12 +52,12 @@ export default {
     }
   },
   methods: {
-    handleConfirmDelete(){
+    handleConfirmDelete() {
       this.dialogVisible = false;
       // alert('confirm!')
       this.$emit("delete")
     },
-    handleClose(){
+    handleClose() {
       this.dialogVisible = false;
     },
     handleClick() {
@@ -74,20 +67,25 @@ export default {
       // this.selectedRow = {};
       this.$emit("newItem")
     },
-    handleDelete(){
+    handleDelete() {
       // this.$emit("deleteItem")
       this.dialogVisible = true;
     }
   },
-  mounted(){
+  mounted() {
     // this.$refs.tabWidget
   }
 }
 </script>
 <style scoped>
+.adjust {
+  vertical-align: text-bottom;
+}
+
 .tableTop {
   text-align: right;
   margin-bottom: 20px;
+  margin-top: 12px;
   margin-left: 12px;
   margin-right: 12px;
 }

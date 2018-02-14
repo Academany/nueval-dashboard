@@ -11,7 +11,7 @@
         </el-row>
     </div>
     <div v-else>
-        <div v-if="selectedRole">
+        <div v-if="booted">
             <router-view></router-view>
         </div>
     
@@ -24,6 +24,7 @@
                         <el-select v-model="selectedRole">
                             <el-option v-for="role in filteredRoles" :label="role.instructor.course.name" :value="role" :key="role.role"></el-option>
                         </el-select>
+                        <el-button @click="launchApp">Start</el-button>
                     </el-card>
                 </el-col>
             </el-row>
@@ -38,6 +39,7 @@ export default {
     data() {
         return {
             loading: false,
+            booted: false,
             loaded: 0,
             selectedRole: null,
             showSelect: false
@@ -57,8 +59,9 @@ export default {
     },
     methods: {
         launchApp: function () {
-            //   alert('boot')
+            //alert('boot')
             var vm = this;
+            this.booted = true
             this.bootApp(this.selectedRole.instructor).then((success) => {
                 vm.loading = false;
                 vm.loaded = 100;
@@ -87,7 +90,7 @@ export default {
                 vm.$nextTick(function () {
                     vm.launchApp()
                 })
-            }
+            } 
         }).catch((error) => {
             console.log('Something bad happened');
             vm.$router.push('/')

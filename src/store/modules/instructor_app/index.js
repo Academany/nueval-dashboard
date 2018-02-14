@@ -28,6 +28,7 @@ export default {
             commit,
             dispatch,
         }, instructor) {
+          // debugger
       return new Promise((resolve, reject) => {
                 // booting the app means loading all the stuff needed to show it correctly
                 // we already loaded installed apps

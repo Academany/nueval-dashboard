@@ -109,7 +109,7 @@ export default {
             dispatch
         }, lab) {
             return new Promise((resolve, reject) => {
-                debugger
+                // debugger
                 const courseId = lab.courseId || (lab.course && lab.course.id)
                     // Do something here... lets say, a http call using vue-resource
                 api.post("/api/courses/" + courseId + "/labs", lab).then((response) => {
@@ -132,7 +132,7 @@ export default {
             dispatch,
         }, lab) {
             return new Promise((resolve, reject) => {
-                debugger
+                //debugger
                 const courseId = lab.courseId || lab.course && lab.course.id
                 if (!courseId) return reject("Can't find courseId")
                     // Do something here... lets say, a http call using vue-resource

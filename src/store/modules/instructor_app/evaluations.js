@@ -132,7 +132,7 @@ export default {
                 const params = {}
                 api.get('/api/students/' + studentId + '/progress?cache=' + (Math.random() * 1000000))
                     .then((data) => {
-                        debugger
+                        //debugger
                         if (data && data.length > 0) {
                             commit(SET_PROGRESS, data)
                             resolve(data)
@@ -278,11 +278,11 @@ export default {
             // send student to next cycle
             return new Promise((resolve, reject) => {
                 // graduate current student
-                debugger
+                //debugger
                 const student = state.currentStudent
                 const session = state.currentEvaluation || sessionParam || null
                 if (!student || !session) {
-                    debugger
+                    //debugger
                     return reject("Missing parameters")
 
                 }

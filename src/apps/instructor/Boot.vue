@@ -21,8 +21,8 @@
                     <el-card>
                         <p>Looks like you are instructor in more than one course</p>
                         <p>Please select a course</p>
-                        <el-select v-model="selectedRole">
-                            <el-option v-for="role in filteredRoles" :label="role.instructor.course.name" :value="role" :key="role.role"></el-option>
+                        <el-select v-model="selectedRoleIdx" @change="selectRole">
+                            <el-option v-for="role,idx in filteredRoles" :label="role.instructor.course.name" :value="idx" :key="role.role"></el-option>
                         </el-select>
                         <el-button @click="launchApp">Start</el-button>
                     </el-card>
@@ -41,6 +41,7 @@ export default {
             loading: false,
             booted: false,
             loaded: 0,
+            selectedRoleIdx: null,
             selectedRole: null,
             showSelect: false
         }
@@ -52,12 +53,16 @@ export default {
         }),
         filteredRoles() {
             const roles = this.userRoles || [];
+            console.log(roles)
             return roles.filter((el) => {
                 return (el.role === 'instructor')
             })
         }
     },
     methods: {
+        selectRole: function(roleIdx){
+          this.selectedRole = this.filteredRoles[roleIdx] || null
+        },
         launchApp: function () {
             //alert('boot')
             var vm = this;

@@ -116,7 +116,7 @@ export default {
       // console.log('Leave feedback!')
       // console.log(message)
       return new Promise((resolve, reject) => {
-        debugger
+        //debugger
         api.post('/api/messages', {
           from: message.from,
           subject: message.subject,

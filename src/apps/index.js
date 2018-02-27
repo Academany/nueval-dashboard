@@ -49,6 +49,10 @@ let apps = [{
                     component: lazy('./manager/evaluations/List.vue')
                 },
                 {
+                    path: 'stats',
+                    component: lazy('./manager/stats/List.vue')
+                },
+                {
                     path: 'courses',
                     component: lazy('./manager/courses/List.vue')
                 },

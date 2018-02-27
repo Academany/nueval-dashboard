@@ -15,7 +15,7 @@ export default {
   },
   mutations: {
     [LOAD_MODULES](state) {
-            // nop
+      // nop
     },
     [SET_MODULES](state, mods) {
       state.mods = mods;
@@ -49,28 +49,29 @@ export default {
     },
   },
   actions: {
-
-    loadModules({
+      loadModules({
             commit,
-        }, courseId) {
+      }, courseId) {
       commit(LOAD_MODULES);
       const opts = {
-        url: '/api/courses/' + courseId + '/modules?filter=' + encodeURIComponent(
-                    JSON.stringify({
-                      include: ['course'],
-                    })
-                ),
+        url: '/api/courses/' + courseId + '/modules'
+
+        //?filter=' + encodeURIComponent(
+        //    JSON.stringify({
+        //      include: ['course'],
+        //    })
+        //),
       }
       api.get(opts.url)
-                .then(function (response) {
-                  console.log('set modules');
-                  console.log(response);
-                  commit('SET_MODULES', response);
-                })
-                .catch(function (error) {
-                  commit('API_FAILURE', error)
-                    //  if (cb) cb(error);
-                });
+      .then(function (response) {
+        console.log('set modules');
+        console.log(response);
+        commit('SET_MODULES', response);
+      })
+      .catch(function (error) {
+        commit('API_FAILURE', error)
+          //  if (cb) cb(error);
+      });
     },
     setModules({
             commit,

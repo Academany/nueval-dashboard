@@ -8,15 +8,15 @@
               <fa-icon name="arrow-left"></fa-icon>
             </router-link>
           </el-menu-item>
-  
+
           <el-menu-item v-if="currentCourse" index="" :disabled="true">
             {{ currentCourse.name }}
           </el-menu-item>
-  
+
           <el-menu-item v-if="activeTab && currentCourse.id" :index="activeTab.target" :disabled="true">
             <fa-icon class="fa-fix" :name="activeTab.icon"></fa-icon> {{activeTab.label}}
           </el-menu-item>
-  
+
           <slot name="header-menu"></slot>
           <CourseMenu v-if="currentCourse" class="right clearfix" />
         </div>
@@ -162,6 +162,12 @@ export default {
           'description': 'Manage Evaluation sessions',
           'target': '/apps/manager/evaluations',
           'icon': 'graduation-cap'
+        },
+        {
+          'label': 'Stats',
+          'description': 'View stats about the course',
+          'target': '/apps/manager/stats',
+          'icon': 'line-chart'
         },
         {
           'label': 'Settings',

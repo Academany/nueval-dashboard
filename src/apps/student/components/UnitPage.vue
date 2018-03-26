@@ -2,38 +2,38 @@
     <el-card>
         <div slot="header">{{module ? module.name : ''}}
             <div class="pull-right">
-    
+
                 <el-tag v-if="module">Ver. {{module.rules && module.rules.version}}</el-tag>
             </div>
         </div>
         <div class="card-body">
             <h4>Overall progress</h4>
             <UnitStatus :readonly="readonly" :module="module" :record="record" @showFeedback="handleShowFeedback" />
-    
+
             <h4>Unit description</h4>
             <UnitTasks :module="module" />
-    
+
             <h4>Learning outcomes</h4>
             <UnitOutcomes :readonly="true" :module="module" :record="record" />
-    
+
             <div v-if="!global">
                 <h4>Have you?</h4>
                 <StudentCheckList :readonly="readonly" :module="module" :record="record" @save="handleUpdateCheckList" />
             </div>
-    
+
             <h4>Feedback</h4>
             <FeedbackList ref="FeedbackForm" :messages="messages" />
-    
+
             <FeedbackForm @newFeedback="handleNewFeedback" />
-    
+
             <h4>FAQ</h4>
             <UnitFAQ :module="module" />
-    
+
             <h4>Recent Changes</h4>
             <RecentChanges :record="record" />
-    
+
         </div>
-    
+
     </el-card>
 </template>
 
@@ -109,7 +109,7 @@ export default {
         },
         handleUpdateCheckList(checklist) {
             var vm = this;
-            debugger
+            // debugger
             vm.updateChecklist(checklist)
                 .then((success) => {
                     vm.logOk("Checklist recorded successfully")

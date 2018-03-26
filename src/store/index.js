@@ -16,6 +16,7 @@ import users from './modules/users'
 import admin from './modules/admin'
 import modules from './modules/modules'
 import apps from './modules/apps'
+import stats from './modules/stats'
 import instructor_app from './modules/instructor_app'
 import student_app from './modules/student_app'
 import manager_app from './modules/manager_app'
@@ -42,6 +43,7 @@ export default new Vuex.Store({
     admin,
     instructor_app,
     student_app,
-    manager_app
+    manager_app,
+    stats
   },
 })

@@ -3,8 +3,7 @@
       <div class="block">
         <el-tabs v-model="activeName" @tab-click="handleClick">
           <el-tab-pane label="General" name="general">
-            <h3>Work in progress</h3>
-            <p>General stats coming soon</p>
+            <GeneralTab></GeneralTab>
           </el-tab-pane>
          <el-tab-pane label="Labs" name="labs">
            <LabsTab></LabsTab>
@@ -24,10 +23,11 @@
 import { mapActions, mapGetters } from 'vuex'
 import LabsTab from './LabsTab.vue'
 import StudentsTab from './StudentsTab.vue'
+import GeneralTab from './GeneralTab.vue'
 
 export default{
   components: {
-      LabsTab, StudentsTab
+      LabsTab, StudentsTab,GeneralTab
   },
   data() {
      return {

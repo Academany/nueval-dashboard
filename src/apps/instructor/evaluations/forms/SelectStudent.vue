@@ -29,7 +29,7 @@ export default {
     },
     methods: {
         handleLabChange(val) {
-          debugger
+          // debugger
             // alert(JSON.stringify(val))
             const targetId = val
             let currentLab

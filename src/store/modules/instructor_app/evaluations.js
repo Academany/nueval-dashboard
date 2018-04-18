@@ -2,6 +2,7 @@ import {
     API_FAILURE,
 } from '../failure'
 import api from '../api'
+import config from '../../../config'
 
 export const LOAD_EVALUATIONS = "LOAD_EVALUATIONS"
 export const SELECT_EVALUATION = "SELECT_EVALUATION"
@@ -438,7 +439,14 @@ export default {
             sessions.forEach((ev) => {
                 const recs = ev && ev.records || []
                 const completed = recs.filter(er => er.completed)
-                if (completed.length > 0 && completed.length == recs.length && ev.evaluation.kind === 'local') {
+                let allCompleted = (completed.length == recs.length)
+                // check if we do incremental evaluation
+                // in this case the student can be sent to global if he completed at least one unit
+                if (config.use_incremental){
+                  allCompleted = (completed.length >= 1)
+                }
+                debugger
+                if (completed.length > 0 && allCompleted && ev.evaluation.kind === 'local') {
                     canGoGlobal = true
                 }
             })

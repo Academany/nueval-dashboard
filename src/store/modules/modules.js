@@ -9,6 +9,20 @@ import { API_FAILURE } from './failure'
 import api from './api'
 
 
+function toDate(dateStr) {
+    const [day, month, year] = dateStr.split("-")
+    return new Date(year, month - 1, day)
+}
+
+const sortedModules = (mods) => {
+  return mods.sort((a,b)=>{
+    a = new Date(a.date);
+    b = new Date(b.date);
+    console.log(a)
+    return a>b ? 1 : a<b ? -1 : 0;
+  })
+}
+
 export default {
   getters: {
     modules: state => state.mods,
@@ -18,7 +32,7 @@ export default {
       // nop
     },
     [SET_MODULES](state, mods) {
-      state.mods = mods;
+      state.mods = sortedModules(mods);
     },
     [CREATE_MODULE](state, response) {
       var newc = state.mods.slice();

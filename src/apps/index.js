@@ -1,3 +1,4 @@
+import config from '../config'
 const applist = ['labs', 'supernodes', 'finalprojects', 'programs']
 
 const lazy = (path) => {
@@ -118,11 +119,11 @@ let apps = [{
                         },
                         {
                             path: 'evaluations',
-                            component: lazy('./instructor/evaluations/Local.vue')
+                            component: config.use_incremental ? lazy('./instructor/evaluations/LocalIncremental.vue') : lazy('./instructor/evaluations/Local.vue')
                         },
                         {
                             path: 'globaleval',
-                            component: lazy('./instructor/evaluations/Global.vue')
+                            component: config.use_incremental ? lazy('./instructor/evaluations/GlobalIncremental.vue') : lazy('./instructor/evaluations/Global.vue')
                         },
                         {
                             path: 'finalprojects',

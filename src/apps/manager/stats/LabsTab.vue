@@ -3,7 +3,7 @@
   <p>Local evaluation</p>
 <el-table
   :data="tableData"
-  stripe
+
   style="width: 90%"
   v-loading="loading"
   :row-class-name="tableRowClassName"

@@ -6,7 +6,19 @@ export const DELETE_MODULE = "DELETE_MODULE"
 
 import { API_FAILURE } from '../../failure'
 import api from '../../api'
+function toDate(dateStr) {
+    const [day, month, year] = dateStr.split("-")
+    return new Date(year, month - 1, day)
+}
 
+const sortedModules = (mods) => {
+  return mods.sort((a,b)=>{
+    a = new Date(a.date);
+    b = new Date(b.date);
+    console.log(a)
+    return a>b ? 1 : a<b ? -1 : 0;
+  })
+}
 export default {
   namespaced: true,
   state: {
@@ -108,7 +120,7 @@ export default {
     },
     [SET_MODULES](state, data) {
       state.loading = false
-      state.modules = data
+      state.modules = sortedModules(data)
     },
     [UPDATE_MODULE](state, reponse) {},
     [CREATE_MODULE](state, response) {},

@@ -2,7 +2,7 @@
     <div v-if="student" style="padding-right: 24px">
         <el-row :gutter="24">
             <el-col :span="8">
-    
+
                 <div v-if="student.lab">
                     <el-card class="website-card">
                         <div slot="header">Student website</div>
@@ -12,18 +12,18 @@
                             <fa-icon name="image" class="fa-fix"></fa-icon> Slide</a>
                         <a target="_blank" :href="videoURL">
                             <fa-icon name="play-circle" class="fa-fix"></fa-icon> Video</a>
-    
+
                     </el-card>
                 </div>
                 <br>
                 <div v-if="student.booked && student.booked.length > 0">
-    
+
                     <el-card style="width: 100%">
-    
+
                         <div slot="header">
                             <strong>Final project presentation:</strong>
                         </div>
-    
+
                         <div style="display: inline-box" v-for="booking in student.booked" :key="booking.id">
                             {{booking.name }} {{booking.date | moment('YYYY-MM-DD')}}
                             <span v-if="student.presented && student.presented.length > 0">
@@ -38,9 +38,9 @@
                         </div>
                     </el-card>
                 </div>
-    
+
             </el-col>
-    
+
             <el-col :span="16">
                 <div v-if="student.lab">
                     <el-card style="width: 100%">
@@ -49,7 +49,7 @@
                         </a>
                     </el-card>
                 </div>
-    
+
             </el-col>
         </el-row>
     </div>
@@ -61,17 +61,26 @@ export default {
     ],
     computed: {
         websiteURL() {
-            if (this.student && this.student.lab)
-                return `http://archive.fabacademy.org/archives/2017/${this.student.lab.lab_id}/students/${this.student.student_id}`
+
+            if (this.student && this.student.lab){
+                // console.log(this.student)
+                if (this.student.website) return 'http://fabacademy.org'  + this.student.website;
+                else
+                  return `http://archive.fabacademy.org/archives/2017/${this.student.lab.lab_id}/students/${this.student.student_id}`
+              }
             return ''
         },
         videoURL() {
             if (this.student && this.student.lab)
-                return `http://archive.fabacademy.org/archives/2017/${this.student.lab.lab_id}/students/${this.student.student_id}/presentation.mp4`
+              if (this.student.website) return 'http://fabacademy.org'  + this.student.website + '/presentation.mp4';
+              else
+              return `http://archive.fabacademy.org/archives/2017/${this.student.lab.lab_id}/students/${this.student.student_id}/presentation.mp4`
             return ''
         },
         slideURL() {
             if (this.student && this.student.lab)
+                if (this.student.website) return 'http://fabacademy.org'  + this.student.website + '/presentation.png';
+                else
                 return `http://archive.fabacademy.org/archives/2017/${this.student.lab.lab_id}/students/${this.student.student_id}/presentation.png`
             return ''
         }

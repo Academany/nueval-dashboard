@@ -74,12 +74,13 @@ export default {
   methods: {
     tableRowClassName(row) {
         var lab = row
-        if (lab){
-          if (lab.studentsEvalUnits === 0 || !lab.studentsEvalStarted) {
-            return 'warning-row';
-          } else if (lab.studentsProgress > 90) {
-            return 'success-row';
-          }
+        if (lab.studentsCount <= (lab.studentsDropped + lab.studentsNextCycle)){
+          return 'disabled-row'
+        }
+        if (lab.studentsEvalUnits === 0 || !lab.studentsEvalStarted) {
+          return 'warning-row';
+        } else if (lab.studentsProgress > 90) {
+          return 'success-row';
         }
         return '';
     },
@@ -183,6 +184,8 @@ export default {
         return lab
       }).filter((lab)=>{
         return lab.active > 0
+      }).sort((a,b)=>{
+        return a.lab.toLowerCase() < b.lab.toLowerCase() ? -1 : 1
       })
 
     },
@@ -198,6 +201,10 @@ export default {
 <style>
   .el-table .warning-row {
     background: #ffdddd;
+  }
+  .el-table .disabled-row {
+    color: #dedede;
+
   }
 
   .el-table .success-row {

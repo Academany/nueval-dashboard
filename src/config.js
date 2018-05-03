@@ -1,4 +1,4 @@
 export default {
     api_url : '',
-    use_incremental: true
+      use_incremental: true
 }

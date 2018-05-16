@@ -1,7 +1,7 @@
 <template>
   <MDView>
     <MLTable slot="master" ref="masterTable" :value="presentations" :selectedRow="selectedRow" :tableColumns="tableColumns" @select="handleSelect" @edit="handleEdit" @delete="handleDelete" />
-    <MDDetailView :entity="entity" :selectedRow="selectedRow" v-model="tabs" @newItem="handleNew" @delete="handleDelete" :readonly="true" slot="detail">
+    <MDDetailView :entity="entity" :selectedRow="selectedRow" v-model="tabs" @newItem="handleNew" @delete="handleDelete" slot="detail">
       <BasicDetail :item="selectedRow" slot="tab-content-0" @cancelEdit="handleCancel" />
       <StudentsList v-if="selectedRow && selectedRow.id" :item="selectedRow" @refresh="handleRefresh" slot="tab-content-1" />
     </MDDetailView>

@@ -202,6 +202,7 @@ export default {
                 })
             })
         },
+      
         ...mapActions({
             'cancelStudent': 'instructor_app/evaluations/cancelStudent',
             'nextCycle': 'instructor_app/evaluations/nextCycle',

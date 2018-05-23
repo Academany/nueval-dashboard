@@ -5,12 +5,12 @@
     </div>
     <el-form v-model="form" label-position="top">
       <el-form-item label="Select your Lab" prop="labId">
-        <el-select v-model="form.lab" placeholder="Select Lab">
+        <el-select v-model="lab_id" @input="selectLab" placeholder="Select Lab">
         <el-option
           v-for="item in labs"
           :key="item.id"
           :label="item.name"
-          :value="item">
+          :value="item.id">
         </el-option>
         </el-select>
       </el-form-item>
@@ -153,7 +153,7 @@ export default{
           session: this.session,
           students
         });
-        
+        vm.lab_id = null;        
         vm.filter= {};
         vm.form = {
           students: [],
@@ -167,15 +167,26 @@ export default{
     },
     handleVisibleChange:function(visible){
       this.selectVisible = visible;
+    },
+    selectLab(lab_id){
+      for (var i=0;i<this.labs.length; i++){
+        if (this.labs[i].id == lab_id){
+          var _form = this.form
+          _form.lab = this.labs[i]
+          this.form = _form
+        }
+      }
+    
     }
   },
   data: function() {
     return {
       filter: {},
       selectVisible: false,
+      lab_id: null,
       form: {
         students: [],
-        lab: null,
+        lab: null
       }
     }
   }

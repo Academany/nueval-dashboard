@@ -53,8 +53,9 @@ export default {
             dispatch,
         }) {
       return new Promise((resolve, reject) => {
+        const instructor_id = state.instructor.id
         commit(RELOAD_INSTRUCTOR)
-        api.get('/api/instructors/' + state.instructor.id + '?filter=' + encodeURIComponent(
+        api.get('/api/instructors/' + instructor_id + '?filter=' + encodeURIComponent(
                     JSON.stringify({
                       include: [{
                         course: {
@@ -66,9 +67,10 @@ export default {
                         labs: {
                           'students': ['booked', 'presented', 'lab'],
                         },
-                      },
+                      }
                       ],
                     }))).then((response) => {
+                      debugger
                       commit(SET_INSTRUCTOR, response)
                       resolve(response)
                     }).catch((error) => {
@@ -95,7 +97,9 @@ export default {
     [SET_INSTRUCTOR](state, data) {
       state.instructor = data
     },
-    [RELOAD_INSTRUCTOR](state, data) {},
+    [RELOAD_INSTRUCTOR](state, data) {
+      state.instructor = null
+    },
   },
   getters: {
     currentCourse: state => state.instructor && state.instructor.course || null,

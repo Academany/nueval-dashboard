@@ -44,7 +44,7 @@ export default {
         bookStudent({commit,dispatch, state},{ session, studentId}){
            return new Promise((resolve,reject)=>{
             commit(BOOK_STUDENT, studentId)
-            
+            // make sure student is not already booked
             api.get('/api/students/' + studentId + "/booked/count").then((response)=>{
                 const count = response.body && response.body.count || 0;
                 if (count > 0) {
@@ -72,8 +72,11 @@ export default {
                         }
                     })
                 }
+            }).catch((error)=>{
+                commit(API_FAILURE, error, {root: true})
+                reject(error)
             })
-            // make sure student is not already booked
+         
 
             // make sure session is not full already
 

@@ -1,14 +1,14 @@
 <template>
     <div class="fullwidth graybg padded fixed tableHead">
         <el-button v-if="student && student.lab" type="primary" size="mini">
-    
+
             <span>
                 <fa-icon name="flask" class="fa-fix"></fa-icon>
                 <small>
                     {{student.lab.name}}
                 </small>
             </span>
-    
+
         </el-button>
         <el-tag>{{student && student.student_id}}</el-tag>
         {{ student && student.first_name}} {{ student && student.last_name}}
@@ -28,6 +28,8 @@
                 <fa-icon name="exclamation-triangle" class="fa-fix"></fa-icon> Waiting for feedback</el-button>
             <el-button type="success" size="small" :disabled="!canGraduate || isGraduated" class="toolbar-btn" @click="handleRequestGraduation">
                 <fa-icon name="graduation-cap" class="fa-fix"></fa-icon> Graduate</el-button>
+                <el-button type="success" size="small"  :disabled="isGraduated" class="toolbar-btn" @click="handleRequestConditionalGraduation">
+                    <fa-icon name="graduation-cap" class="fa-fix"></fa-icon> Graduate Cond.</el-button>
             <el-button type="warning" size="small" :disabled="isGraduated || isRecycled" class="toolbar-btn" @click="handleNextCycle">
                 <fa-icon name="recycle" class="fa-fix"></fa-icon> Next cycle</el-button>
         </el-button-group>
@@ -56,6 +58,9 @@ export default {
         })
     },
     methods: {
+      handleRequestConditionalGraduation() {
+        this.$emit('action', 'requestConditionalGraduation')
+      },
         handleRequestGraduation() {
             this.$emit('action', 'requestGraduation')
         },

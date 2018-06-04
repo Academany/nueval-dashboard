@@ -17,6 +17,7 @@ export const UPDATE_PROGRESS = "UPDATE_PROGRESS"
 export const BOOK_STUDENT = "BOOK_STUDENT"
 export const HAS_FAILURE = "HAS_FAILURE"
 export const GRADUATE_STUDENT = "GRADUATE_STUDENT"
+export const GRADUATE_STUDENT_CONDITIONAL = "GRADUATE_STUDENT_CONDITIONAL"
 export const RECYCLE_STUDENT = "RECYCLE_STUDENT"
 export const DROP_STUDENT = "DROP_STUDENT"
 export const LOCAL_COMPLETE = "LOCAL_COMPLETE"
@@ -203,7 +204,33 @@ export default {
                 const session = state.currentEvaluation
                 if (!student || !session)
                     return reject("Missing parameters")
-                api.put("/api/evaluations/" + session.id + "/students/" + student.id, { graduated: true, dropped: false, next_cycle: false, waiting_feedback: false })
+                api.put("/api/evaluations/" + session.id + "/students/" + student.id, { graduated: true, conditional: false, dropped: false, next_cycle: false, waiting_feedback: false })
+                    .then((response) => {
+                        commit(GRADUATE_STUDENT, {
+                            session,
+                            student,
+                        })
+                        dispatch('loadProgress', student.id)
+                        resolve(response)
+                    })
+                    .catch((error) => {
+                        commit(API_FAILURE, error, {
+                            root: true,
+                        });
+                        commit(HAS_FAILURE)
+
+                        reject(error)
+                    })
+            })
+        },
+        graduateStudentConditional({ commit, dispatch, state }) {
+            return new Promise((resolve, reject) => {
+                // graduate current student
+                const student = state.currentStudent
+                const session = state.currentEvaluation
+                if (!student || !session)
+                    return reject("Missing parameters")
+                api.put("/api/evaluations/" + session.id + "/students/" + student.id, { graduated: true, conditional: true, dropped: false, next_cycle: false, waiting_feedback: false })
                     .then((response) => {
                         commit(GRADUATE_STUDENT, {
                             session,
@@ -387,8 +414,16 @@ export default {
 
         },
         [GRADUATE_STUDENT](state, { session, student }) {
-            if (state.currentStudent)
-                state.currentStudent.graduated = true
+            if (state.currentStudent) {
+                const current = state.currentStudent
+                state.currentStudent = {...current, graduated : true, conditional : false }
+            }
+        },
+        [GRADUATE_STUDENT_CONDITIONAL](state, { session, student }) {
+          if (state.currentStudent) {
+              const current = state.currentStudent
+              state.currentStudent = {...current, graduated : true, conditional : true }
+          }
         },
         [WAITING_FEEDBACK](state, { session, student }) {
             if (state.currentStudent)

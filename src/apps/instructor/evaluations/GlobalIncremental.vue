@@ -15,7 +15,8 @@
                         <TabFinalProject :student="currentStudent">
                         </TabFinalProject>
                     </el-tab-pane>
-                    <el-tab-pane v-for="session in overallProgress " :key="session.id " :name="session.id" :label="`${session.evaluation.name} ${session.evaluation.date} ${session.completed ? '- ok' : ''}` ">
+                    <el-tab-pane v-for="session in overallProgress " :key="session.id " :name="session.id"
+                    :label="`${session.evaluation.name} ${session.evaluation.date} ${session.completed ? '- ok' : ''}` ">
                         <TabGlobalEvaluation v-if="isGlobal(session)" :session="session" @prepareStudent="handleSetup" :modules="sortedModules" @updateModule="handleUpdateModule" />
                         <TabEvaluation v-if="!isGlobal(session)" :session="session" :modules="currentCourse.modules" @updateModule="handleUpdateModule" />
                     </el-tab-pane>
@@ -89,6 +90,14 @@ export default {
                         this.requestGraduation()
                     })
                 })
+            } else if (actionName === 'requestConditionalGraduation') {
+              vm.$confirm('Do you want to graduate this student under condition?', 'Confirm', {
+                confirmButtonText: 'Long life to the new guru!',
+                cancelButtonText: 'No, not yet',
+                type: 'danger'
+              }).then(()=> {
+                this.requestConditionalGraduation()
+              })
             } else if (actionName === 'requestFeedback') {
                 const vm = this
                 vm.$confirm('Do you want to flag that you are waiting for feedback by the student?', 'Confirm', {
@@ -121,6 +130,14 @@ export default {
                 this.$notify({ title: "Error", message: "Something wrong happened, please reload and try again" })
             })
 
+        },
+        requestConditionalGraduation(){
+          this.graduateStudentConditional().then((success)=>{
+            this.$notify({ title: "Congratulations!", message: "The student successfully graduated" })
+          }).catch((error) => {
+            console.log(error)
+            this.$notify({ title: "Error", message: "Something wrong happened, please reload and try again" })
+          })
         },
         handleDetails(session) {
             // alert('Details!')
@@ -192,6 +209,7 @@ export default {
         ...mapActions({
             'requestFeedback': 'instructor_app/evaluations/requestFeedback',
             'graduateStudent': 'instructor_app/evaluations/graduateStudent',
+            'graduateStudentConditional': 'instructor_app/evaluations/graduateStudentConditional',
             'nextCycle': 'instructor_app/evaluations/nextCycle',
             'bookStudent': 'instructor_app/evaluations/bookStudent',
             'selectStudent': 'instructor_app/evaluations/selectStudent',

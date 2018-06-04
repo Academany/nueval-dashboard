@@ -328,7 +328,14 @@ export default {
   },
   getters: {
     currentCourse: state => state.student && state.student.course || null,
-    courseModules: state => (state.student && state.student.course) ? state.student.course.modules : [],
+    courseModules: (state ) => {
+      const mods = (state.student && state.student.course) ? state.student.course.modules : []
+      return mods.sort((a,b)=>{
+        a = new Date(a.date)
+        b = new Date(b.date)
+        return a>b ? 1 : a<b ? -1 : 0;
+      })
+    } ,
     selectedModule: state => state.module,
     selectedRecord: state => state.record,
     recordMessages: state => state.record ? state.record.messages : [],

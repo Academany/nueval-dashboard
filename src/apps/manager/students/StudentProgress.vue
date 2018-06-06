@@ -49,6 +49,10 @@
         <el-checkbox v-model="form.graduated">
         </el-checkbox>
       </el-form-item>
+      <el-form-item label="Graduated Conditional" prop="conditional">
+        <el-checkbox v-model="form.conditional">
+        </el-checkbox>
+      </el-form-item>
       <el-form-item label="Next Cycle" prop="next_cycle">
         <el-checkbox v-model="form.next_cycle">
         </el-checkbox>
@@ -151,6 +155,7 @@ export default {
         dropped: vm.form.dropped,
         next_cycle: vm.form.next_cycle,
         featured: vm.form.featured,
+        conditional: vm.form.conditional,
         id: vm.form.id
       }).then(function(success) {
         vm.notify('Success', 'Student saved');

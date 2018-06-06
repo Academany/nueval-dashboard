@@ -60,7 +60,7 @@ import {mapActions} from 'vuex';
                 // vm.resetForm();
                 //formW.resetFields();
               }).catch(function(error){
-                console.log(error);
+               // console.log(error);
                 vm.notify('Error', 'Some error happened');
               });
           } else {

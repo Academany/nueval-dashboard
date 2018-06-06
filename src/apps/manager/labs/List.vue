@@ -112,7 +112,7 @@ export default {
       // alert('delete')
       if (this.selectedRow) {
         this.deleteLab(this.selectedRow).then((success) => {
-          console.log('delete ok')
+          //console.log('delete ok')
         });
       }
     },

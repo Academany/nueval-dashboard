@@ -153,11 +153,11 @@ export default {
       }
     },
     handleSelect(item) {
-      console.log(item);
+      //console.log(item);
     },
     handleRemove(item) {
-      console.log("Remove");
-      console.log(item)
+      //console.log("Remove");
+     // console.log(item)
     }
   }
 }

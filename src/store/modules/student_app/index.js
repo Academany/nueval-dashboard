@@ -294,7 +294,7 @@ export default {
       state.record = record
     },
     [LEAVE_FEEDBACK](state, feedback) {
-      console.log("Left feedback" + JSON.stringify(feedback))
+      //console.log("Left feedback" + JSON.stringify(feedback))
 
       const rec = {
         ...state.record,
@@ -323,7 +323,7 @@ export default {
     },
     [RECORD_PERSISTED](state) {},
     [CREATE_FEEDBACK](state, feedback) {
-      console.log("Created feedback" + JSON.stringify(feedback))
+      //console.log("Created feedback" + JSON.stringify(feedback))
     },
   },
   getters: {

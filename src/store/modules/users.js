@@ -54,8 +54,8 @@ export default {
             }
             api.get(opts.url)
                 .then(function (response) {
-                    console.log('set users');
-                    console.log(response);
+                    //console.log('set users');
+                    //console.log(response);
                     commit('SET_USERS', response);
 
                 })

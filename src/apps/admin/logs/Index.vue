@@ -47,11 +47,11 @@ export default {
             'setCurrentPage': 'admin/logs/setCurrentPage'
         }),
         handleSizeChange(val) {
-            console.log(`${val} items per page`);
+            //console.log(`${val} items per page`);
             this.initLogs(val)
         },
         handleCurrentChange(val) {
-            console.log(`current page: ${val}`);
+            //console.log(`current page: ${val}`);
             this.setCurrentPage(val - 1)
         }
     }

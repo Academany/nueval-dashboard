@@ -113,7 +113,7 @@ export default {
             loadStudents: 'admin/students/loadStudents'
         }),
         handleSelect(item) {
-            console.log(item);
+          //  console.log(item);
         }
     }
 }

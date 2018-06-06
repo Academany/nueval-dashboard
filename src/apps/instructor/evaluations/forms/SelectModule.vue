@@ -40,9 +40,10 @@ export default {
             // console.log('Record for looking into ' + this.records.length)
             const recs = this.records || []
             const record = recs.find((r) => r.moduleId === module.id)
-            if (!record) console.log('No record found ' + module.id)
-            console.log('Need to make up one')
-            // console.log(module.id)
+            if (!record) {
+              console.log('No record found ' + module.id)
+             // console.log('Need to make up one')
+            }// console.log(module.id)
             return record
         }
     },

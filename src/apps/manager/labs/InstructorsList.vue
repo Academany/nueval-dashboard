@@ -69,7 +69,7 @@ export default {
           this.notify("Success", "Instructor updated")
         }).catch((error) => {
           this.notify("Error", "Some error occurred")
-          console.log(error)
+         // console.log(error)
         });
       }
     },

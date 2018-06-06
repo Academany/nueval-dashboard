@@ -11,7 +11,7 @@
                     <el-tab-pane label=" Overall progress " name="general">
                         <TabGeneral :evaluations="overallProgress " @showDetails="handleDetails" />
                     </el-tab-pane>
-                    <el-tab-pane label="Website & Final project" name="finalproject">
+                    <el-tab-pane label=" Student Records " name="finalproject">
                         <TabFinalProject :student="currentStudent">
                         </TabFinalProject>
                     </el-tab-pane>
@@ -91,7 +91,8 @@ export default {
                     })
                 })
             } else if (actionName === 'requestConditionalGraduation') {
-              vm.$confirm('Do you want to graduate this student under condition?', 'Confirm', {
+                const vm = this
+                vm.$confirm('Do you want to graduate this student under condition?', 'Confirm', {
                 confirmButtonText: 'Long life to the new guru!',
                 cancelButtonText: 'No, not yet',
                 type: 'danger'
@@ -126,7 +127,7 @@ export default {
             this.graduateStudent().then((success) => {
                 this.$notify({ title: "Congratulations!", message: "The student successfully graduated" })
             }).catch((error) => {
-                console.log(error)
+               // console.log(error)
                 this.$notify({ title: "Error", message: "Something wrong happened, please reload and try again" })
             })
 
@@ -135,7 +136,7 @@ export default {
           this.graduateStudentConditional().then((success)=>{
             this.$notify({ title: "Congratulations!", message: "The student successfully graduated" })
           }).catch((error) => {
-            console.log(error)
+          //  console.log(error)
             this.$notify({ title: "Error", message: "Something wrong happened, please reload and try again" })
           })
         },
@@ -155,7 +156,7 @@ export default {
             this.currentRow = val
         },
         handleClick(tab, event) {
-            console.log(tab, event)
+            //console.log(tab, event)
         },
         handleModuleChange(val) {
 

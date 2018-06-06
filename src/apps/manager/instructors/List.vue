@@ -106,7 +106,7 @@ export default {
       if (this.selectedRow){
         this.deleteInstructor(this.selectedRow).then(
             (succes) => {
-              console.log('delete ok')
+              //('delete ok')
               vm.notify("Success","Instructor deleted")
             }
         );

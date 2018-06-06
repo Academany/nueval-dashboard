@@ -106,7 +106,7 @@ export default {
                         vm.$notify({ title: "Success", message: "Operation completed" })
                     }).catch((error) => {
                         vm.$notify({ title: "Error", message: "Some error occurred" })
-                        console.log(error)
+                       // console.log(error)
                     })
                 })
 
@@ -128,7 +128,7 @@ export default {
                         vm.$notify({ title: "Success", message: "Operation completed" })
                     }).catch((error) => {
                         vm.$notify({ title: "Error", message: "Some error occurred" })
-                        console.log(error)
+                    //    console.log(error)
                     })
                 })
 
@@ -158,7 +158,7 @@ export default {
             this.currentRow = val
         },
         handleClick(tab, event) {
-            console.log(tab, event)
+           // console.log(tab, event)
         },
         handleModuleChange(val) {
 

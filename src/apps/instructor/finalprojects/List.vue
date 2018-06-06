@@ -71,9 +71,9 @@ export default {
         },
         handleBooking(opts) {
 
-            console.log('Booking !!!!')
-            console.log(opts.session)
-            console.log(opts.students)
+           // console.log('Booking !!!!')
+           // console.log(opts.session)
+           // console.log(opts.students)
             var vm = this
             if (opts && opts.students) {
                 Promise.all(

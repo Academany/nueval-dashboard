@@ -139,7 +139,7 @@ export default {
         .catch(_ => { });
     },
     handleSelect(item) {
-      console.log(item);
+     // console.log(item);
     }
 
   }

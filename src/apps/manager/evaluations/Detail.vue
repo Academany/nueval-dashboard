@@ -85,7 +85,7 @@ export default {
       return moment(this.selectedDate).format('YYYY-MM-DD')
     },
     submitForm(formName) {
-      console.log(this.selectedDate)
+      //console.log(this.selectedDate)
       var vm = this;
       this.$refs[formName].validate((valid) => {
         if (valid) {

@@ -86,7 +86,7 @@ export default {
       if (this.selectedRow) {
         this.deleteStudent(this.selectedRow).then(
           (succes) => {
-            console.log('delete ok')
+           // console.log('delete ok')
             vm.notify("Success", "Student deleted")
           }
         );

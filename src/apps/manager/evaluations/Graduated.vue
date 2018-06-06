@@ -23,6 +23,13 @@
           {{ scope.row.lab ? scope.row.lab.name : '' | truncate(25) }}
         </template>
       </el-table-column>
+      <el-table-column prop="conditional" label="Cond." :width="80">
+        <template slot-scope="scope">
+          <span v-if="scope.row.conditional == true">
+            YES
+          </span>
+        </template>
+      </el-table-column>
       <el-table-column label="Instructor" sortable :width="130" v-if="item.kind === 'local'">
         <template slot-scope="scope">
           <span v-if="scope.row.evaluator">
@@ -71,6 +78,7 @@ export default {
         list = this.evaluationStudents(this.item) || []
       }
       list = list.filter((s) => s.graduated === true)
+      debugger
       // if (this.item.kind && this.item.kind === 'local') {
       //   students = this.allStudents || []
       // }
@@ -86,7 +94,7 @@ export default {
   },
   methods: {
     tableHeaders() {
-      return ["ID", "Username", "Email", "Lab", this.item.kind === 'global' ? "Evaluator" : "Instructor"]
+      return ["ID", "Username", "Email", "Lab", "Conditional", this.item.kind === 'global' ? "Evaluator" : "Instructor"]
     },
     tableRows() {
       let rows = []
@@ -99,6 +107,7 @@ export default {
 
           student.email,
           student.lab && student.lab.name || '',
+          student.conditional &&  'YES' || '',
           student.evaluator && (student.evaluator.first_name + ' ' + student.evaluator.last_name) || ''
         ])
       }
@@ -108,7 +117,7 @@ export default {
       loadStudents: 'admin/students/loadStudents'
     }),
     handleSelect(item) {
-      console.log(item);
+      //console.log(item);
     }
   }
 }

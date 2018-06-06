@@ -53,7 +53,7 @@ export default {
         }),
         filteredRoles() {
             const roles = this.userRoles || [];
-            console.log(roles)
+            //console.log(roles)
             return roles.filter((el) => {
                 return (el.role === 'instructor')
             })
@@ -97,7 +97,7 @@ export default {
                 })
             } 
         }).catch((error) => {
-            console.log('Something bad happened');
+           // console.log('Something bad happened');
             vm.$router.push('/')
         });
     }

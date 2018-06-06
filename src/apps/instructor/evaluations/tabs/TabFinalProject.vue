@@ -1,7 +1,7 @@
 <template>
     <div v-if="student" style="padding-right: 24px">
         <el-row :gutter="24">
-            <el-col :span="8">
+            <el-col :span="12">
 
                 <div v-if="student.lab">
                     <el-card class="website-card">
@@ -38,28 +38,39 @@
                         </div>
                     </el-card>
                 </div>
-
-            </el-col>
-
-            <el-col :span="16">
+                <br>
                 <div v-if="student.lab">
                     <el-card style="width: 100%">
+                        <div slot="header">Final project slide</div>
                         <a :href="videoURL" target="_blank">
-                            <img style="width: 100%" :src="slideURL">
+                            <LazyImage style="width: 100%" :src="slideURL"/>
                         </a>
                     </el-card>
                 </div>
 
             </el-col>
+
+            <el-col :span="12">
+                <InternalComments :student="student"/>
+            </el-col>
         </el-row>
     </div>
 </template>
 <script>
+import InternalComments from '../cards/InternalComments.vue'
+import LazyImage from '../fragments/LazyImage.vue'
 export default {
+    components: {
+        InternalComments,
+        LazyImage
+    },
     props: [
         'student'
     ],
     computed: {
+        messages(){
+            return []
+        },
         websiteURL() {
 
             if (this.student && this.student.lab){

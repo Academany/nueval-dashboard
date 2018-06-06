@@ -127,7 +127,7 @@ export default {
         //formW.resetFields();
         vm.resetForm();
       }).catch(function (error) {
-        console.log(error);
+       // console.log(error);
         vm.notify('Error', 'Some error happened');
       });
     },

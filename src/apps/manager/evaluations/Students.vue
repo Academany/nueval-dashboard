@@ -229,7 +229,7 @@ export default {
         });
         return
       }
-      console.log(this.evaluator_option[student.id])
+      //console.log(this.evaluator_option[student.id])
       const instr = this.findInstructor(this.evaluator_option[student.id])
       const params = {
         student: student,
@@ -249,7 +249,7 @@ export default {
       this.$emit("remove", params)
     },
     handleSelect(item) {
-      console.log(item);
+     // console.log(item);
     }
   }
 }

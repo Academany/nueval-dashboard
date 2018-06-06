@@ -117,7 +117,7 @@ export default {
             this.graduateStudent().then((success) => {
                 this.$notify({ title: "Congratulations!", message: "The student successfully graduated" })
             }).catch((error) => {
-                console.log(error)
+                //console.log(error)
                 this.$notify({ title: "Error", message: "Something wrong happened, please reload and try again" })
             })
 
@@ -138,7 +138,7 @@ export default {
             this.currentRow = val
         },
         handleClick(tab, event) {
-            console.log(tab, event)
+            //console.log(tab, event)
         },
         handleModuleChange(val) {
 

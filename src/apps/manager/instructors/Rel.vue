@@ -93,7 +93,7 @@ export default {
          ]
       },
       handleSelect(item) {
-        console.log(item);
+        //console.log(item);
       }
     }
 }

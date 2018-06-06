@@ -91,7 +91,7 @@ export default {
     },
     handleSubmit(form) {
       var vm = this;
-      console.log(form);
+     // console.log(form);
       if (this.selectedItem && this.selectedItem.id) {
         this.updateModule(form).then((success) => {
           vm.$message('Module successfully updated')
@@ -111,7 +111,7 @@ export default {
       }
     },
     handleCommand(param) {
-      console.log(param)
+      //console.log(param)
       const vm = this;
       const { cmd, item } = JSON.parse(param);
       // vm.$message(cmd + ' on ' + item.id)

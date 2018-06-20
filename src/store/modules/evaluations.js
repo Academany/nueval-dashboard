@@ -33,7 +33,7 @@ export default {
                             {
                                 'pairings': [{
                                         'student': [
-                                            'lab', { 'sheets': ['evaluation'] }
+                                            'lab', { 'sheets': ['evaluation','records'] }
                                         ]
                                     },
                                     'instructor'

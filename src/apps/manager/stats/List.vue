@@ -12,8 +12,11 @@
            <StudentsTab></StudentsTab>
          </el-tab-pane>
          <el-tab-pane label="Instructors" name="instructors">
-           <h3>Work in progress</h3>
-           <p>Instructors coming soon</p>
+           <InstructorsTab/>
+         </el-tab-pane>
+         <el-tab-pane label="Global Eval" name="evaluators">
+           <EvaluatorsTab />
+
          </el-tab-pane>
        </el-tabs>
       </div>
@@ -24,10 +27,12 @@ import { mapActions, mapGetters } from 'vuex'
 import LabsTab from './LabsTab.vue'
 import StudentsTab from './StudentsTab.vue'
 import GeneralTab from './GeneralTab.vue'
+import EvaluatorsTab from './EvaluatorsTab.vue'
+import InstructorsTab from './InstructorsTab.vue'
 
 export default{
   components: {
-      LabsTab, StudentsTab,GeneralTab
+      LabsTab, StudentsTab, GeneralTab,  EvaluatorsTab, InstructorsTab
   },
   data() {
      return {

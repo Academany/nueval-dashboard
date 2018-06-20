@@ -1,35 +1,36 @@
 <template>
-    <div v-if="loading">
-        <el-row>
-            <el-col :span="12" :offset="6">
-                <el-card>
-                    <h1>Loading...</h1>
-                    <p>Please wait, loading your dashboard</p>
-                    <el-progress :percentage="loaded"></el-progress>
-                </el-card>
-            </el-col>
-        </el-row>
-    </div>
-    <div v-else>
-        <div v-if="booted">
-            <router-view></router-view>
-        </div>
-    
-        <div v-else>
-            <el-row v-if="filteredRoles.length > 1">
+    <div>
+        <div v-if="loading">
+            <el-row>
                 <el-col :span="12" :offset="6">
                     <el-card>
-                        <p>Looks like you are instructor in more than one course</p>
-                        <p>Please select a course</p>
-                        <el-select v-model="selectedRoleIdx" @change="selectRole">
-                            <el-option v-for="role,idx in filteredRoles" :label="role.instructor.course.name" :value="idx" :key="role.role"></el-option>
-                        </el-select>
-                        <el-button @click="launchApp">Start</el-button>
+                        <h1>Loading...</h1>
+                        <p>Please wait, loading your dashboard</p>
+                        <el-progress :percentage="loaded"></el-progress>
                     </el-card>
                 </el-col>
             </el-row>
         </div>
-    </div>
+        <div v-else>
+            <div v-if="booted">
+                <router-view></router-view>
+            </div>
+        
+            <div v-else>
+                <el-row v-if="filteredRoles.length > 1">
+                    <el-col :span="12" :offset="6">
+                        <el-card>
+                            <p>Looks like you are instructor in more than one course</p>
+                            <p>Please select a course</p>
+                            <el-select v-model="selectedRoleIdx" @change="selectRole">
+                                <el-option v-for="(role,idx) in filteredRoles" :label="role.instructor.course.name" :value="idx" :key="role.role"></el-option>
+                            </el-select>
+                            <el-button @click="launchApp">Start</el-button>
+                        </el-card>
+                    </el-col>
+                </el-row>
+            </div>
+        </div>
     </div>
 </template>
 <script>

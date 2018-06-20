@@ -1,7 +1,9 @@
 <template>
     <div class="sheet" v-loading="students.length == 0">
 
-
+  <div>
+    <h3><strong>Local Evaluation:</strong></h3>
+  </div>
 
       <el-row>
         <el-col :span="12">
@@ -83,10 +85,19 @@
     </el-row>
       <br>
 
+
+  <div>
+    <h3><strong>Global Evaluation:</strong></h3>
+  </div>
+      <el-row>
+        <el-col :span="12">
+           <LocalChart :data="globalChartData" :options="globalChartOptions"></LocalChart>
+        </el-col>
+        <el-col :span="12"> 
       <table v-if="students.length > 0 && pending_global">
         <tr>
           <td>
-            <strong>Global Evaluation:</strong>
+            
           </td>
         </tr>
         <tr>
@@ -140,13 +151,26 @@
             <strong>Graduated:</strong>
           </td>
           <td>
-            <span>{{graduated }}</span>
+            <span>{{graduated - graudated_conditional }}</span> 
           </td>
           <td style="width: 200px">
-            <el-progress status="success" :text-inside="true" :stroke-width="18" :percentage="Math.round(graduated / under_global * 100)"></el-progress>
+            <el-progress status="success" :text-inside="true" :stroke-width="18" :percentage="Math.round((graduated - graudated_conditional) / under_global * 100)"></el-progress>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <strong>Graduated conditionally:</strong>
+          </td>
+          <td>
+            <span>{{graudated_conditional }}</span> 
+          </td>
+          <td style="width: 200px">
+            <el-progress status="success" :text-inside="true" :stroke-width="18" :percentage="Math.round(graudated_conditional / under_global * 100)"></el-progress>
           </td>
         </tr>
       </table>
+        </el-col>
+        </el-row>
 
     </div>
   </template>
@@ -173,7 +197,20 @@
           datasets: [{
               backgroundColor: [  '#00D8FF', '#41B883','#E46651','#DD1B16'],
               data: [this.pending_local, this.completed_local, this.dropped, this.next_cycle_local]
-            }]
+          }]
+        }
+      },
+      globalChartOptions(){
+        return {responsive: true, maintainAspectRatio: false}
+      },
+      globalChartData(){
+        return {
+          labels: ['Pending', 'Assigned', 'Waiting', 'Graduated','Grad. Conditional', 'Next Cycle'],
+          datasets: [{
+              backgroundColor: [  '#00D8FF', '#41B883','#E46651','#DD1B16', '#FFCC00', '#CCDDCC'],
+              data: [this.pending_global, this.assigned, this.waiting,this.graduated - this.graudated_conditional,
+              this.graudated_conditional, this.next_cycle_global]
+          }]
         }
       },
       pending_local() {
@@ -234,6 +271,11 @@
       graduated() {
         const allStudents = this.students || []
         const graduated = allStudents.filter((s) => s.graduated === true)
+        return graduated.length
+      },
+      graudated_conditional(){
+        const allStudents = this.students || []
+        const graduated = allStudents.filter((s) => s.graduated === true && s.graudated_conditional === true)
         return graduated.length
       },
       waiting() {

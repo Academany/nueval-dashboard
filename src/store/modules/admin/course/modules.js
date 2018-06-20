@@ -15,7 +15,7 @@ const sortedModules = (mods) => {
   return mods.sort((a,b)=>{
     a = new Date(a.date);
     b = new Date(b.date);
-    console.log(a)
+    // console.log(a)
     return a>b ? 1 : a<b ? -1 : 0;
   })
 }

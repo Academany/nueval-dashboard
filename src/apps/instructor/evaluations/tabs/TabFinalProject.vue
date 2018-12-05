@@ -24,7 +24,8 @@
                             <strong>Final project presentation:</strong>
                         </div>
 
-                        <div style="display: inline-box" v-for="booking in student.booked" :key="booking.id">
+                        <div style="display: inline-box" v-for="(booking,idx) in student.booked" :key="booking.id">
+                            <div v-if="idx==0">
                             {{booking.name }} {{booking.date | moment('YYYY-MM-DD')}}
                             <span v-if="student.presented && student.presented.length > 0">
                                 <el-tag type="success">Presented</el-tag>
@@ -35,6 +36,7 @@
                             <span v-else>
                                 <el-tag type="primary">Pending</el-tag>
                             </span>
+                            </div>
                         </div>
                     </el-card>
                 </div>

@@ -40,7 +40,13 @@ export default {
                             'students': ['lab', 'presented', 'booked', 'noshow']
                         },
                         {
-                            'pairings': ['student', 'instructor'],
+                            'pairings': [
+                                { 
+                                    'student': ['presented','booked','noshow']
+                                },
+                                    'instructor'
+                                
+                                ]
 
                         },
                         'course'
@@ -608,6 +614,11 @@ export default {
                         if (p.instructorId === instructor.id) {
                             const student = students.find(s => (s.id === p.studentId))
                             if (student) {
+                                if (!student.booked){
+                                    student.booked = p.student.booked || []
+                                    student.presented = p.student.presented || []
+                                    student.noshow = p.student.noshow || []
+                                }
                                 queue[session.name].push(student)
                             }
                         }

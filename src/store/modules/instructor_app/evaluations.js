@@ -40,13 +40,12 @@ export default {
                             'students': ['lab', 'presented', 'booked', 'noshow']
                         },
                         {
-                            'pairings': [
-                                { 
-                                    'student': ['presented','booked','noshow']
+                            'pairings': [{
+                                    'student': ['presented', 'booked', 'noshow']
                                 },
-                                    'instructor'
-                                
-                                ]
+                                'instructor'
+
+                            ]
 
                         },
                         'course'
@@ -117,7 +116,11 @@ export default {
             commit,
             state,
             dispatch,
-        }, { evaluationId, instructorId, studentId }) {
+        }, {
+            evaluationId,
+            instructorId,
+            studentId
+        }) {
             return new Promise((resolve, reject) => {
                 commit(PREPARE_EVALUATION, studentId)
                 api.post('/api/evaluations/' + evaluationId + '/prepare/' + studentId, {
@@ -204,14 +207,24 @@ export default {
 
             dispatch('loadProgress', state.currentStudent.id)
         },
-        graduateStudent({ commit, dispatch, state }) {
+        graduateStudent({
+            commit,
+            dispatch,
+            state
+        }) {
             return new Promise((resolve, reject) => {
                 // graduate current student
                 const student = state.currentStudent
                 const session = state.currentEvaluation
                 if (!student || !session)
                     return reject("Missing parameters")
-                api.put("/api/evaluations/" + session.id + "/students/" + student.id, { graduated: true, conditional: false, dropped: false, next_cycle: false, waiting_feedback: false })
+                api.put("/api/evaluations/" + session.id + "/students/" + student.id, {
+                        graduated: true,
+                        conditional: false,
+                        dropped: false,
+                        next_cycle: false,
+                        waiting_feedback: false
+                    })
                     .then((response) => {
                         commit(GRADUATE_STUDENT, {
                             session,
@@ -230,14 +243,24 @@ export default {
                     })
             })
         },
-        graduateStudentConditional({ commit, dispatch, state }) {
+        graduateStudentConditional({
+            commit,
+            dispatch,
+            state
+        }) {
             return new Promise((resolve, reject) => {
                 // graduate current student
                 const student = state.currentStudent
                 const session = state.currentEvaluation
                 if (!student || !session)
                     return reject("Missing parameters")
-                api.put("/api/evaluations/" + session.id + "/students/" + student.id, { graduated: true, conditional: true, dropped: false, next_cycle: false, waiting_feedback: false })
+                api.put("/api/evaluations/" + session.id + "/students/" + student.id, {
+                        graduated: true,
+                        conditional: true,
+                        dropped: false,
+                        next_cycle: false,
+                        waiting_feedback: false
+                    })
                     .then((response) => {
                         commit(GRADUATE_STUDENT_CONDITIONAL, {
                             session,
@@ -256,14 +279,18 @@ export default {
                     })
             })
         },
-        leaveComment({ commit, state, dispatch }, message) {
+        leaveComment({
+            commit,
+            state,
+            dispatch
+        }, message) {
             console.log('Leave comment!')
             console.log(message)
             const uuidv4 = () => {
-                return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
-                  (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+                return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
+                    (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
                 )
-              }
+            }
 
             return new Promise((resolve, reject) => {
                 api.post('/api/students/' + state.currentStudent.id + '/comments', {
@@ -282,34 +309,45 @@ export default {
                         console.log(success)
                         commit(LEAVE_COMMENT, success.body)
                         resolve(success.body)
-                        // const feedbackItem = success.body
-                        // if (feedbackItem.id) {
-                        //     api.put('/api/records/' + state.record.id + '/messages/rel/' + feedbackItem.id, {
-                        //         evaluationRecordId: state.record.id,
-                        //         messageId: feedbackItem.id,
-                        //     }).then((success) => {
-                        //         commit(LEAVE_FEEDBACK, feedbackItem)
-                        //         dispatch('loadRecord').then(resolve).catch(reject)
-                        //     }).catch((error) => {
-                        //         commit(API_FAILURE, error, { root: true })
-                        //         reject(error)
-                        //     })
-                        // }
+                            // const feedbackItem = success.body
+                            // if (feedbackItem.id) {
+                            //     api.put('/api/records/' + state.record.id + '/messages/rel/' + feedbackItem.id, {
+                            //         evaluationRecordId: state.record.id,
+                            //         messageId: feedbackItem.id,
+                            //     }).then((success) => {
+                            //         commit(LEAVE_FEEDBACK, feedbackItem)
+                            //         dispatch('loadRecord').then(resolve).catch(reject)
+                            //     }).catch((error) => {
+                            //         commit(API_FAILURE, error, { root: true })
+                            //         reject(error)
+                            //     })
+                            // }
                     })
                     .catch((error) => {
-                        commit(API_FAILURE, error, { root: true })
+                        commit(API_FAILURE, error, {
+                            root: true
+                        })
                         reject(error)
                     })
             })
         },
-        requestFeedback({ commit, dispatch, state }) {
+        requestFeedback({
+            commit,
+            dispatch,
+            state
+        }) {
             return new Promise((resolve, reject) => {
                 // graduate current student
                 const student = ç
                 const session = state.currentEvaluation
                 if (!student || !session)
                     return reject("Missing parameters")
-                api.put("/api/evaluations/" + session.id + "/students/" + student.id, { graduated: false, dropped: false, next_cycle: false, waiting_feedback: true })
+                api.put("/api/evaluations/" + session.id + "/students/" + student.id, {
+                        graduated: false,
+                        dropped: false,
+                        next_cycle: false,
+                        waiting_feedback: true
+                    })
                     .then((response) => {
                         commit(WAITING_FEEDBACK, {
                             session,
@@ -328,7 +366,11 @@ export default {
                     })
             })
         },
-        localComplete({ commit, dispatch, state }) {
+        localComplete({
+            commit,
+            dispatch,
+            state
+        }) {
             // send student to next cycle
             return new Promise((resolve, reject) => {
                 // graduate current student
@@ -336,7 +378,9 @@ export default {
                 const session = state.currentEvaluation
                 if (!student || !session)
                     return reject("Missing parameters")
-                api.put("/api/evaluations/" + session.id + "/students/" + student.id, { local_complete: true })
+                api.put("/api/evaluations/" + session.id + "/students/" + student.id, {
+                        local_complete: true
+                    })
                     .then((response) => {
                         commit(LOCAL_COMPLETE, {
                             session,
@@ -355,7 +399,11 @@ export default {
                     })
             })
         },
-        nextCycle({ commit, dispatch, state }, sessionParam) {
+        nextCycle({
+            commit,
+            dispatch,
+            state
+        }, sessionParam) {
             // send student to next cycle
             return new Promise((resolve, reject) => {
                 // graduate current student
@@ -367,7 +415,12 @@ export default {
                     return reject("Missing parameters")
 
                 }
-                api.put("/api/evaluations/" + session.id + "/students/" + student.id, { next_cycle: true, graduated: false, dropped: false, waiting_feedback: false })
+                api.put("/api/evaluations/" + session.id + "/students/" + student.id, {
+                        next_cycle: true,
+                        graduated: false,
+                        dropped: false,
+                        waiting_feedback: false
+                    })
                     .then((response) => {
                         commit(RECYCLE_STUDENT, {
                             session,
@@ -386,7 +439,11 @@ export default {
                     })
             })
         },
-        cancelStudent({ commit, dispatch, state }, sessionParam) {
+        cancelStudent({
+            commit,
+            dispatch,
+            state
+        }, sessionParam) {
             // mark student as dropped out
             // send student to next cycle
             return new Promise((resolve, reject) => {
@@ -399,15 +456,31 @@ export default {
                     return reject("Missing parameters")
                 }
 
-                api.put("/api/evaluations/" + session.id + "/students/" + student.id, { next_cycle: false, graduated: false, dropped: true, waiting_feedback: false })
+
+
+
+                api.put("/api/evaluations/" + session.id + "/students/" + student.id, {
+                        next_cycle: false,
+                        graduated: false,
+                        dropped: true,
+                        waiting_feedback: false
+                    })
                     .then((response) => {
                         commit(DROP_STUDENT, {
                             session,
                             student,
                         })
 
-                        dispatch('loadProgress', student.id)
-                        resolve(response)
+                        api.post('/api/notification-center', {
+                            test: "sample"
+                        }).then((success) => {
+                            dispatch('loadProgress', student.id)
+                            resolve(response)
+                        }).catch((error) => {
+                            console.log('Failed to post notification')
+                        })
+
+
                     })
                     .catch((error) => {
                         commit(API_FAILURE, error, {
@@ -466,31 +539,55 @@ export default {
             // TODO Mark student complete!!!
 
         },
-        [GRADUATE_STUDENT](state, { session, student }) {
+        [GRADUATE_STUDENT](state, {
+            session,
+            student
+        }) {
             if (state.currentStudent) {
                 const current = state.currentStudent
-                state.currentStudent = {...current, graduated : true, conditional : false }
+                state.currentStudent = {...current,
+                    graduated: true,
+                    conditional: false
+                }
             }
         },
-        [GRADUATE_STUDENT_CONDITIONAL](state, { session, student }) {
-          if (state.currentStudent) {
-              const current = state.currentStudent
-              state.currentStudent = {...current, graduated : true, conditional : true }
-          }
+        [GRADUATE_STUDENT_CONDITIONAL](state, {
+            session,
+            student
+        }) {
+            if (state.currentStudent) {
+                const current = state.currentStudent
+                state.currentStudent = {...current,
+                    graduated: true,
+                    conditional: true
+                }
+            }
         },
-        [WAITING_FEEDBACK](state, { session, student }) {
+        [WAITING_FEEDBACK](state, {
+            session,
+            student
+        }) {
             if (state.currentStudent)
                 state.currentStudent.waiting_feedback = true
         },
-        [RECYCLE_STUDENT](state, { session, student }) {
+        [RECYCLE_STUDENT](state, {
+            session,
+            student
+        }) {
             if (state.currentStudent)
                 state.currentStudent.next_cycle = true
         },
-        [DROP_STUDENT](state, { session, student }) {
+        [DROP_STUDENT](state, {
+            session,
+            student
+        }) {
             if (state.currentStudent)
                 state.currentStudent.dropped = true
         },
-        [LOCAL_COMPLETE](state, { session, student }) {
+        [LOCAL_COMPLETE](state, {
+            session,
+            student
+        }) {
             if (state.currentStudent)
                 state.currentStudent.local_complete = true
         },
@@ -536,10 +633,10 @@ export default {
                 const recs = ev && ev.records || []
                 const completed = recs.filter(er => er.completed)
                 let allCompleted = (completed.length == recs.length)
-                // check if we do incremental evaluation
-                // in this case the student can be sent to global if he completed at least one unit
-                if (config.use_incremental){
-                  allCompleted = (completed.length >= 1)
+                    // check if we do incremental evaluation
+                    // in this case the student can be sent to global if he completed at least one unit
+                if (config.use_incremental) {
+                    allCompleted = (completed.length >= 1)
                 }
                 debugger
                 if (completed.length > 0 && allCompleted && ev.evaluation.kind === 'local') {
@@ -614,7 +711,7 @@ export default {
                         if (p.instructorId === instructor.id) {
                             const student = students.find(s => (s.id === p.studentId))
                             if (student) {
-                                if (!student.booked){
+                                if (!student.booked) {
                                     student.booked = p.student.booked || []
                                     student.presented = p.student.presented || []
                                     student.noshow = p.student.noshow || []
